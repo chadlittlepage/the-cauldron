@@ -1,4 +1,4 @@
-import { lazy, useEffect } from 'react';
+import { lazy, useEffect, useRef } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/main-layout';
 import { LoadingBoundary } from '@/components/ui/loading-boundary';
@@ -7,6 +7,7 @@ import { RoleRoute } from '@/components/layout/role-route';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
+  const topRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
@@ -15,25 +16,12 @@ function ScrollToTop() {
   }, []);
 
   useEffect(() => {
-    // Immediate scroll
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-
-    // After paint — catches cases where browser overrides during layout
-    requestAnimationFrame(() => {
-      window.scrollTo(0, 0);
-    });
-
-    // After any lazy component hydration or layout shift
-    const timeout = setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 50);
-
-    return () => clearTimeout(timeout);
+    // Scroll the anchor element into view — works regardless of which
+    // element is the actual scroll container
+    topRef.current?.scrollIntoView();
   }, [pathname]);
 
-  return null;
+  return <div ref={topRef} />;
 }
 
 // Eager: pages that are always needed on first load
