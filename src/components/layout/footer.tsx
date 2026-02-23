@@ -22,7 +22,7 @@ const company = [
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-white/5 bg-hex-deeper">
+    <footer className="mt-auto bg-hex-deeper/80 backdrop-blur-sm">
       <div className="mx-auto max-w-7xl px-6 py-14">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
@@ -111,7 +111,7 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 sm:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 pt-8 sm:flex-row">
           <p className="text-xs text-hex-muted">
             &copy; {new Date().getFullYear()} hexwave.io. All rights reserved.
           </p>

@@ -30,7 +30,7 @@ export function ChartsPage() {
   return (
     <div className="relative">
       {/* Hero */}
-      <div className="relative border-b border-white/5 overflow-hidden">
+      <div className="relative">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 w-[400px] h-[300px] rounded-full bg-accent-orange/5 blur-[100px]" />
         </div>

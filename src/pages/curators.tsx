@@ -13,7 +13,7 @@ export function CuratorsPage() {
   return (
     <div className="relative">
       {/* Hero */}
-      <div className="relative border-b border-white/5 overflow-hidden">
+      <div className="relative">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-1/3 w-[400px] h-[300px] rounded-full bg-accent-pink/5 blur-[100px]" />
         </div>

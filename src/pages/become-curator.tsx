@@ -79,7 +79,7 @@ export function BecomeCuratorPage() {
   return (
     <div className="relative">
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-white/5">
+      <section className="relative">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-accent-pink/5 blur-[120px]" />
           <div className="absolute top-[200px] right-0 w-[300px] h-[300px] rounded-full bg-accent-purple/5 blur-[80px]" />
@@ -145,7 +145,7 @@ export function BecomeCuratorPage() {
       </section>
 
       {/* How It Works */}
-      <section className="border-t border-white/5">
+      <section>
         <div className="mx-auto max-w-4xl px-6 py-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold">How It Works</h2>
@@ -169,7 +169,7 @@ export function BecomeCuratorPage() {
       </section>
 
       {/* Track Lifecycle */}
-      <section className="border-t border-white/5">
+      <section>
         <div className="mx-auto max-w-4xl px-6 py-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold">Track Lifecycle</h2>
@@ -199,7 +199,7 @@ export function BecomeCuratorPage() {
       </section>
 
       {/* Benefits */}
-      <section className="border-t border-white/5">
+      <section>
         <div className="mx-auto max-w-4xl px-6 py-20">
           <h2 className="text-3xl font-bold text-center mb-12">Benefits</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -217,7 +217,7 @@ export function BecomeCuratorPage() {
       </section>
 
       {/* CTA */}
-      <section className="border-t border-white/5">
+      <section>
         <div className="relative mx-auto max-w-4xl px-6 py-20 text-center">
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] rounded-full bg-accent-pink/5 blur-[80px]" />

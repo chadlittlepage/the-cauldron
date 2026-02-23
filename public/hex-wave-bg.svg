@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <rect width="1920" height="1080" fill="#06080c"/>
+
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Row 1 -->
+  <g opacity="0.09">
+    <polygon points="80,60 120,37 160,60 160,106 120,129 80,106" fill="#8b5cf6" fill-opacity="0.08" stroke="#a855f7" stroke-width="1.5"/>
+    <polygon points="200,60 240,37 280,60 280,106 240,129 200,106" fill="#7c3aed" fill-opacity="0.06" stroke="#8b5cf6" stroke-width="1.5"/>
+    <polygon points="320,60 360,37 400,60 400,106 360,129 320,106" fill="none" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="8,4"/>
+    <path d="M440,83 Q480,30 520,83 Q560,136 600,83 Q640,30 680,83 Q720,136 760,83 Q800,30 840,83 Q880,136 920,83" fill="none" stroke="url(#g1)" stroke-width="2"/>
+  </g>
+
+  <!-- Row 2 -->
+  <g opacity="0.075">
+    <polygon points="950,40 990,17 1030,40 1030,86 990,109 950,86" fill="#a855f7" fill-opacity="0.07" stroke="#a855f7" stroke-width="1.5"/>
+    <polygon points="1070,40 1110,17 1150,40 1150,86 1110,109 1070,86" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="8,4"/>
+    <path d="M1200,63 Q1240,10 1280,63 Q1320,116 1360,63 Q1400,10 1440,63 Q1480,116 1520,63 Q1560,10 1600,63 Q1640,116 1680,63 Q1720,10 1760,63 Q1800,116 1840,63" fill="none" stroke="url(#g1)" stroke-width="1.8"/>
+  </g>
+
+  <!-- Row 3 -->
+  <g opacity="0.08">
+    <polygon points="40,200 80,177 120,200 120,246 80,269 40,246" fill="#8b5cf6" fill-opacity="0.07" stroke="#a855f7" stroke-width="1.5"/>
+    <polygon points="160,200 200,177 240,200 240,246 200,269 160,246" fill="#7c3aed" fill-opacity="0.05" stroke="#8b5cf6" stroke-width="1.5"/>
+    <polygon points="280,200 320,177 360,200 360,246 320,269 280,246" fill="none" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="8,4"/>
+    <path d="M400,223 Q440,170 480,223 Q520,276 560,223 Q600,170 640,223" fill="none" stroke="url(#g1)" stroke-width="1.8"/>
+    <path d="M680,223 Q720,170 760,223 Q800,276 840,223 Q880,170 920,223 Q960,276 1000,223 Q1040,170 1080,223 Q1120,276 1160,223" fill="none" stroke="url(#g1)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Row 4 -->
+  <g opacity="0.07">
+    <polygon points="1200,180 1240,157 1280,180 1280,226 1240,249 1200,226" fill="#a855f7" fill-opacity="0.06" stroke="#a855f7" stroke-width="1.5"/>
+    <polygon points="1320,180 1360,157 1400,180 1400,226 1360,249 1320,226" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+    <polygon points="1440,180 1480,157 1520,180 1520,226 1480,249 1440,226" fill="none" stroke="#a855f7" stroke-width="1.2" stroke-dasharray="6,4"/>
+    <path d="M1570,203 Q1610,150 1650,203 Q1690,256 1730,203 Q1770,150 1810,203 Q1850,256 1890,203" fill="none" stroke="url(#g1)" stroke-width="1.8"/>
+  </g>
+
+  <!-- Row 5 -->
+  <g opacity="0.075">
+    <polygon points="100,350 140,327 180,350 180,396 140,419 100,396" fill="#8b5cf6" fill-opacity="0.07" stroke="#a855f7" stroke-width="1.5"/>
+    <polygon points="220,350 260,327 300,350 300,396 260,419 220,396" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="8,4"/>
+    <path d="M340,373 Q380,320 420,373 Q460,426 500,373 Q540,320 580,373 Q620,426 660,373 Q700,320 740,373" fill="none" stroke="url(#g1)" stroke-width="1.8"/>
+  </g>
+
+  <!-- Row 6 -->
+  <g opacity="0.065">
+    <polygon points="800,330 840,307 880,330 880,376 840,399 800,376" fill="#7c3aed" fill-opacity="0.06" stroke="#8b5cf6" stroke-width="1.5"/>
+    <polygon points="920,330 960,307 1000,330 1000,376 960,399 920,376" fill="none" stroke="#a855f7" stroke-width="1.2" stroke-dasharray="6,4"/>
+    <path d="M1050,353 Q1090,300 1130,353 Q1170,406 1210,353 Q1250,300 1290,353 Q1330,406 1370,353 Q1410,300 1450,353 Q1490,406 1530,353 Q1570,300 1610,353 Q1650,406 1690,353 Q1730,300 1770,353 Q1810,406 1850,353" fill="none" stroke="url(#g1)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Row 7 -->
+  <g opacity="0.08">
+    <polygon points="50,500 90,477 130,500 130,546 90,569 50,546" fill="#a855f7" fill-opacity="0.08" stroke="#a855f7" stroke-width="1.5"/>
+    <polygon points="170,500 210,477 250,500 250,546 210,569 170,546" fill="#8b5cf6" fill-opacity="0.05" stroke="#8b5cf6" stroke-width="1.5"/>
+    <polygon points="290,500 330,477 370,500 370,546 330,569 290,546" fill="none" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="8,4"/>
+    <path d="M420,523 Q460,470 500,523 Q540,576 580,523 Q620,470 660,523 Q700,576 740,523 Q780,470 820,523" fill="none" stroke="url(#g1)" stroke-width="2"/>
+  </g>
+
+  <!-- Row 8 -->
+  <g opacity="0.07">
+    <polygon points="900,490 940,467 980,490 980,536 940,559 900,536" fill="#7c3aed" fill-opacity="0.06" stroke="#8b5cf6" stroke-width="1.5"/>
+    <polygon points="1020,490 1060,467 1100,490 1100,536 1060,559 1020,536" fill="none" stroke="#a855f7" stroke-width="1.2" stroke-dasharray="6,4"/>
+    <path d="M1150,513 Q1190,460 1230,513 Q1270,566 1310,513 Q1350,460 1390,513 Q1430,566 1470,513 Q1510,460 1550,513 Q1590,566 1630,513 Q1670,460 1710,513 Q1750,566 1790,513 Q1830,460 1870,513" fill="none" stroke="url(#g1)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Row 9 -->
+  <g opacity="0.075">
+    <polygon points="120,650 160,627 200,650 200,696 160,719 120,696" fill="#8b5cf6" fill-opacity="0.07" stroke="#a855f7" stroke-width="1.5"/>
+    <polygon points="240,650 280,627 320,650 320,696 280,719 240,696" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="8,4"/>
+    <path d="M370,673 Q410,620 450,673 Q490,726 530,673 Q570,620 610,673 Q650,726 690,673 Q730,620 770,673 Q810,726 850,673" fill="none" stroke="url(#g1)" stroke-width="1.8"/>
+  </g>
+
+  <!-- Row 10 -->
+  <g opacity="0.065">
+    <polygon points="920,640 960,617 1000,640 1000,686 960,709 920,686" fill="#a855f7" fill-opacity="0.06" stroke="#a855f7" stroke-width="1.5"/>
+    <polygon points="1040,640 1080,617 1120,640 1120,686 1080,709 1040,686" fill="none" stroke="#8b5cf6" stroke-width="1.2"/>
+    <path d="M1170,663 Q1210,610 1250,663 Q1290,716 1330,663 Q1370,610 1410,663 Q1450,716 1490,663 Q1530,610 1570,663 Q1610,716 1650,663 Q1690,610 1730,663 Q1770,716 1810,663 Q1850,610 1890,663" fill="none" stroke="url(#g1)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Row 11 -->
+  <g opacity="0.07">
+    <polygon points="60,800 100,777 140,800 140,846 100,869 60,846" fill="#8b5cf6" fill-opacity="0.06" stroke="#a855f7" stroke-width="1.5"/>
+    <polygon points="180,800 220,777 260,800 260,846 220,869 180,846" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="8,4"/>
+    <path d="M310,823 Q350,770 390,823 Q430,876 470,823 Q510,770 550,823 Q590,876 630,823 Q670,770 710,823 Q750,876 790,823 Q830,770 870,823" fill="none" stroke="url(#g1)" stroke-width="1.8"/>
+  </g>
+
+  <!-- Row 12 -->
+  <g opacity="0.06">
+    <polygon points="950,790 990,767 1030,790 1030,836 990,859 950,836" fill="#7c3aed" fill-opacity="0.05" stroke="#8b5cf6" stroke-width="1.2"/>
+    <path d="M1100,813 Q1140,760 1180,813 Q1220,866 1260,813 Q1300,760 1340,813 Q1380,866 1420,813 Q1460,760 1500,813 Q1540,866 1580,813 Q1620,760 1660,813 Q1700,866 1740,813 Q1780,760 1820,813 Q1860,866 1900,813" fill="none" stroke="url(#g1)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Row 13 -->
+  <g opacity="0.065">
+    <polygon points="100,950 140,927 180,950 180,996 140,1019 100,996" fill="#a855f7" fill-opacity="0.06" stroke="#a855f7" stroke-width="1.2"/>
+    <polygon points="220,950 260,927 300,950 300,996 260,1019 220,996" fill="none" stroke="#8b5cf6" stroke-width="1.2" stroke-dasharray="6,4"/>
+    <path d="M350,973 Q390,920 430,973 Q470,1026 510,973 Q550,920 590,973 Q630,1026 670,973 Q710,920 750,973 Q790,1026 830,973 Q870,920 910,973 Q950,1026 990,973 Q1030,920 1070,973" fill="none" stroke="url(#g1)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Scattered small accent hexagons -->
+  <g opacity="0.09">
+    <polygon points="1750,50 1775,36 1800,50 1800,78 1775,92 1750,78" fill="#a855f7" fill-opacity="0.1" stroke="#a855f7" stroke-width="1.2"/>
+    <polygon points="1820,250 1845,236 1870,250 1870,278 1845,292 1820,278" fill="#ec4899" fill-opacity="0.08" stroke="#ec4899" stroke-width="1.2"/>
+    <polygon points="1700,450 1725,436 1750,450 1750,478 1725,492 1700,478" fill="#8b5cf6" fill-opacity="0.08" stroke="#8b5cf6" stroke-width="1.2"/>
+    <polygon points="1800,600 1825,586 1850,600 1850,628 1825,642 1800,628" fill="#a855f7" fill-opacity="0.07" stroke="#a855f7" stroke-width="1"/>
+    <polygon points="1720,780 1745,766 1770,780 1770,808 1745,822 1720,808" fill="#7c3aed" fill-opacity="0.08" stroke="#7c3aed" stroke-width="1"/>
+    <polygon points="1830,920 1855,906 1880,920 1880,948 1855,962 1830,948" fill="#ec4899" fill-opacity="0.06" stroke="#ec4899" stroke-width="1"/>
+  </g>
+</svg>

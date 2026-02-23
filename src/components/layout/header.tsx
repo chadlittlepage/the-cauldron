@@ -27,7 +27,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 glass border-b border-white/5">
+    <header className="sticky top-0 z-50 glass">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
@@ -123,7 +123,7 @@ export function Header() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-white/5 bg-hex-surface/95 backdrop-blur-xl animate-slide-up">
+        <div className="md:hidden bg-hex-surface/95 backdrop-blur-xl animate-slide-up">
           <div className="px-6 py-4 space-y-1">
             {navLinks.map((link) => (
               <Link

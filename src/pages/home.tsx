@@ -123,7 +123,7 @@ export function HomePage() {
   return (
     <div className="relative">
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden">
+      <section className="relative">
         {/* Background effects */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-accent-purple/8 blur-[120px] animate-pulse-glow" />
@@ -185,7 +185,7 @@ export function HomePage() {
       </section>
 
       {/* ── Featured Track / Now Playing ── */}
-      <section className="relative border-t border-white/5">
+      <section className="relative">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-accent-purple/5 blur-[100px]" />
         </div>
@@ -304,7 +304,7 @@ export function HomePage() {
       </section>
 
       {/* ── Features ── */}
-      <section className="relative border-t border-white/5">
+      <section className="relative">
         <div className="mx-auto max-w-7xl px-6 py-24">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold">
@@ -337,7 +337,7 @@ export function HomePage() {
       </section>
 
       {/* ── How It Works ── */}
-      <section className="relative border-t border-white/5">
+      <section className="relative">
         <div className="mx-auto max-w-7xl px-6 py-24">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold">How It Works</h2>
@@ -368,7 +368,7 @@ export function HomePage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="relative border-t border-white/5">
+      <section className="relative">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-accent-purple/5 blur-[100px]" />
         </div>

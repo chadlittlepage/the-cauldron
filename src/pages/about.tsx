@@ -16,7 +16,7 @@ export function AboutPage() {
   return (
     <div className="relative">
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-white/5">
+      <section className="relative">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-accent-purple/5 blur-[120px]" />
         </div>
@@ -79,7 +79,7 @@ export function AboutPage() {
       </section>
 
       {/* For Artists & Curators */}
-      <section className="border-t border-white/5">
+      <section>
         <div className="mx-auto max-w-4xl px-6 py-20">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="glass-card rounded-2xl p-8 border-l-4 border-l-accent-purple">
@@ -148,7 +148,7 @@ export function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section className="border-t border-white/5">
+      <section>
         <div className="mx-auto max-w-4xl px-6 py-20">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
             {[
