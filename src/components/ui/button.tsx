@@ -13,11 +13,11 @@ const buttonVariants = cva(
           'gradient-primary text-white shadow-lg shadow-accent-purple/25 hover:shadow-accent-purple/40 hover:brightness-110',
         destructive: 'bg-error text-white hover:bg-error/90 shadow-lg shadow-error/20',
         outline:
-          'border border-hex-border bg-transparent text-hex-text hover:border-accent-purple/50 hover:bg-accent-purple/5 hover:text-white',
+          'border border-accent-purple/50 bg-gradient-to-r from-accent-purple/60 to-accent-pink/60 text-white hover:from-accent-purple/80 hover:to-accent-pink/80 shadow-lg shadow-accent-purple/20',
         ghost: 'text-hex-muted hover:text-hex-text hover:bg-white/5',
         link: 'text-accent-purple underline-offset-4 hover:underline',
         glass:
-          'glass text-hex-text hover:border-accent-purple/30 shadow-lg',
+          'border border-accent-purple/50 bg-gradient-to-r from-accent-purple/60 to-accent-pink/60 text-white hover:from-accent-purple/80 hover:to-accent-pink/80 shadow-lg shadow-accent-purple/20',
       },
       size: {
         default: 'h-10 px-5 py-2',
