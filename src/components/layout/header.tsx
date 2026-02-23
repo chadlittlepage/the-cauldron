@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +24,12 @@ const navLinks = [
 export function Header() {
   const { user, profile, loading, signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  function handleSignOut() {
+    void signOut().then(() => navigate('/'));
+  }
 
   return (
     <header className="sticky top-0 z-50 glass">
@@ -87,7 +92,7 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => void signOut()}
+                  onClick={handleSignOut}
                   className="text-hex-muted hover:text-error"
                   aria-label="Sign out"
                 >
@@ -148,7 +153,7 @@ export function Header() {
                     Dashboard
                   </Link>
                   <button
-                    onClick={() => { void signOut(); setMobileOpen(false); }}
+                    onClick={() => { handleSignOut(); setMobileOpen(false); }}
                     className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-hex-muted hover:text-error hover:bg-white/5"
                   >
                     <LogOut className="h-4 w-4" />

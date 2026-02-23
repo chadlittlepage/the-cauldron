@@ -135,10 +135,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signOut = useCallback(async () => {
-    // Use 'local' scope so the session is always cleared from localStorage
-    // even if the server-side revocation call fails (expired token, network).
-    const { error } = await supabase.auth.signOut({ scope: 'local' });
-    if (error) throw error;
+    // Clear state immediately so the UI updates even if the SDK call is slow
+    // or fails to fire onAuthStateChange (Safari bug).
+    setState({ user: null, profile: null, session: null, loading: false });
+
+    // Remove the Supabase auth token from localStorage directly as a safety net.
+    try {
+      const key = Object.keys(localStorage).find(
+        (k) => k.startsWith('sb-') && k.endsWith('-auth-token'),
+      );
+      if (key) localStorage.removeItem(key);
+    } catch {
+      // Ignore localStorage errors
+    }
+
+    // Tell the SDK to clean up. scope: 'local' avoids a network call.
+    await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
   }, []);
 
   return createElement(
