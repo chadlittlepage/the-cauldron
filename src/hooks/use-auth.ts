@@ -135,7 +135,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signOut = useCallback(async () => {
-    const { error } = await supabase.auth.signOut();
+    // Use 'local' scope so the session is always cleared from localStorage
+    // even if the server-side revocation call fails (expired token, network).
+    const { error } = await supabase.auth.signOut({ scope: 'local' });
     if (error) throw error;
   }, []);
 
