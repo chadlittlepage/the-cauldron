@@ -37,10 +37,6 @@
 
 /* ──────────────────── Base ──────────────────── */
 
-html {
-  scroll-behavior: auto !important;
-}
-
 body {
   margin: 0;
   background-color: var(--color-hex-dark);
