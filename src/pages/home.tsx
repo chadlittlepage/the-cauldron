@@ -202,8 +202,10 @@ export function HomePage() {
           {/* Track counter */}
           <div className="flex items-center justify-center gap-4 mb-6">
             <button
+              type="button"
               onClick={prevTrack}
               className="p-2 rounded-lg text-hex-muted hover:text-hex-text hover:bg-white/5 transition-colors"
+              aria-label="Previous track"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
@@ -211,8 +213,10 @@ export function HomePage() {
               Song {currentTrack + 1} of {featuredTracks.length}
             </span>
             <button
+              type="button"
               onClick={nextTrack}
               className="p-2 rounded-lg text-hex-muted hover:text-hex-text hover:bg-white/5 transition-colors"
+              aria-label="Next track"
             >
               <ChevronRight className="h-5 w-5" />
             </button>

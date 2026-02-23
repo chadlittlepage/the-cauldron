@@ -5,18 +5,31 @@ import { useReviewQueue } from '@/hooks/use-submissions';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { MessageSquare, Star, ListTodo, ArrowRight, Users } from 'lucide-react';
 
 export function CuratorDashboardPage() {
   const { user, profile } = useAuth();
-  const { data: reviews, isLoading: reviewsLoading } = useCuratorReviews(user?.id);
-  const { data: queue, isLoading: queueLoading } = useReviewQueue();
+  const { data: reviews, isLoading: reviewsLoading, isError: reviewsError, error: reviewsErr } = useCuratorReviews(user?.id);
+  const { data: queue, isLoading: queueLoading, isError: queueError, error: queueErr } = useReviewQueue();
 
   if (reviewsLoading || queueLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Spinner size="lg" />
         <p className="text-sm text-hex-muted">Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  if (reviewsError || queueError) {
+    const err = reviewsErr ?? queueErr;
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <Alert variant="error" className="max-w-md">
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription>{err instanceof Error ? err.message : 'Failed to load curator dashboard'}</AlertDescription>
+        </Alert>
       </div>
     );
   }

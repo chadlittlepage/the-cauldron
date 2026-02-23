@@ -5,17 +5,29 @@ import { Avatar } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { StarRating } from '@/components/ui/star-rating';
 import { Spinner } from '@/components/ui/spinner';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Link } from 'react-router-dom';
 
 export function CuratorProfilePage() {
   const { id } = useParams<{ id: string }>();
-  const { data: curator, isLoading } = useProfile(id);
+  const { data: curator, isLoading, isError, error } = useProfile(id);
   const { data: reviews } = useCuratorReviews(id);
 
   if (isLoading) {
     return (
       <div className="flex justify-center py-20">
         <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <Alert variant="error" className="max-w-md">
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load curator profile'}</AlertDescription>
+        </Alert>
       </div>
     );
   }
