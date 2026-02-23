@@ -16,8 +16,6 @@ function ScrollToTop() {
   }, []);
 
   useEffect(() => {
-    // DEBUG: temporary alert to confirm this code is running
-    alert('ScrollToTop fired for: ' + pathname);
     topRef.current?.scrollIntoView();
   }, [pathname]);
 
