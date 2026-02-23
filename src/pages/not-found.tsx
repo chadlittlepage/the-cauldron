@@ -9,7 +9,7 @@ export function NotFoundPage() {
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] h-[400px] rounded-full bg-accent-purple/5 blur-[120px]" />
       </div>
 
-      <div className="relative text-center animate-slide-up">
+      <div className="relative text-center">
         <div className="inline-flex items-center justify-center rounded-2xl bg-accent-purple/10 p-4 mb-6">
           <Headphones className="h-10 w-10 text-accent-purple" />
         </div>

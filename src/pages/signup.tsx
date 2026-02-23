@@ -74,7 +74,7 @@ export function SignupPage() {
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-accent-purple/5 blur-[120px]" />
       </div>
 
-      <div className="relative w-full max-w-md animate-slide-up">
+      <div className="relative w-full max-w-md">
         {/* Email confirmation screen */}
         {emailSent ? (
           <div className="text-center">

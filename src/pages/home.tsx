@@ -127,30 +127,30 @@ export function HomePage() {
         {/* Background effects */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-accent-purple/8 blur-[120px] animate-pulse-glow" />
-          <div className="absolute top-[200px] right-0 w-[400px] h-[400px] rounded-full bg-accent-pink/5 blur-[100px] animate-pulse-glow stagger-2" />
-          <div className="absolute top-[100px] left-0 w-[300px] h-[300px] rounded-full bg-accent-cyan/5 blur-[80px] animate-pulse-glow stagger-3" />
+          <div className="absolute top-[200px] right-0 w-[400px] h-[400px] rounded-full bg-accent-pink/5 blur-[100px] animate-pulse-glow" />
+          <div className="absolute top-[100px] left-0 w-[300px] h-[300px] rounded-full bg-accent-cyan/5 blur-[80px] animate-pulse-glow" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-6 pt-20 pb-16">
           <div className="mx-auto max-w-3xl text-center">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-accent-purple/20 bg-accent-purple/10 px-4 py-1.5 text-sm text-accent-purple mb-8 animate-fade-in">
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent-purple/20 bg-accent-purple/10 px-4 py-1.5 text-sm text-accent-purple mb-8">
               <Sparkles className="h-3.5 w-3.5" />
               <span>Community-powered music curation</span>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] animate-slide-up">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
               Discover Music
               <br />
               <span className="gradient-text">Worth Hearing</span>
             </h1>
 
-            <p className="mx-auto mt-6 max-w-xl text-lg text-hex-muted leading-relaxed animate-slide-up stagger-1">
+            <p className="mx-auto mt-6 max-w-xl text-lg text-hex-muted leading-relaxed">
               Submit tracks for $2, get reviewed by expert curators, and let the community
               decide what rises to the top.
             </p>
 
-            <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4 animate-slide-up stagger-2">
+            <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
               <Link to="/dashboard/submit">
                 <Button variant="accent" size="xl" className="w-full sm:w-auto group">
                   Submit Your Track
@@ -167,7 +167,7 @@ export function HomePage() {
           </div>
 
           {/* Process pills */}
-          <div className="mx-auto mt-16 max-w-3xl animate-slide-up stagger-3">
+          <div className="mx-auto mt-16 max-w-3xl">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {pillStats.map((stat) => (
                 <div
