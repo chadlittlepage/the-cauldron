@@ -85,28 +85,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [state.user, fetchProfile]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        const profile = await fetchProfile(session.user.id);
-        setState({ user: session.user, profile, session, loading: false });
-      } else {
-        setState({ user: null, profile: null, session: null, loading: false });
+    const clearState = () =>
+      setState({ user: null, profile: null, session: null, loading: false });
+
+    supabase.auth.getSession().then(async ({ data: { session }, error }) => {
+      if (error || !session?.user) {
+        clearState();
+        return;
       }
+      const profile = await fetchProfile(session.user.id);
+      if (!profile) {
+        // Token is invalid or profile missing — sign out cleanly
+        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+        clearState();
+        return;
+      }
+      setState({ user: session.user, profile, session, loading: false });
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      // Skip INITIAL_SESSION — getSession() above handles the first load.
-      // This event fires before getSession resolves with session=null,
-      // which would briefly flash the logged-out UI.
       if (event === 'INITIAL_SESSION') return;
 
       if (session?.user) {
         const profile = await fetchProfile(session.user.id);
         setState({ user: session.user, profile, session, loading: false });
       } else {
-        setState({ user: null, profile: null, session: null, loading: false });
+        clearState();
       }
     });
 
