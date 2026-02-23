@@ -62,11 +62,9 @@ export function Header() {
           })}
         </nav>
 
-        {/* Auth Actions */}
-        <div className="hidden md:flex items-center gap-3">
-          {loading ? (
-            <div className="h-8 w-48" />
-          ) : user && profile ? (
+        {/* Auth Actions — fixed min-width prevents layout shift on auth load */}
+        <div className="hidden md:flex items-center justify-end gap-3 min-w-[280px]">
+          {loading ? null : user && profile ? (
             <>
               <Link to="/dashboard">
                 <Button variant="ghost" size="sm" className="gap-2">
