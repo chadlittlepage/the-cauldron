@@ -132,7 +132,7 @@ export function Footer() {
             </Link>
             <div className="flex items-center gap-1.5">
               <BarChart3 className="h-3 w-3 text-success" />
-              <span className="text-xs text-hex-muted">343 tracks submitted</span>
+              <span className="text-xs text-hex-muted">Community-powered curation</span>
             </div>
           </div>
         </div>

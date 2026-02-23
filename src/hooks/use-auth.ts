@@ -7,7 +7,7 @@ import {
   createElement,
 } from 'react';
 import type { ReactNode } from 'react';
-import type { Session, User } from '@supabase/supabase-js';
+import type { AuthResponse, Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import type { Tables } from '@/types/database';
 
@@ -24,7 +24,7 @@ interface AuthContextValue extends AuthState {
     email: string,
     password: string,
     metadata: { display_name: string; role: string },
-  ) => Promise<void>;
+  ) => Promise<AuthResponse>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
@@ -89,12 +89,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = useCallback(
     async (email: string, password: string, metadata: { display_name: string; role: string }) => {
-      const { error } = await supabase.auth.signUp({
+      const response = await supabase.auth.signUp({
         email,
         password,
         options: { data: metadata },
       });
-      if (error) throw error;
+      if (response.error) throw response.error;
+      return response;
     },
     [],
   );

@@ -41,7 +41,7 @@ export function useAdminSubmissions(filters: { status?: string; page?: number } 
         .order('created_at', { ascending: false })
         .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
 
-      if (status) query = query.eq('status', status);
+      if (status) query = query.eq('status', status as SubmissionStatus);
 
       const { data, error, count } = await query;
       if (error) throw error;

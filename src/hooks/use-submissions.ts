@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
-import type { InsertTables } from '@/types/database';
+import type { InsertTables, SubmissionStatus } from '@/types/database';
 import { ITEMS_PER_PAGE } from '@/lib/constants';
 
 interface SubmissionFilters {
@@ -25,7 +25,7 @@ export function useSubmissions(filters: SubmissionFilters = {}) {
         .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
 
       if (genre) query = query.eq('genre', genre);
-      if (status) query = query.eq('status', status);
+      if (status) query = query.eq('status', status as SubmissionStatus);
 
       const { data, error, count } = await query;
       if (error) throw error;

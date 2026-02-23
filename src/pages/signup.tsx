@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FormField } from '@/components/ui/form-field';
-import { Mail, Lock, User, Eye, EyeOff, Headphones, ArrowRight, Music, Users } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, Headphones, ArrowRight, Music, Users, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function SignupPage() {
@@ -23,6 +23,7 @@ export function SignupPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   function updateField(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -48,11 +49,17 @@ export function SignupPage() {
 
     setLoading(true);
     try {
-      await signUp(form.email, form.password, {
+      const { data } = await signUp(form.email, form.password, {
         display_name: form.displayName,
         role: form.role,
       });
-      navigate('/auth/callback');
+      // If session exists, email confirmation is disabled — go straight in
+      if (data?.session) {
+        navigate('/auth/callback');
+      } else {
+        // Email confirmation is enabled — show the confirmation screen
+        setEmailSent(true);
+      }
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'Sign up failed');
     } finally {
@@ -68,6 +75,39 @@ export function SignupPage() {
       </div>
 
       <div className="relative w-full max-w-md animate-slide-up">
+        {/* Email confirmation screen */}
+        {emailSent ? (
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-green-500/10 mb-6">
+              <CheckCircle className="h-8 w-8 text-green-400" />
+            </div>
+            <h1 className="text-2xl font-bold mb-3">Check your email</h1>
+            <p className="text-hex-muted leading-relaxed mb-2">
+              We sent a confirmation link to
+            </p>
+            <p className="font-semibold text-accent-purple mb-6">{form.email}</p>
+            <div className="glass-card rounded-2xl p-6 text-left space-y-3 mb-8">
+              <p className="text-sm text-hex-muted">
+                Click the link in the email to activate your account. If you don&apos;t see it, check your spam folder.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3">
+              <Link to="/login">
+                <Button variant="accent" className="w-full">
+                  Go to Sign In
+                </Button>
+              </Link>
+              <button
+                type="button"
+                onClick={() => setEmailSent(false)}
+                className="text-sm text-hex-muted hover:text-hex-text transition-colors"
+              >
+                Didn&apos;t receive it? Try again
+              </button>
+            </div>
+          </div>
+        ) : (
+        <>
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2.5">
@@ -200,6 +240,8 @@ export function SignupPage() {
             Sign in
           </Link>
         </p>
+        </>
+        )}
       </div>
     </div>
   );

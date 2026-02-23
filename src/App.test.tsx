@@ -30,7 +30,7 @@ vi.mock('@/hooks/use-auth', () => ({
     session: null,
     loading: false,
     signIn: vi.fn(),
-    signUp: vi.fn(),
+    signUp: vi.fn().mockResolvedValue({ data: { session: null, user: null }, error: null }),
     signOut: vi.fn(),
     refreshProfile: vi.fn(),
   }),

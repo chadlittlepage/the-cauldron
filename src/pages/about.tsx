@@ -152,14 +152,14 @@ export function AboutPage() {
         <div className="mx-auto max-w-4xl px-6 py-20">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
             {[
-              { value: '343+', label: 'Tracks', icon: Music },
-              { value: '28', label: 'Curators', icon: Users },
-              { value: '12K+', label: 'Votes', icon: Heart },
-              { value: '$4.2K', label: 'Paid Out', icon: DollarSign },
+              { value: 'Submit', label: 'Share your music', icon: Music },
+              { value: 'Review', label: 'Expert feedback', icon: Users },
+              { value: 'Vote', label: 'Community decides', icon: Heart },
+              { value: 'Chart', label: 'Rise to the top', icon: DollarSign },
             ].map((stat) => (
               <div key={stat.label} className="glass-card rounded-xl p-6">
                 <stat.icon className="mx-auto h-6 w-6 text-accent-purple mb-3" />
-                <div className="text-3xl font-bold">{stat.value}</div>
+                <div className="text-2xl font-bold">{stat.value}</div>
                 <div className="text-xs text-hex-muted mt-1">{stat.label}</div>
               </div>
             ))}

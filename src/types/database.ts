@@ -28,6 +28,7 @@ export interface Database {
           'created_at' | 'updated_at'
         >;
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>;
+        Relationships: [];
       };
       submissions: {
         Row: {
@@ -52,6 +53,15 @@ export interface Database {
         Update: Partial<Database['public']['Tables']['submissions']['Insert']> & {
           status?: SubmissionStatus;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'submissions_artist_id_fkey';
+            columns: ['artist_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       votes: {
         Row: {
@@ -62,6 +72,22 @@ export interface Database {
         };
         Insert: Omit<Database['public']['Tables']['votes']['Row'], 'id' | 'created_at'>;
         Update: never;
+        Relationships: [
+          {
+            foreignKeyName: 'votes_submission_id_fkey';
+            columns: ['submission_id'];
+            isOneToOne: false;
+            referencedRelation: 'submissions';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'votes_voter_id_fkey';
+            columns: ['voter_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       reviews: {
         Row: {
@@ -78,6 +104,22 @@ export interface Database {
           'id' | 'created_at' | 'updated_at'
         >;
         Update: Partial<Database['public']['Tables']['reviews']['Insert']>;
+        Relationships: [
+          {
+            foreignKeyName: 'reviews_submission_id_fkey';
+            columns: ['submission_id'];
+            isOneToOne: false;
+            referencedRelation: 'submissions';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'reviews_curator_id_fkey';
+            columns: ['curator_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       charts: {
         Row: {
@@ -91,6 +133,15 @@ export interface Database {
         };
         Insert: Omit<Database['public']['Tables']['charts']['Row'], 'id' | 'created_at'>;
         Update: Partial<Database['public']['Tables']['charts']['Insert']>;
+        Relationships: [
+          {
+            foreignKeyName: 'charts_submission_id_fkey';
+            columns: ['submission_id'];
+            isOneToOne: false;
+            referencedRelation: 'submissions';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       payments: {
         Row: {
@@ -112,6 +163,22 @@ export interface Database {
         Update: Partial<Database['public']['Tables']['payments']['Insert']> & {
           status?: PaymentStatus;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'payments_submission_id_fkey';
+            columns: ['submission_id'];
+            isOneToOne: false;
+            referencedRelation: 'submissions';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'payments_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       curator_payouts: {
         Row: {
@@ -127,6 +194,15 @@ export interface Database {
         };
         Insert: Omit<Database['public']['Tables']['curator_payouts']['Row'], 'id' | 'created_at'>;
         Update: Partial<Database['public']['Tables']['curator_payouts']['Insert']>;
+        Relationships: [
+          {
+            foreignKeyName: 'curator_payouts_curator_id_fkey';
+            columns: ['curator_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
       };
     };
     Views: Record<string, never>;
@@ -173,6 +249,7 @@ export interface Database {
       chart_type: ChartType;
       payment_status: PaymentStatus;
     };
+    CompositeTypes: Record<string, never>;
   };
 }
 
