@@ -1,4 +1,4 @@
-import { lazy, useEffect, useLayoutEffect } from 'react';
+import { lazy, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/main-layout';
 import { LoadingBoundary } from '@/components/ui/loading-boundary';
@@ -8,16 +8,29 @@ import { RoleRoute } from '@/components/layout/role-route';
 function ScrollToTop() {
   const { pathname } = useLocation();
 
-  // Disable browser's automatic scroll restoration
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
   }, []);
 
-  // Scroll to top before the browser paints
-  useLayoutEffect(() => {
+  useEffect(() => {
+    // Immediate scroll
     window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    // After paint — catches cases where browser overrides during layout
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+    });
+
+    // After any lazy component hydration or layout shift
+    const timeout = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 50);
+
+    return () => clearTimeout(timeout);
   }, [pathname]);
 
   return null;
