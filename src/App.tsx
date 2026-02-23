@@ -16,8 +16,8 @@ function ScrollToTop() {
   }, []);
 
   useEffect(() => {
-    // Scroll the anchor element into view — works regardless of which
-    // element is the actual scroll container
+    // DEBUG: temporary alert to confirm this code is running
+    alert('ScrollToTop fired for: ' + pathname);
     topRef.current?.scrollIntoView();
   }, [pathname]);
 
