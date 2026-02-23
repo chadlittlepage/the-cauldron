@@ -1,9 +1,12 @@
-// Supabase Database Types - will be generated with `supabase gen types typescript`
-// Placeholder until Supabase project is created
-
 export type UserRole = 'artist' | 'curator' | 'admin';
 
 export type SubmissionStatus = 'pending' | 'in_review' | 'accepted' | 'rejected';
+
+export type MusicPlatform = 'spotify' | 'soundcloud' | 'bandcamp' | 'other';
+
+export type ChartType = 'monthly' | 'yearly';
+
+export type PaymentStatus = 'pending' | 'succeeded' | 'failed' | 'refunded';
 
 export interface Database {
   public: {
@@ -20,7 +23,10 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database['public']['Tables']['profiles']['Row'], 'created_at' | 'updated_at'>;
+        Insert: Omit<
+          Database['public']['Tables']['profiles']['Row'],
+          'created_at' | 'updated_at'
+        >;
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>;
       };
       submissions: {
@@ -29,20 +35,23 @@ export interface Database {
           artist_id: string;
           track_title: string;
           track_url: string;
-          platform: 'bandcamp' | 'spotify' | 'soundcloud' | 'other';
+          platform: MusicPlatform;
           genre: string;
           description: string | null;
           status: SubmissionStatus;
           payment_id: string | null;
           paid_at: string | null;
+          vote_count: number;
           created_at: string;
           updated_at: string;
         };
         Insert: Omit<
           Database['public']['Tables']['submissions']['Row'],
-          'id' | 'created_at' | 'updated_at' | 'status'
+          'id' | 'created_at' | 'updated_at' | 'status' | 'vote_count'
         >;
-        Update: Partial<Database['public']['Tables']['submissions']['Insert']>;
+        Update: Partial<Database['public']['Tables']['submissions']['Insert']> & {
+          status?: SubmissionStatus;
+        };
       };
       votes: {
         Row: {
@@ -74,7 +83,7 @@ export interface Database {
         Row: {
           id: string;
           submission_id: string;
-          chart_type: 'monthly' | 'yearly';
+          chart_type: ChartType;
           period: string;
           rank: number;
           vote_count: number;
@@ -83,12 +92,93 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['charts']['Row'], 'id' | 'created_at'>;
         Update: Partial<Database['public']['Tables']['charts']['Insert']>;
       };
+      payments: {
+        Row: {
+          id: string;
+          submission_id: string;
+          user_id: string;
+          stripe_session_id: string;
+          stripe_payment_intent_id: string | null;
+          amount_cents: number;
+          currency: string;
+          status: PaymentStatus;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit<
+          Database['public']['Tables']['payments']['Row'],
+          'id' | 'created_at' | 'updated_at' | 'status'
+        >;
+        Update: Partial<Database['public']['Tables']['payments']['Insert']> & {
+          status?: PaymentStatus;
+        };
+      };
+      curator_payouts: {
+        Row: {
+          id: string;
+          curator_id: string;
+          amount_cents: number;
+          currency: string;
+          stripe_transfer_id: string | null;
+          review_count: number;
+          period: string;
+          paid_at: string | null;
+          created_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['curator_payouts']['Row'], 'id' | 'created_at'>;
+        Update: Partial<Database['public']['Tables']['curator_payouts']['Insert']>;
+      };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      get_submission_details: {
+        Args: { p_submission_id: string };
+        Returns: Array<{
+          id: string;
+          artist_id: string;
+          artist_name: string;
+          track_title: string;
+          track_url: string;
+          platform: MusicPlatform;
+          genre: string;
+          description: string | null;
+          status: SubmissionStatus;
+          vote_count: number;
+          review_count: number;
+          avg_rating: number | null;
+          created_at: string;
+        }>;
+      };
+      get_curator_stats: {
+        Args: { p_curator_id: string };
+        Returns: Array<{
+          total_reviews: number;
+          avg_rating: number | null;
+          total_earnings_cents: number;
+        }>;
+      };
+      has_voted: {
+        Args: { p_submission_id: string; p_user_id: string };
+        Returns: boolean;
+      };
+      is_admin: {
+        Args: Record<string, never>;
+        Returns: boolean;
+      };
+    };
     Enums: {
       user_role: UserRole;
       submission_status: SubmissionStatus;
+      music_platform: MusicPlatform;
+      chart_type: ChartType;
+      payment_status: PaymentStatus;
     };
   };
 }
+
+export type Tables<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Row'];
+export type InsertTables<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Insert'];
+export type UpdateTables<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Update'];

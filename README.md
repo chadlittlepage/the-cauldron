@@ -1,51 +1,42 @@
-# The Witches' Cauldron
+# hexwave.io
 
-Where magical music meets mystical curation. A listener-driven music discovery platform where artists submit tracks, the community votes, and curators provide expert reviews.
+A music curation platform where artists submit tracks for $2, the community votes, and curators with 1000+ listeners review and get paid. Monthly and yearly charts rank the best tracks.
 
-## Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | Frontend | React 19 + TypeScript + Vite 7 |
 | Backend | Supabase (Postgres, Auth, RLS, Edge Functions) |
-| Payments | Stripe |
-| Styling | Tailwind CSS 4 + shadcn/ui |
+| Payments | Stripe Checkout |
+| Styling | Tailwind CSS 4 + CVA components |
 | State | TanStack Query |
+| Validation | Zod |
 | Testing | Vitest + Playwright |
-| CI/CD | GitHub Actions |
-| Hosting | Vercel |
+| CI/CD | GitHub Actions → Vercel |
 
 ## Quick Start
 
 ```bash
-# Install dependencies
 npm install
-
-# Copy environment variables
-cp .env.example .env
-# Fill in your Supabase and Stripe keys
-
-# Start development server
+cp .env.example .env  # Fill in your Supabase + Stripe keys
 npm run dev
 ```
 
-## Infrastructure Status
+## Scripts
 
-- [x] React + TypeScript + Vite scaffold
-- [x] GitHub repository + Actions CI/CD
-- [x] Tailwind CSS + dark theme
-- [x] Supabase client + type definitions
-- [x] TanStack Query provider
-- [x] React Router
-- [x] ESLint + Prettier
-- [x] Vitest + Playwright
-- [x] Dependabot
-- [x] Claude Code agents
-- [ ] Supabase project + migrations
-- [ ] Stripe integration
-- [ ] Vercel deployment
-- [ ] Auth flows
-- [ ] Submission system
-- [ ] Voting system
-- [ ] Curator dashboard
-- [ ] Admin panel
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server |
+| `npm run build` | Production build |
+| `npm run check` | Full check (types + lint + format + tests) |
+| `npm run test` | Unit tests (watch) |
+| `npm run test:e2e` | E2E tests |
+
+## Architecture
+
+- **Supabase RLS** is the real security layer — client-side role checks are UX only
+- **TanStack Query** is the single source of server state
+- **Zod** validates at every boundary (client forms + Edge Functions)
+- **Edge Functions** handle all secrets (Stripe, service_role key)
+- Source maps are disabled in production builds

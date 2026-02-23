@@ -6,18 +6,21 @@
   --color-primary-dark: #3a4459;
   --color-accent-purple: #9b59b6;
   --color-accent-orange: #e67e22;
-  --color-cauldron-dark: #0a0e14;
-  --color-cauldron-surface: #121820;
-  --color-cauldron-card: #1a2230;
-  --color-cauldron-border: #2a3545;
-  --color-cauldron-text: #e0e6ed;
-  --color-cauldron-muted: #8899aa;
+  --color-hex-dark: #0a0e14;
+  --color-hex-surface: #121820;
+  --color-hex-card: #1a2230;
+  --color-hex-border: #2a3545;
+  --color-hex-text: #e0e6ed;
+  --color-hex-muted: #8899aa;
+  --color-success: #27ae60;
+  --color-warning: #f39c12;
+  --color-error: #e74c3c;
 }
 
 body {
   margin: 0;
-  background-color: var(--color-cauldron-dark);
-  color: var(--color-cauldron-text);
+  background-color: var(--color-hex-dark);
+  color: var(--color-hex-text);
   font-family:
     'Inter',
     -apple-system,

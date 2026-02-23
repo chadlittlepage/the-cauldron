@@ -1,40 +1,83 @@
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import App from './App';
 
-function renderApp() {
+vi.mock('@/lib/supabase', () => ({
+  supabase: {
+    auth: {
+      getSession: vi.fn().mockResolvedValue({ data: { session: null } }),
+      onAuthStateChange: vi.fn().mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } }),
+      signInWithPassword: vi.fn(),
+      signUp: vi.fn(),
+      signOut: vi.fn(),
+    },
+    from: vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      single: vi.fn().mockResolvedValue({ data: null }),
+    }),
+    rpc: vi.fn().mockResolvedValue({ data: null }),
+    functions: { invoke: vi.fn() },
+  },
+}));
+
+vi.mock('@/hooks/use-auth', () => ({
+  useAuth: () => ({
+    user: null,
+    profile: null,
+    session: null,
+    loading: false,
+    signIn: vi.fn(),
+    signUp: vi.fn(),
+    signOut: vi.fn(),
+    refreshProfile: vi.fn(),
+  }),
+  AuthProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
+
+function renderApp(route = '/') {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
 
   return render(
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      <MemoryRouter initialEntries={[route]}>
         <App />
-      </BrowserRouter>
+      </MemoryRouter>
     </QueryClientProvider>,
   );
 }
 
 describe('App', () => {
-  it('renders the site title', () => {
+  it('renders the site title in header', () => {
     renderApp();
-    expect(screen.getByText("The Witches' Cauldron")).toBeInTheDocument();
+    expect(screen.getByText('hexwave')).toBeInTheDocument();
   });
 
   it('renders navigation links', () => {
     renderApp();
-    expect(screen.getByText('Submit Music')).toBeInTheDocument();
-    expect(screen.getByText('Featured Tracks')).toBeInTheDocument();
-    expect(screen.getByText('Curators')).toBeInTheDocument();
+    expect(screen.getAllByText('Browse').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Charts').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Curators').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Sign In')).toBeInTheDocument();
   });
 
   it('renders the hero section', () => {
     renderApp();
-    expect(screen.getByText('Mystical Curation')).toBeInTheDocument();
+    expect(screen.getByText('Curated by the Community')).toBeInTheDocument();
     expect(screen.getByText('Submit Your Track')).toBeInTheDocument();
+  });
+
+  it('renders login page', () => {
+    renderApp('/login');
+    expect(screen.getByText('Welcome back to hexwave')).toBeInTheDocument();
+  });
+
+  it('renders signup page', () => {
+    renderApp('/signup');
+    expect(screen.getByText('Join hexwave as an artist or curator')).toBeInTheDocument();
   });
 });
