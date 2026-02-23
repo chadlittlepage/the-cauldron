@@ -244,7 +244,7 @@ export function HomePage() {
               </div>
 
               {/* Spotify Embed — all preloaded, instant switch */}
-              <div className="rounded-xl overflow-hidden mb-5">
+              <div className="rounded-xl overflow-hidden mb-5 bg-[#121212]">
                 <iframe
                   src={`https://open.spotify.com/embed/track/${t.spotifyId}?theme=0`}
                   width="100%"
