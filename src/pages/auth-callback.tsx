@@ -7,13 +7,32 @@ export function AuthCallbackPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_IN') {
+    // Supabase puts tokens in the URL hash after email confirmation.
+    // getSession() will automatically exchange them for a session.
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
         navigate('/dashboard', { replace: true });
+        return;
       }
-    });
 
-    return () => subscription.unsubscribe();
+      // If no session yet, listen for the auth state change
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+        if (event === 'SIGNED_IN') {
+          navigate('/dashboard', { replace: true });
+        }
+      });
+
+      // Timeout fallback — redirect to login if nothing happens in 10s
+      const timeout = setTimeout(() => {
+        subscription.unsubscribe();
+        navigate('/login', { replace: true });
+      }, 10000);
+
+      return () => {
+        clearTimeout(timeout);
+        subscription.unsubscribe();
+      };
+    });
   }, [navigate]);
 
   return (
