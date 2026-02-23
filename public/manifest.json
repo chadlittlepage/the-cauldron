@@ -1,0 +1,17 @@
+{
+  "name": "hexwave",
+  "short_name": "hexwave",
+  "description": "Community-powered music curation. Submit, vote, and discover independent music.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e14",
+  "theme_color": "#0a0e14",
+  "icons": [
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

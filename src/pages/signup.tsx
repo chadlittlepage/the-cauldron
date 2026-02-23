@@ -186,6 +186,7 @@ export function SignupPage() {
               <Input
                 id="email"
                 type="email"
+                inputMode="email"
                 autoComplete="email"
                 value={form.email}
                 onChange={(e) => updateField('email', e.target.value)}

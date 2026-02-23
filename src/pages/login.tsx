@@ -79,6 +79,7 @@ export function LoginPage() {
               <Input
                 id="email"
                 type="email"
+                inputMode="email"
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
