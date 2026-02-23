@@ -1,25 +1,55 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Music,
   TrendingUp,
-  Users,
   ArrowRight,
   Play,
   Star,
   Zap,
-  DollarSign,
   Headphones,
   BarChart3,
   Shield,
   Sparkles,
+  Heart,
+  ThumbsDown,
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 
-const stats = [
-  { label: 'Tracks Submitted', value: '343+', icon: Music },
-  { label: 'Active Curators', value: '28', icon: Users },
-  { label: 'Community Votes', value: '12K+', icon: TrendingUp },
-  { label: 'Artists Paid', value: '$4.2K', icon: DollarSign },
+
+const featuredTracks = [
+  {
+    title: 'Sailor Song',
+    artist: 'Gigi Perez',
+    genres: ['Indie', 'Pop'],
+    spotifyId: '0UYnhUfnUj5adChuAXvLUB',
+    votes: 127,
+  },
+  {
+    title: 'Automatic',
+    artist: 'half·alive',
+    genres: ['Alternative', 'Indie'],
+    spotifyId: '4WDzpyln8Ac9JbElIEv2bl',
+    votes: 98,
+  },
+  {
+    title: 'Pushing It Down and Praying',
+    artist: 'Lizzy McAlpine',
+    genres: ['Singer-Songwriter', 'Folk'],
+    spotifyId: '4wO2JlPZw72Xlu6dGUW4Ce',
+    votes: 84,
+  },
+];
+
+const pillStats = [
+  { label: 'Submit Music', icon: Music, desc: 'Share your tracks' },
+  { label: 'Get Reviewed', icon: Star, desc: 'Expert curators listen' },
+  { label: 'Earn Votes', icon: Heart, desc: 'Community decides' },
+  { label: 'Chart', icon: TrendingUp, desc: 'Rise to the top' },
 ];
 
 const features = [
@@ -80,6 +110,16 @@ const howItWorks = [
 ];
 
 export function HomePage() {
+  const [currentTrack, setCurrentTrack] = useState(0);
+
+  function nextTrack() {
+    setCurrentTrack((i) => (i + 1) % featuredTracks.length);
+  }
+
+  function prevTrack() {
+    setCurrentTrack((i) => (i - 1 + featuredTracks.length) % featuredTracks.length);
+  }
+
   return (
     <div className="relative">
       {/* ── Hero ── */}
@@ -91,7 +131,7 @@ export function HomePage() {
           <div className="absolute top-[100px] left-0 w-[300px] h-[300px] rounded-full bg-accent-cyan/5 blur-[80px] animate-pulse-glow stagger-3" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-6 pt-20 pb-28">
+        <div className="relative mx-auto max-w-7xl px-6 pt-20 pb-16">
           <div className="mx-auto max-w-3xl text-center">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 rounded-full border border-accent-purple/20 bg-accent-purple/10 px-4 py-1.5 text-sm text-accent-purple mb-8 animate-fade-in">
@@ -126,21 +166,136 @@ export function HomePage() {
             </div>
           </div>
 
-          {/* Stats bar */}
-          <div className="mx-auto mt-20 max-w-4xl animate-slide-up stagger-3">
+          {/* Process pills */}
+          <div className="mx-auto mt-16 max-w-3xl animate-slide-up stagger-3">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {stats.map((stat) => (
+              {pillStats.map((stat) => (
                 <div
                   key={stat.label}
                   className="glass-card rounded-xl px-5 py-4 text-center transition-all duration-300"
                 >
                   <stat.icon className="mx-auto h-5 w-5 text-accent-purple mb-2" />
-                  <div className="text-2xl font-bold text-hex-text">{stat.value}</div>
-                  <div className="text-xs text-hex-muted mt-1">{stat.label}</div>
+                  <div className="text-sm font-bold text-hex-text">{stat.label}</div>
+                  <div className="text-xs text-hex-muted mt-1">{stat.desc}</div>
                 </div>
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Featured Track / Now Playing ── */}
+      <section className="relative border-t border-white/5">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-accent-purple/5 blur-[100px]" />
+        </div>
+        <div className="relative mx-auto max-w-3xl px-6 py-20">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl sm:text-4xl font-bold">
+              <span className="gradient-text">Now Playing</span>
+            </h2>
+            <p className="mt-3 text-hex-muted">
+              Listen, vote, and help great music rise.
+            </p>
+          </div>
+
+          {/* Track counter */}
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <button
+              onClick={prevTrack}
+              className="p-2 rounded-lg text-hex-muted hover:text-hex-text hover:bg-white/5 transition-colors"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <span className="text-sm text-hex-muted">
+              Song {currentTrack + 1} of {featuredTracks.length}
+            </span>
+            <button
+              onClick={nextTrack}
+              className="p-2 rounded-lg text-hex-muted hover:text-hex-text hover:bg-white/5 transition-colors"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* All track cards — rendered simultaneously, only active one visible */}
+          {featuredTracks.map((t, idx) => (
+            <div
+              key={t.spotifyId}
+              className={`glass-card rounded-2xl p-6 glow-purple transition-opacity duration-200 ${
+                idx === currentTrack ? 'block' : 'hidden'
+              }`}
+            >
+              {/* Track header */}
+              <div className="flex items-start justify-between mb-5">
+                <div>
+                  <h3 className="text-xl font-bold">{t.title}</h3>
+                  <p className="text-hex-muted">{t.artist}</p>
+                </div>
+                <div className="flex gap-1.5">
+                  {t.genres.map((g) => (
+                    <Badge key={g} variant="outline">{g}</Badge>
+                  ))}
+                </div>
+              </div>
+
+              {/* Spotify Embed — all preloaded, instant switch */}
+              <div className="rounded-xl overflow-hidden mb-5">
+                <iframe
+                  src={`https://open.spotify.com/embed/track/${t.spotifyId}?theme=0`}
+                  width="100%"
+                  height="152"
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="eager"
+                  title={`${t.title} by ${t.artist}`}
+                  className="rounded-xl"
+                />
+              </div>
+
+              {/* Open in Spotify link */}
+              <div className="flex justify-end mb-5">
+                <a
+                  href={`https://open.spotify.com/track/${t.spotifyId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-accent-purple hover:text-accent-purple/80 transition-colors"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  Open in Spotify
+                </a>
+              </div>
+
+              {/* Vote / Pass buttons */}
+              <div className="grid grid-cols-2 gap-3">
+                <Link to="/signup">
+                  <Button
+                    variant="accent"
+                    size="lg"
+                    className="w-full gap-2"
+                  >
+                    <Heart className="h-4 w-4" />
+                    Vote ({t.votes})
+                  </Button>
+                </Link>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full gap-2"
+                  onClick={nextTrack}
+                >
+                  <ThumbsDown className="h-4 w-4" />
+                  Pass
+                </Button>
+              </div>
+
+              <p className="text-center text-xs text-hex-muted mt-4">
+                <Link to="/signup" className="text-accent-purple hover:underline">
+                  Sign up
+                </Link>
+                {' '}to hear full songs and vote.
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -222,7 +377,7 @@ export function HomePage() {
               Ready to share your music?
             </h2>
             <p className="mt-4 text-hex-muted max-w-lg mx-auto leading-relaxed">
-              Join hundreds of independent artists already getting real feedback and community
+              Join independent artists getting real feedback and community
               recognition on hexwave.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
