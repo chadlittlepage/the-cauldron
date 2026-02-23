@@ -31,7 +31,7 @@ const STEPS = [
 ];
 
 export function SubmitTrackPage() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   const createSubmission = useCreateSubmission();
 
@@ -99,6 +99,7 @@ export function SubmitTrackPage() {
     if (!user) return;
 
     try {
+      const isAdmin = profile?.role === 'admin';
       const submission = await createSubmission.mutateAsync({
         artist_id: user.id,
         track_title: form.trackTitle,
@@ -106,10 +107,15 @@ export function SubmitTrackPage() {
         platform: form.platform,
         genre: form.genre,
         description: form.description || null,
-        payment_id: null,
-        paid_at: null,
+        payment_id: isAdmin ? 'admin_bypass' : null,
+        paid_at: isAdmin ? new Date().toISOString() : null,
       });
-      navigate(`/payment/checkout/${submission.id}`);
+      // Admins skip payment, go straight to dashboard
+      if (isAdmin) {
+        navigate('/dashboard/submissions');
+      } else {
+        navigate(`/payment/checkout/${submission.id}`);
+      }
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'Failed to create submission');
     }
@@ -288,13 +294,19 @@ export function SubmitTrackPage() {
                   <div className="border-t border-hex-border my-3" />
                   <div className="flex justify-between text-base">
                     <span className="font-semibold">Submission Fee</span>
-                    <span className="font-bold gradient-text text-lg">$2.00</span>
+                    {profile?.role === 'admin' ? (
+                      <span className="font-bold text-success text-lg">Free (Admin)</span>
+                    ) : (
+                      <span className="font-bold gradient-text text-lg">$2.00</span>
+                    )}
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-hex-muted">
-                You&apos;ll be redirected to Stripe for secure payment processing.
-              </p>
+              {profile?.role !== 'admin' && (
+                <p className="text-xs text-hex-muted">
+                  You&apos;ll be redirected to Stripe for secure payment processing.
+                </p>
+              )}
             </div>
           )}
 
@@ -322,8 +334,16 @@ export function SubmitTrackPage() {
                 className="gap-2 group"
                 size="lg"
               >
-                {createSubmission.isPending ? 'Processing...' : 'Continue to Payment'}
-                <CreditCard className="h-4 w-4" />
+                {createSubmission.isPending
+                  ? 'Processing...'
+                  : profile?.role === 'admin'
+                    ? 'Submit Track'
+                    : 'Continue to Payment'}
+                {profile?.role === 'admin' ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <CreditCard className="h-4 w-4" />
+                )}
               </Button>
             )}
           </div>
