@@ -70,7 +70,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Skip INITIAL_SESSION — getSession() above handles the first load.
+      // This event fires before getSession resolves with session=null,
+      // which would briefly flash the logged-out UI.
+      if (event === 'INITIAL_SESSION') return;
+
       if (session?.user) {
         const profile = await fetchProfile(session.user.id);
         setState({ user: session.user, profile, session, loading: false });
