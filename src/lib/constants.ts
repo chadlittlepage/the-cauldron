@@ -49,3 +49,7 @@ export const SUBMISSION_FEE_CENTS = 200;
 export const SUBMISSION_FEE_DISPLAY = '$2.00';
 export const CURATOR_MIN_LISTENERS = 1000;
 export const ITEMS_PER_PAGE = 20;
+
+// Demo fallback IDs — remove when going live
+export const DEMO_ARTIST_ID = 'aaaaaaaa-0001-4000-a000-000000000001'; // Luna Waves
+export const DEMO_CURATOR_ID = 'aaaaaaaa-0002-4000-a000-000000000001'; // The Sound Sage

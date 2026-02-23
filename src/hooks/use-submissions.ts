@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
 import type { InsertTables, SubmissionStatus } from '@/types/database';
-import { ITEMS_PER_PAGE } from '@/lib/constants';
+import { ITEMS_PER_PAGE, DEMO_ARTIST_ID } from '@/lib/constants';
 
 interface SubmissionFilters {
   genre?: string;
@@ -60,6 +60,18 @@ export function useArtistSubmissions(artistId: string | undefined) {
         .eq('artist_id', artistId)
         .order('created_at', { ascending: false });
       if (error) throw error;
+
+      // Demo fallback: show demo artist's submissions for new/empty accounts
+      if (data.length === 0 && artistId !== DEMO_ARTIST_ID) {
+        const { data: demoData, error: demoError } = await supabase
+          .from('submissions')
+          .select('*')
+          .eq('artist_id', DEMO_ARTIST_ID)
+          .order('created_at', { ascending: false });
+        if (demoError) throw demoError;
+        return demoData;
+      }
+
       return data;
     },
     enabled: !!artistId,

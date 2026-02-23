@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
 import type { InsertTables } from '@/types/database';
+import { DEMO_CURATOR_ID } from '@/lib/constants';
 
 export function useSubmissionReviews(submissionId: string | undefined) {
   return useQuery({
@@ -31,6 +32,18 @@ export function useCuratorReviews(curatorId: string | undefined) {
         .eq('curator_id', curatorId)
         .order('created_at', { ascending: false });
       if (error) throw error;
+
+      // Demo fallback: show demo curator's reviews for new/empty accounts
+      if (data.length === 0 && curatorId !== DEMO_CURATOR_ID) {
+        const { data: demoData, error: demoError } = await supabase
+          .from('reviews')
+          .select('*, submissions(track_title, artist_id, genre)')
+          .eq('curator_id', DEMO_CURATOR_ID)
+          .order('created_at', { ascending: false });
+        if (demoError) throw demoError;
+        return demoData;
+      }
+
       return data;
     },
     enabled: !!curatorId,

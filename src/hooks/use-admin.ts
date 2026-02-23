@@ -100,3 +100,27 @@ export function useAdminPayouts() {
     },
   });
 }
+
+export function useAdminAnalytics() {
+  return useQuery({
+    queryKey: queryKeys.admin.analytics(),
+    queryFn: async () => {
+      const [genres, monthly, curators, revenue] = await Promise.all([
+        supabase.rpc('get_submissions_by_genre'),
+        supabase.rpc('get_submissions_by_month'),
+        supabase.rpc('get_top_curators'),
+        supabase.rpc('get_revenue_by_month'),
+      ]);
+
+      const firstError = [genres, monthly, curators, revenue].find((r) => r.error)?.error;
+      if (firstError) throw firstError;
+
+      return {
+        genreBreakdown: genres.data ?? [],
+        monthlySubmissions: monthly.data ?? [],
+        topCurators: curators.data ?? [],
+        monthlyRevenue: revenue.data ?? [],
+      };
+    },
+  });
+}

@@ -38,5 +38,6 @@ export const queryKeys = {
       ['admin', 'submissions', filters] as const,
     allCurators: () => ['admin', 'curators'] as const,
     allPayouts: () => ['admin', 'payouts'] as const,
+    analytics: () => ['admin', 'analytics'] as const,
   },
 } as const;

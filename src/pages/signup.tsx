@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FormField } from '@/components/ui/form-field';
 import { Mail, Lock, User, Eye, EyeOff, Headphones, ArrowRight, Music, Users, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { CURATOR_MIN_LISTENERS } from '@/lib/constants';
 
 export function SignupPage() {
   const { signUp } = useAuth();
@@ -49,9 +50,10 @@ export function SignupPage() {
 
     setLoading(true);
     try {
+      // All new signups start as artist — curator requires verification
       const { data } = await signUp(form.email, form.password, {
         display_name: form.displayName,
-        role: form.role,
+        role: 'artist',
       });
       // If session exists, email confirmation is disabled — go straight in
       if (data?.session) {
@@ -123,7 +125,7 @@ export function SignupPage() {
 
         {/* Card */}
         <div className="glass-card rounded-2xl p-8">
-          <form onSubmit={(e) => void handleSubmit(e)} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {serverError && (
               <Alert variant="error">
                 <AlertDescription>{serverError}</AlertDescription>
@@ -159,6 +161,15 @@ export function SignupPage() {
                 Curator
               </button>
             </div>
+
+            {form.role === 'curator' && (
+              <Alert>
+                <AlertDescription>
+                  Curator accounts require verification of {CURATOR_MIN_LISTENERS.toLocaleString()}+ listeners.
+                  You'll start as an artist and can apply for curator status once verified.
+                </AlertDescription>
+              </Alert>
+            )}
 
             <FormField label="Display Name" htmlFor="displayName" error={errors.displayName}>
               <Input

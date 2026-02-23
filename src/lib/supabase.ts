@@ -9,5 +9,7 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true,
+    storageKey: 'hexwave-auth',
+    flowType: 'implicit',
   },
 });

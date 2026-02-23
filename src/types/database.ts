@@ -241,6 +241,27 @@ export interface Database {
         Args: Record<string, never>;
         Returns: boolean;
       };
+      get_submissions_by_genre: {
+        Args: Record<string, never>;
+        Returns: Array<{ genre: string; count: number }>;
+      };
+      get_submissions_by_month: {
+        Args: Record<string, never>;
+        Returns: Array<{ month: string; count: number }>;
+      };
+      get_top_curators: {
+        Args: Record<string, never>;
+        Returns: Array<{
+          curator_id: string;
+          display_name: string;
+          review_count: number;
+          avg_rating: number;
+        }>;
+      };
+      get_revenue_by_month: {
+        Args: Record<string, never>;
+        Returns: Array<{ month: string; revenue_cents: number }>;
+      };
     };
     Enums: {
       user_role: UserRole;
