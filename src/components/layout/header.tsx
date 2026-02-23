@@ -22,7 +22,7 @@ const navLinks = [
 ];
 
 export function Header() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, loading, signOut } = useAuth();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -64,7 +64,9 @@ export function Header() {
 
         {/* Auth Actions */}
         <div className="hidden md:flex items-center gap-3">
-          {user && profile ? (
+          {loading ? (
+            <div className="h-8 w-48" />
+          ) : user && profile ? (
             <>
               <Link to="/dashboard">
                 <Button variant="ghost" size="sm" className="gap-2">
@@ -137,7 +139,7 @@ export function Header() {
               </Link>
             ))}
             <div className="pt-3 mt-3 border-t border-hex-border space-y-2">
-              {user ? (
+              {loading ? null : user ? (
                 <>
                   <Link
                     to="/dashboard"
