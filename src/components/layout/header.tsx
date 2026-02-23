@@ -62,9 +62,12 @@ export function Header() {
           })}
         </nav>
 
-        {/* Auth Actions — fixed min-width prevents layout shift on auth load */}
-        <div className="hidden md:flex items-center justify-end gap-3 min-w-[280px]">
-          {loading ? null : user && profile ? (
+        {/* Auth Actions — fixed min-width prevents layout shift, opacity transition prevents flash */}
+        <div className={cn(
+          'hidden md:flex items-center justify-end gap-3 min-w-[280px] transition-opacity duration-300',
+          loading ? 'opacity-0' : 'opacity-100',
+        )}>
+          {user && profile ? (
             <>
               <Link to="/dashboard">
                 <Button variant="ghost" size="sm" className="gap-2">
@@ -136,8 +139,8 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <div className="pt-3 mt-3 border-t border-hex-border space-y-2">
-              {loading ? null : user ? (
+            <div className={cn('pt-3 mt-3 border-t border-hex-border space-y-2 transition-opacity duration-300', loading ? 'opacity-0' : 'opacity-100')}>
+              {user ? (
                 <>
                   <Link
                     to="/dashboard"
