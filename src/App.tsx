@@ -1,9 +1,17 @@
-import { lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { lazy, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/main-layout';
 import { LoadingBoundary } from '@/components/ui/loading-boundary';
 import { ProtectedRoute } from '@/components/layout/protected-route';
 import { RoleRoute } from '@/components/layout/role-route';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 // Eager: pages that are always needed on first load
 import { HomePage } from '@/pages/home';
@@ -54,6 +62,7 @@ const AnalyticsPage = lazy(() => import('@/pages/admin/analytics').then((m) => (
 function App() {
   return (
     <MainLayout>
+      <ScrollToTop />
       <LoadingBoundary>
         <Routes>
           {/* Public */}
