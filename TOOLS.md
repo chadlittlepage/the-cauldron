@@ -11,9 +11,11 @@
 ## Hosting
 | Tool | URL |
 |------|-----|
-| Live Site | https://hexwave.vercel.app |
+| Live Site (Custom Domain) | https://hexwave.io |
+| Live Site (Vercel) | https://hexwave.vercel.app |
 | Vercel Dashboard | https://vercel.com/chad-littlepages-projects/hexwave |
 | Vercel Deployments | https://vercel.com/chad-littlepages-projects/hexwave/deployments |
+| Vercel Domains | https://vercel.com/chad-littlepages-projects/hexwave/settings/domains |
 | Vercel Settings | https://vercel.com/chad-littlepages-projects/hexwave/settings |
 | Vercel Environment Variables | https://vercel.com/chad-littlepages-projects/hexwave/settings/environment-variables |
 
@@ -49,6 +51,9 @@
 |------|-----|
 | IONOS Dashboard | https://my.ionos.com |
 | IONOS DNS Settings | https://my.ionos.com/domains/hexwave.io |
+| Domain | `hexwave.io` |
+| A Record | `@ → 216.198.79.1` (Vercel) |
+| CNAME | `www → 04ef5040f141ae61.vercel-dns-017.com` (Vercel) |
 
 ## Payments (Not Yet Configured)
 | Tool | URL |
@@ -70,5 +75,7 @@
 |------|-------|
 | Supabase Project ID | `jitgzcumsjaxemjbjhit` |
 | Supabase URL | `https://jitgzcumsjaxemjbjhit.supabase.co` |
+| Supabase Site URL | `https://hexwave.io` |
+| Supabase Redirect URLs | `https://hexwave.io/**`, `https://www.hexwave.io/**`, `https://hexwave.vercel.app/**`, `http://localhost:5173/**` |
 | Apple Developer Team ID | `72J767FV46` |
 | Apple Developer Email | `chad.littlepage@me.com` |
