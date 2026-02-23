@@ -57,13 +57,16 @@ export function TrackEmbed({ url, platform, className }: TrackEmbedProps) {
   const height = platform === 'spotify' ? '152' : '166';
 
   return (
-    <div className={cn('rounded-xl overflow-hidden', className)}>
+    <div
+      className={cn('rounded-xl overflow-hidden', className)}
+      style={{ background: '#000' }}
+    >
       <iframe
         src={embedUrl}
         width="100%"
         height={height}
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy"
+        loading="eager"
         title={`${platform} embed`}
         className="rounded-xl"
       />
