@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#06080c"/>
+
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <!-- Radial glow behind text -->
+    <radialGradient id="glow" cx="50%" cy="50%" r="40%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background pattern — 1/4 size hexagons, 2x brightness -->
+  <!-- Row 1 -->
+  <g opacity="0.16">
+    <polygon points="50,35 75,21 100,35 100,63 75,77 50,63" fill="#8b5cf6" fill-opacity="0.12" stroke="#a855f7" stroke-width="1"/>
+    <polygon points="125,35 150,21 175,35 175,63 150,77 125,63" fill="#7c3aed" fill-opacity="0.1" stroke="#8b5cf6" stroke-width="1"/>
+    <polygon points="200,35 225,21 250,35 250,63 225,77 200,63" fill="none" stroke="#a855f7" stroke-width="1" stroke-dasharray="5,3"/>
+    <path d="M275,49 Q300,18 325,49 Q350,80 375,49 Q400,18 425,49 Q450,80 475,49 Q500,18 525,49 Q550,80 575,49" fill="none" stroke="url(#g1)" stroke-width="1.2"/>
+  </g>
+
+  <!-- Row 2 -->
+  <g opacity="0.14">
+    <polygon points="600,25 625,11 650,25 650,53 625,67 600,53" fill="#a855f7" fill-opacity="0.1" stroke="#a855f7" stroke-width="1"/>
+    <polygon points="675,25 700,11 725,25 725,53 700,67 675,53" fill="none" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="5,3"/>
+    <path d="M750,39 Q775,8 800,39 Q825,70 850,39 Q875,8 900,39 Q925,70 950,39 Q975,8 1000,39 Q1025,70 1050,39 Q1075,8 1100,39 Q1125,70 1150,39" fill="none" stroke="url(#g1)" stroke-width="1"/>
+  </g>
+
+  <!-- Row 3 -->
+  <g opacity="0.15">
+    <polygon points="25,120 50,106 75,120 75,148 50,162 25,148" fill="#8b5cf6" fill-opacity="0.1" stroke="#a855f7" stroke-width="1"/>
+    <polygon points="100,120 125,106 150,120 150,148 125,162 100,148" fill="none" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="5,3"/>
+    <path d="M175,134 Q200,103 225,134 Q250,165 275,134 Q300,103 325,134 Q350,165 375,134" fill="none" stroke="url(#g1)" stroke-width="1.2"/>
+    <path d="M410,134 Q435,103 460,134 Q485,165 510,134 Q535,103 560,134 Q585,165 610,134 Q635,103 660,134" fill="none" stroke="url(#g1)" stroke-width="1"/>
+  </g>
+
+  <!-- Row 4 -->
+  <g opacity="0.13">
+    <polygon points="750,110 775,96 800,110 800,138 775,152 750,138" fill="#a855f7" fill-opacity="0.1" stroke="#a855f7" stroke-width="1"/>
+    <polygon points="825,110 850,96 875,110 875,138 850,152 825,138" fill="none" stroke="#8b5cf6" stroke-width="1"/>
+    <path d="M925,124 Q950,93 975,124 Q1000,155 1025,124 Q1050,93 1075,124 Q1100,155 1125,124 Q1150,93 1175,124" fill="none" stroke="url(#g1)" stroke-width="1"/>
+  </g>
+
+  <!-- Row 5 -->
+  <g opacity="0.14">
+    <polygon points="60,210 85,196 110,210 110,238 85,252 60,238" fill="#8b5cf6" fill-opacity="0.1" stroke="#a855f7" stroke-width="1"/>
+    <path d="M150,224 Q175,193 200,224 Q225,255 250,224 Q275,193 300,224 Q325,255 350,224 Q375,193 400,224" fill="none" stroke="url(#g1)" stroke-width="1.2"/>
+  </g>
+
+  <!-- Row 6 -->
+  <g opacity="0.12">
+    <polygon points="500,200 525,186 550,200 550,228 525,242 500,228" fill="#7c3aed" fill-opacity="0.1" stroke="#8b5cf6" stroke-width="1"/>
+    <path d="M625,214 Q650,183 675,214 Q700,245 725,214 Q750,183 775,214 Q800,245 825,214 Q850,183 875,214 Q900,245 925,214 Q950,183 975,214 Q1000,245 1025,214 Q1050,183 1075,214 Q1100,245 1125,214 Q1150,183 1175,214" fill="none" stroke="url(#g1)" stroke-width="1"/>
+  </g>
+
+  <!-- Row 7 — lower area -->
+  <g opacity="0.14">
+    <polygon points="40,430 65,416 90,430 90,458 65,472 40,458" fill="#a855f7" fill-opacity="0.1" stroke="#a855f7" stroke-width="1"/>
+    <polygon points="115,430 140,416 165,430 165,458 140,472 115,458" fill="none" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="5,3"/>
+    <path d="M200,444 Q225,413 250,444 Q275,475 300,444 Q325,413 350,444 Q375,475 400,444 Q425,413 450,444" fill="none" stroke="url(#g1)" stroke-width="1.2"/>
+  </g>
+
+  <!-- Row 8 -->
+  <g opacity="0.13">
+    <polygon points="550,420 575,406 600,420 600,448 575,462 550,448" fill="#8b5cf6" fill-opacity="0.08" stroke="#8b5cf6" stroke-width="1"/>
+    <path d="M675,434 Q700,403 725,434 Q750,465 775,434 Q800,403 825,434 Q850,465 875,434 Q900,403 925,434 Q950,465 975,434 Q1000,403 1025,434 Q1050,465 1075,434 Q1100,403 1125,434" fill="none" stroke="url(#g1)" stroke-width="1"/>
+  </g>
+
+  <!-- Row 9 -->
+  <g opacity="0.12">
+    <polygon points="75,530 100,516 125,530 125,558 100,572 75,558" fill="#7c3aed" fill-opacity="0.08" stroke="#8b5cf6" stroke-width="1"/>
+    <path d="M175,544 Q200,513 225,544 Q250,575 275,544 Q300,513 325,544 Q350,575 375,544 Q400,513 425,544 Q450,575 475,544 Q500,513 525,544" fill="none" stroke="url(#g1)" stroke-width="1"/>
+  </g>
+
+  <!-- Row 10 -->
+  <g opacity="0.11">
+    <polygon points="575,520 600,506 625,520 625,548 600,562 575,548" fill="#a855f7" fill-opacity="0.08" stroke="#a855f7" stroke-width="1"/>
+    <path d="M700,534 Q725,503 750,534 Q775,565 800,534 Q825,503 850,534 Q875,565 900,534 Q925,503 950,534 Q975,565 1000,534 Q1025,503 1050,534 Q1075,565 1100,534 Q1125,503 1150,534" fill="none" stroke="url(#g1)" stroke-width="1"/>
+  </g>
+
+  <!-- Accent hexagons on right side -->
+  <g opacity="0.16">
+    <polygon points="1090,30 1110,18 1130,30 1130,52 1110,64 1090,52" fill="#a855f7" fill-opacity="0.12" stroke="#a855f7" stroke-width="1"/>
+    <polygon points="1130,150 1150,138 1170,150 1170,172 1150,184 1130,172" fill="#ec4899" fill-opacity="0.1" stroke="#ec4899" stroke-width="1"/>
+    <polygon points="1060,280 1080,268 1100,280 1100,302 1080,314 1060,302" fill="#8b5cf6" fill-opacity="0.1" stroke="#8b5cf6" stroke-width="1"/>
+    <polygon points="1120,400 1140,388 1160,400 1160,422 1140,434 1120,422" fill="#a855f7" fill-opacity="0.09" stroke="#a855f7" stroke-width="0.8"/>
+    <polygon points="1075,490 1095,478 1115,490 1115,512 1095,524 1075,512" fill="#7c3aed" fill-opacity="0.1" stroke="#7c3aed" stroke-width="0.8"/>
+    <polygon points="1140,570 1160,558 1180,570 1180,592 1160,604 1140,592" fill="#ec4899" fill-opacity="0.08" stroke="#ec4899" stroke-width="0.8"/>
+  </g>
+
+  <!-- Center glow -->
+  <ellipse cx="600" cy="315" rx="500" ry="260" fill="url(#glow)"/>
+
+  <!-- Logo icon — headphones in gradient circle -->
+  <circle cx="600" cy="250" r="32" fill="url(#g2)"/>
+  <g transform="translate(600,250)" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+    <path d="M-12,4 C-12,-8 -8,-14 0,-14 C8,-14 12,-8 12,4"/>
+    <rect x="-14" y="2" width="6" height="10" rx="2" fill="white"/>
+    <rect x="8" y="2" width="6" height="10" rx="2" fill="white"/>
+  </g>
+
+  <!-- "hexwave" text -->
+  <text x="600" y="320" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="56" font-weight="700" letter-spacing="-1">
+    <tspan fill="url(#g2)">hex</tspan><tspan fill="#e8ecf1">wave</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text x="600" y="360" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" fill="#7b8ca3" font-weight="400">
+    Music Curation Platform
+  </text>
+</svg>
