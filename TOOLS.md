@@ -31,6 +31,25 @@
 | Supabase API Settings | https://supabase.com/dashboard/project/jitgzcumsjaxemjbjhit/settings/api |
 | Supabase Storage | https://supabase.com/dashboard/project/jitgzcumsjaxemjbjhit/storage |
 
+## Email (Resend)
+| Tool | URL |
+|------|-----|
+| Resend Dashboard | https://resend.com/overview |
+| Resend API Keys | https://resend.com/api-keys |
+| Resend Domains | https://resend.com/domains |
+| Resend Logs | https://resend.com/logs |
+| SMTP Host | `smtp.resend.com` |
+| SMTP Port | `465` |
+| Sender Address | `noreply@hexwave.io` |
+| Sender Name | `HexWave` |
+| Domain | `hexwave.io` (verified) |
+
+## Domain Registrar (IONOS)
+| Tool | URL |
+|------|-----|
+| IONOS Dashboard | https://my.ionos.com |
+| IONOS DNS Settings | https://my.ionos.com/domains/hexwave.io |
+
 ## Payments (Not Yet Configured)
 | Tool | URL |
 |------|-----|
