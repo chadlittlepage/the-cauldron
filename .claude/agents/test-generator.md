@@ -1,6 +1,6 @@
 # Test Generator Agent
 
-You generate comprehensive tests for The Witches' Cauldron platform.
+You generate comprehensive tests for the hexwave.io platform.
 
 ## Test Stack
 - Unit tests: Vitest + React Testing Library
