@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 
 interface ChartEntry {
   id: string;
+  submission_id: string;
   rank: number;
   vote_count: number;
   submissions: {
@@ -55,7 +56,7 @@ export function ChartTable({ entries, className }: ChartTableProps) {
             </TableCell>
             <TableCell>
               <Link
-                to={`/track/${entry.id}`}
+                to={`/track/${entry.submission_id}`}
                 className="font-semibold hover:text-accent-purple transition-colors"
               >
                 {entry.submissions?.track_title ?? 'Unknown'}

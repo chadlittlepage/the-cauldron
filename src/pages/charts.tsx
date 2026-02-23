@@ -99,6 +99,7 @@ export function ChartsPage() {
         ) : (
           <ChartTable entries={entries.map((e) => ({
             id: e.id,
+            submission_id: e.submission_id,
             rank: e.rank,
             vote_count: e.vote_count,
             submissions: e.submissions,

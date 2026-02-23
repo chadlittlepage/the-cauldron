@@ -9,7 +9,7 @@ export function useCharts(type: ChartType, period: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('charts')
-        .select('*, submissions(track_title, track_url, platform, genre, artist_id, profiles!submissions_artist_id_fkey(display_name))')
+        .select('id, submission_id, rank, vote_count, chart_type, period, submissions(track_title, track_url, platform, genre, artist_id, profiles!submissions_artist_id_fkey(display_name))')
         .eq('chart_type', type)
         .eq('period', period)
         .order('rank', { ascending: true });
