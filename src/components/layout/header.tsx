@@ -6,6 +6,7 @@ import {
   LogOut,
   LayoutDashboard,
   Shield,
+  Settings,
   Menu,
   X,
   Headphones,
@@ -85,6 +86,12 @@ export function Header() {
                   </Button>
                 </Link>
               )}
+              <Link to="/settings/profile">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <Settings className="h-4 w-4" />
+                  Settings
+                </Button>
+              </Link>
               <div className="flex items-center gap-3 ml-1 pl-3 border-l border-hex-border">
                 <span className="text-sm font-medium text-hex-text">
                   {profile?.display_name ?? (user.user_metadata as Record<string, string>).display_name ?? ''}
@@ -151,6 +158,14 @@ export function Header() {
                   >
                     <LayoutDashboard className="h-4 w-4" />
                     Dashboard
+                  </Link>
+                  <Link
+                    to="/settings/profile"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-hex-muted hover:text-hex-text hover:bg-white/5"
+                  >
+                    <Settings className="h-4 w-4" />
+                    Settings
                   </Link>
                   <button
                     onClick={() => { handleSignOut(); setMobileOpen(false); }}

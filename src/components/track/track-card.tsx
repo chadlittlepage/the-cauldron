@@ -77,7 +77,7 @@ export const TrackCard = memo(function TrackCard({
 
       <div className="mt-4 flex items-center justify-between text-xs text-hex-muted">
         <span>{new Date(createdAt).toLocaleDateString()}</span>
-        <span className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity text-accent-purple">
+        <span className="flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity text-accent-purple">
           View details <ExternalLink className="h-3 w-3" />
         </span>
       </div>

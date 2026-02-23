@@ -51,7 +51,7 @@ export function SubmissionList({
                 <ThumbsUp className="h-4 w-4" />
                 <span className="text-sm font-semibold">{sub.vote_count}</span>
               </div>
-              <ExternalLink className="h-4 w-4 text-hex-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+              <ExternalLink className="h-4 w-4 text-hex-muted opacity-60 group-hover:opacity-100 transition-opacity" />
             </div>
           </Link>
         ))}

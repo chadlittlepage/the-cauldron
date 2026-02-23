@@ -78,7 +78,7 @@ export function CuratorsPage() {
                       </Badge>
                     </div>
                   </div>
-                  <ExternalLink className="h-4 w-4 text-hex-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-1" />
+                  <ExternalLink className="h-4 w-4 text-hex-muted opacity-60 group-hover:opacity-100 transition-opacity shrink-0 mt-1" />
                 </div>
               </Link>
             ))}

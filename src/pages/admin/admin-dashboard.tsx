@@ -74,7 +74,7 @@ export function AdminDashboardPage() {
                 <h3 className="font-semibold mb-1 group-hover:text-accent-purple transition-colors">
                   {link.label}
                 </h3>
-                <span className="flex items-center gap-1 text-xs text-hex-muted opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="flex items-center gap-1 text-xs text-hex-muted opacity-60 group-hover:opacity-100 transition-opacity">
                   Open <ArrowRight className="h-3 w-3" />
                 </span>
               </div>
