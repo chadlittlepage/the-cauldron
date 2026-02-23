@@ -62,12 +62,9 @@ export function Header() {
           })}
         </nav>
 
-        {/* Auth Actions — fixed min-width prevents layout shift, opacity transition prevents flash */}
-        <div className={cn(
-          'hidden md:flex items-center justify-end gap-3 min-w-[280px] transition-opacity duration-300',
-          loading ? 'opacity-0' : 'opacity-100',
-        )}>
-          {user && profile ? (
+        {/* Auth Actions — user is set synchronously from localStorage so no flash */}
+        <div className="hidden md:flex items-center justify-end gap-3 min-w-[280px]">
+          {user ? (
             <>
               <Link to="/dashboard">
                 <Button variant="ghost" size="sm" className="gap-2">
@@ -75,7 +72,7 @@ export function Header() {
                   Dashboard
                 </Button>
               </Link>
-              {profile.role === 'admin' && (
+              {profile?.role === 'admin' && (
                 <Link to="/admin">
                   <Button variant="ghost" size="sm" className="gap-2">
                     <Shield className="h-4 w-4" />
@@ -85,7 +82,7 @@ export function Header() {
               )}
               <div className="flex items-center gap-3 ml-1 pl-3 border-l border-hex-border">
                 <span className="text-sm font-medium text-hex-text">
-                  {profile.display_name}
+                  {profile?.display_name ?? (user.user_metadata as Record<string, string>).display_name ?? ''}
                 </span>
                 <Button
                   variant="ghost"
@@ -98,7 +95,7 @@ export function Header() {
                 </Button>
               </div>
             </>
-          ) : (
+          ) : !loading ? (
             <>
               <Link to="/login">
                 <Button variant="ghost" size="sm">
@@ -111,7 +108,7 @@ export function Header() {
                 </Button>
               </Link>
             </>
-          )}
+          ) : null}
         </div>
 
         {/* Mobile Toggle */}
@@ -139,7 +136,7 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <div className={cn('pt-3 mt-3 border-t border-hex-border space-y-2 transition-opacity duration-300', loading ? 'opacity-0' : 'opacity-100')}>
+            <div className="pt-3 mt-3 border-t border-hex-border space-y-2">
               {user ? (
                 <>
                   <Link

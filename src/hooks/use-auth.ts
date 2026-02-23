@@ -11,6 +11,32 @@ import type { AuthResponse, Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import type { Tables } from '@/types/database';
 
+/**
+ * Read the Supabase session from localStorage synchronously so the very first
+ * render already knows whether the user is logged in.  This eliminates the
+ * flash where auth buttons briefly show "Sign In" before switching to the
+ * logged-in layout.
+ */
+function getStoredSession(): { user: User; session: Session } | null {
+  try {
+    const key = Object.keys(localStorage).find(
+      (k) => k.startsWith('sb-') && k.endsWith('-auth-token'),
+    );
+    if (!key) return null;
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const stored = JSON.parse(raw) as Record<string, unknown>;
+    if (stored?.access_token && stored?.user) {
+      return { user: stored.user as User, session: stored as unknown as Session };
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+const storedSession = getStoredSession();
+
 interface AuthState {
   user: User | null;
   profile: Tables<'profiles'> | null;
@@ -41,9 +67,9 @@ export function useAuth(): AuthContextValue {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({
-    user: null,
+    user: storedSession?.user ?? null,
     profile: null,
-    session: null,
+    session: storedSession?.session ?? null,
     loading: true,
   });
 
