@@ -8,15 +8,34 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { FormField } from '@/components/ui/form-field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { cn } from '@/lib/utils';
+import {
+  Music,
+  Link as LinkIcon,
+  FileText,
+  CreditCard,
+  ArrowRight,
+  ArrowLeft,
+  Check,
+  Headphones,
+  Info,
+} from 'lucide-react';
+
+const STEPS = [
+  { label: 'Track Info', icon: Music },
+  { label: 'Link', icon: LinkIcon },
+  { label: 'Details', icon: FileText },
+  { label: 'Payment', icon: CreditCard },
+];
 
 export function SubmitTrackPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const createSubmission = useCreateSubmission();
 
+  const [step, setStep] = useState(0);
   const [form, setForm] = useState({
     trackTitle: '',
     trackUrl: '',
@@ -29,10 +48,38 @@ export function SubmitTrackPage() {
 
   function updateField(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function validateStep(): boolean {
+    const fieldErrors: Record<string, string> = {};
+
+    if (step === 0) {
+      if (!form.trackTitle.trim()) fieldErrors.trackTitle = 'Track title is required';
+      if (!form.genre) fieldErrors.genre = 'Please select a genre';
+    } else if (step === 1) {
+      if (!form.trackUrl.trim()) fieldErrors.trackUrl = 'Track URL is required';
+    }
+
+    setErrors(fieldErrors);
+    return Object.keys(fieldErrors).length === 0;
+  }
+
+  function nextStep() {
+    if (validateStep()) {
+      setStep((s) => Math.min(s + 1, STEPS.length - 1));
+    }
+  }
+
+  function prevStep() {
+    setStep((s) => Math.max(s - 1, 0));
+  }
+
+  async function handleSubmit() {
     setErrors({});
     setServerError('');
 
@@ -69,84 +116,219 @@ export function SubmitTrackPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-10">
-      <Card>
-        <CardHeader>
-          <CardTitle>Submit a Track</CardTitle>
-          <CardDescription>Share your music with the hexwave community ($2 fee)</CardDescription>
-        </CardHeader>
-        <form onSubmit={(e) => void handleSubmit(e)}>
-          <CardContent className="space-y-4">
-            {serverError && (
-              <Alert variant="error">
-                <AlertDescription>{serverError}</AlertDescription>
-              </Alert>
+    <div className="relative min-h-[80vh]">
+      {/* Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[400px] rounded-full bg-accent-purple/5 blur-[120px]" />
+      </div>
+
+      <div className="relative mx-auto max-w-2xl px-6 py-10">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center rounded-xl bg-accent-purple/10 p-3 mb-4">
+            <Headphones className="h-6 w-6 text-accent-purple" />
+          </div>
+          <h1 className="text-2xl font-bold">Submit a Track</h1>
+          <p className="mt-2 text-sm text-hex-muted">
+            Share your music with the hexwave community
+          </p>
+        </div>
+
+        {/* Step indicator */}
+        <div className="flex items-center justify-between mb-10 max-w-md mx-auto">
+          {STEPS.map((s, idx) => (
+            <div key={s.label} className="flex items-center">
+              <div className="flex flex-col items-center">
+                <div
+                  className={cn(
+                    'flex h-10 w-10 items-center justify-center rounded-xl border-2 transition-all duration-300',
+                    idx < step
+                      ? 'border-accent-purple bg-accent-purple text-white'
+                      : idx === step
+                        ? 'border-accent-purple bg-accent-purple/10 text-accent-purple'
+                        : 'border-hex-border text-hex-muted',
+                  )}
+                >
+                  {idx < step ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    <s.icon className="h-4 w-4" />
+                  )}
+                </div>
+                <span
+                  className={cn(
+                    'mt-2 text-xs font-medium',
+                    idx <= step ? 'text-hex-text' : 'text-hex-muted',
+                  )}
+                >
+                  {s.label}
+                </span>
+              </div>
+              {idx < STEPS.length - 1 && (
+                <div
+                  className={cn(
+                    'h-px w-12 mx-2 mt-[-16px]',
+                    idx < step ? 'bg-accent-purple' : 'bg-hex-border',
+                  )}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Form card */}
+        <div className="glass-card rounded-2xl p-8">
+          {serverError && (
+            <Alert variant="error" className="mb-6">
+              <AlertDescription>{serverError}</AlertDescription>
+            </Alert>
+          )}
+
+          {/* Step 0: Track Info */}
+          {step === 0 && (
+            <div className="space-y-5 animate-fade-in">
+              <FormField label="Track Title" htmlFor="trackTitle" error={errors.trackTitle}>
+                <Input
+                  id="trackTitle"
+                  value={form.trackTitle}
+                  onChange={(e) => updateField('trackTitle', e.target.value)}
+                  placeholder="My Awesome Track"
+                  icon={<Music className="h-4 w-4" />}
+                />
+              </FormField>
+              <FormField label="Genre" htmlFor="genre" error={errors.genre}>
+                <Select
+                  id="genre"
+                  value={form.genre}
+                  onChange={(e) => updateField('genre', e.target.value)}
+                >
+                  <option value="">Select a genre</option>
+                  {GENRES.map((g) => (
+                    <option key={g} value={g}>
+                      {g.charAt(0).toUpperCase() + g.slice(1)}
+                    </option>
+                  ))}
+                </Select>
+              </FormField>
+            </div>
+          )}
+
+          {/* Step 1: Link */}
+          {step === 1 && (
+            <div className="space-y-5 animate-fade-in">
+              <FormField label="Platform" htmlFor="platform" error={errors.platform}>
+                <Select
+                  id="platform"
+                  value={form.platform}
+                  onChange={(e) => updateField('platform', e.target.value)}
+                >
+                  {PLATFORMS.map((p) => (
+                    <option key={p.value} value={p.value}>
+                      {p.label}
+                    </option>
+                  ))}
+                </Select>
+              </FormField>
+              <FormField label="Track URL" htmlFor="trackUrl" error={errors.trackUrl}>
+                <Input
+                  id="trackUrl"
+                  value={form.trackUrl}
+                  onChange={(e) => updateField('trackUrl', e.target.value)}
+                  placeholder="https://open.spotify.com/track/..."
+                  icon={<LinkIcon className="h-4 w-4" />}
+                />
+              </FormField>
+              <div className="flex items-start gap-2 rounded-lg bg-accent-purple/5 border border-accent-purple/10 p-3">
+                <Info className="h-4 w-4 text-accent-purple shrink-0 mt-0.5" />
+                <p className="text-xs text-hex-muted">
+                  Paste the full URL from {form.platform === 'spotify' ? 'Spotify' : form.platform}.
+                  Right-click the track and select &quot;Copy link&quot; or &quot;Share&quot;.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Step 2: Details */}
+          {step === 2 && (
+            <div className="space-y-5 animate-fade-in">
+              <FormField
+                label="Description (optional)"
+                htmlFor="description"
+                error={errors.description}
+              >
+                <Textarea
+                  id="description"
+                  value={form.description}
+                  onChange={(e) => updateField('description', e.target.value)}
+                  placeholder="Tell us about your track, its inspiration, production details..."
+                  rows={5}
+                />
+              </FormField>
+            </div>
+          )}
+
+          {/* Step 3: Payment */}
+          {step === 3 && (
+            <div className="space-y-6 animate-fade-in text-center">
+              <div className="rounded-xl bg-hex-surface/80 p-6">
+                <h3 className="font-semibold text-lg mb-4">Submission Summary</h3>
+                <div className="space-y-3 text-sm text-left">
+                  <div className="flex justify-between">
+                    <span className="text-hex-muted">Track</span>
+                    <span className="font-medium">{form.trackTitle}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-hex-muted">Genre</span>
+                    <span className="font-medium capitalize">{form.genre}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-hex-muted">Platform</span>
+                    <span className="font-medium capitalize">{form.platform}</span>
+                  </div>
+                  <div className="border-t border-hex-border my-3" />
+                  <div className="flex justify-between text-base">
+                    <span className="font-semibold">Submission Fee</span>
+                    <span className="font-bold gradient-text text-lg">$2.00</span>
+                  </div>
+                </div>
+              </div>
+              <p className="text-xs text-hex-muted">
+                You&apos;ll be redirected to Stripe for secure payment processing.
+              </p>
+            </div>
+          )}
+
+          {/* Navigation */}
+          <div className="flex justify-between mt-8">
+            {step > 0 ? (
+              <Button variant="ghost" onClick={prevStep} className="gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                Back
+              </Button>
+            ) : (
+              <div />
             )}
-            <FormField label="Track Title" htmlFor="trackTitle" error={errors.trackTitle}>
-              <Input
-                id="trackTitle"
-                value={form.trackTitle}
-                onChange={(e) => updateField('trackTitle', e.target.value)}
-                placeholder="My Awesome Track"
-              />
-            </FormField>
-            <FormField label="Platform" htmlFor="platform" error={errors.platform}>
-              <Select
-                id="platform"
-                value={form.platform}
-                onChange={(e) => updateField('platform', e.target.value)}
+
+            {step < STEPS.length - 1 ? (
+              <Button variant="accent" onClick={nextStep} className="gap-2 group">
+                Continue
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            ) : (
+              <Button
+                variant="accent"
+                onClick={() => void handleSubmit()}
+                disabled={createSubmission.isPending}
+                className="gap-2 group"
+                size="lg"
               >
-                {PLATFORMS.map((p) => (
-                  <option key={p.value} value={p.value}>
-                    {p.label}
-                  </option>
-                ))}
-              </Select>
-            </FormField>
-            <FormField label="Track URL" htmlFor="trackUrl" error={errors.trackUrl}>
-              <Input
-                id="trackUrl"
-                value={form.trackUrl}
-                onChange={(e) => updateField('trackUrl', e.target.value)}
-                placeholder="https://open.spotify.com/track/..."
-              />
-            </FormField>
-            <FormField label="Genre" htmlFor="genre" error={errors.genre}>
-              <Select
-                id="genre"
-                value={form.genre}
-                onChange={(e) => updateField('genre', e.target.value)}
-              >
-                <option value="">Select a genre</option>
-                {GENRES.map((g) => (
-                  <option key={g} value={g}>
-                    {g.charAt(0).toUpperCase() + g.slice(1)}
-                  </option>
-                ))}
-              </Select>
-            </FormField>
-            <FormField label="Description (optional)" htmlFor="description" error={errors.description}>
-              <Textarea
-                id="description"
-                value={form.description}
-                onChange={(e) => updateField('description', e.target.value)}
-                placeholder="Tell us about your track..."
-                rows={4}
-              />
-            </FormField>
-          </CardContent>
-          <CardFooter>
-            <Button
-              type="submit"
-              variant="accent"
-              className="w-full"
-              disabled={createSubmission.isPending}
-            >
-              {createSubmission.isPending ? 'Submitting...' : 'Continue to Payment ($2)'}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
+                {createSubmission.isPending ? 'Processing...' : 'Continue to Payment'}
+                <CreditCard className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { FormField } from '@/components/ui/form-field';
 import { StarRating } from '@/components/ui/star-rating';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Send } from 'lucide-react';
 
 interface ReviewFormProps {
   onSubmit: (rating: number, feedback: string) => Promise<void>;
@@ -37,9 +38,9 @@ export function ReviewForm({ onSubmit, loading }: ReviewFormProps) {
   }
 
   return (
-    <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
+    <form onSubmit={(e) => void handleSubmit(e)} className="space-y-5">
       <div>
-        <label className="text-sm font-medium text-hex-text">Rating</label>
+        <label className="text-sm font-medium text-hex-text mb-3 block">Rating</label>
         <StarRating value={rating} onChange={setRating} size="lg" className="mt-2" />
         {errors.rating && <p className="mt-1 text-sm text-error">{errors.rating}</p>}
       </div>
@@ -57,8 +58,9 @@ export function ReviewForm({ onSubmit, loading }: ReviewFormProps) {
           <AlertDescription>{errors._server}</AlertDescription>
         </Alert>
       )}
-      <Button type="submit" variant="accent" disabled={loading}>
+      <Button type="submit" variant="accent" size="lg" disabled={loading} className="gap-2 group">
         {loading ? 'Submitting...' : 'Submit Review'}
+        {!loading && <Send className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />}
       </Button>
     </form>
   );

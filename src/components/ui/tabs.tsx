@@ -11,25 +11,31 @@ interface Tab {
 interface TabsProps {
   tabs: Tab[];
   defaultValue?: string;
+  onChange?: (value: string) => void;
   className?: string;
 }
 
-export function Tabs({ tabs, defaultValue, className }: TabsProps) {
+export function Tabs({ tabs, defaultValue, onChange, className }: TabsProps) {
   const [active, setActive] = useState(defaultValue ?? tabs[0]?.value ?? '');
+
+  function handleChange(value: string) {
+    setActive(value);
+    onChange?.(value);
+  }
 
   return (
     <div className={className}>
-      <div className="flex border-b border-hex-border" role="tablist">
+      <div className="flex rounded-lg bg-hex-surface/60 p-1" role="tablist">
         {tabs.map((tab) => (
           <button
             key={tab.value}
             role="tab"
             aria-selected={active === tab.value}
-            onClick={() => setActive(tab.value)}
+            onClick={() => handleChange(tab.value)}
             className={cn(
-              'px-4 py-2 text-sm font-medium transition-colors -mb-px',
+              'flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all duration-200',
               active === tab.value
-                ? 'border-b-2 border-accent-purple text-hex-text'
+                ? 'bg-accent-purple text-white shadow-md shadow-accent-purple/20'
                 : 'text-hex-muted hover:text-hex-text',
             )}
           >

@@ -5,7 +5,7 @@ import { useReviewQueue } from '@/hooks/use-submissions';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import { MessageSquare, Star, ListTodo } from 'lucide-react';
+import { MessageSquare, Star, ListTodo, ArrowRight, Users } from 'lucide-react';
 
 export function CuratorDashboardPage() {
   const { user, profile } = useAuth();
@@ -14,8 +14,9 @@ export function CuratorDashboardPage() {
 
   if (reviewsLoading || queueLoading) {
     return (
-      <div className="flex justify-center py-20">
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Spinner size="lg" />
+        <p className="text-sm text-hex-muted">Loading dashboard...</p>
       </div>
     );
   }
@@ -25,26 +26,63 @@ export function CuratorDashboardPage() {
     : 'N/A';
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10">
-      <h1 className="text-3xl font-bold">Curator Dashboard</h1>
-      <p className="mt-1 text-hex-muted">Welcome back, {profile?.display_name}</p>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        <StatCard label="Reviews Written" value={reviews?.length ?? 0} icon={<MessageSquare className="h-5 w-5" />} />
-        <StatCard label="Avg Rating Given" value={avgRating} icon={<Star className="h-5 w-5" />} />
-        <StatCard label="Queue Size" value={queue?.length ?? 0} icon={<ListTodo className="h-5 w-5" />} />
+    <div className="relative">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-0 w-[400px] h-[300px] rounded-full bg-accent-pink/5 blur-[100px]" />
       </div>
 
-      <div className="mt-10 flex gap-4">
-        <Link to="/dashboard/review-queue">
-          <Button variant="accent">Review Queue ({queue?.length ?? 0})</Button>
-        </Link>
-        <Link to="/dashboard/my-reviews">
-          <Button variant="outline">My Reviews</Button>
-        </Link>
-        <Link to="/dashboard/curator-stats">
-          <Button variant="outline">Stats</Button>
-        </Link>
+      <div className="relative mx-auto max-w-7xl px-6 py-10">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-pink/10">
+            <Users className="h-5 w-5 text-accent-pink" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold">Curator Dashboard</h1>
+            <p className="text-sm text-hex-muted">Welcome back, {profile?.display_name}</p>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid gap-4 sm:grid-cols-3 mb-10">
+          <StatCard
+            label="Reviews Written"
+            value={reviews?.length ?? 0}
+            icon={<MessageSquare className="h-5 w-5" />}
+          />
+          <StatCard
+            label="Avg Rating Given"
+            value={avgRating}
+            icon={<Star className="h-5 w-5" />}
+          />
+          <StatCard
+            label="Queue Size"
+            value={queue?.length ?? 0}
+            icon={<ListTodo className="h-5 w-5" />}
+          />
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-wrap gap-3">
+          <Link to="/dashboard/review-queue">
+            <Button variant="accent" className="gap-2 group">
+              Review Queue ({queue?.length ?? 0})
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
+          <Link to="/dashboard/my-reviews">
+            <Button variant="outline" className="gap-2">
+              <MessageSquare className="h-4 w-4" />
+              My Reviews
+            </Button>
+          </Link>
+          <Link to="/dashboard/curator-stats">
+            <Button variant="outline" className="gap-2">
+              <Star className="h-4 w-4" />
+              Stats
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );

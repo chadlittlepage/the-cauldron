@@ -5,7 +5,7 @@ import { GenreFilter } from '@/components/track/genre-filter';
 import { Pagination } from '@/components/ui/pagination';
 import { Spinner } from '@/components/ui/spinner';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Music } from 'lucide-react';
+import { Music, Search, Headphones } from 'lucide-react';
 
 export function BrowsePage() {
   const [genre, setGenre] = useState('');
@@ -18,49 +18,92 @@ export function BrowsePage() {
   });
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10">
-      <h1 className="text-3xl font-bold">Browse Tracks</h1>
-      <p className="mt-2 text-hex-muted">Discover music curated by the community</p>
-
-      <GenreFilter selected={genre} onChange={(g) => { setGenre(g); setPage(1); }} className="mt-6" />
-
-      {isLoading ? (
-        <div className="flex justify-center py-20">
-          <Spinner size="lg" />
+    <div className="relative">
+      {/* Hero area */}
+      <div className="relative border-b border-white/5 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-[400px] h-[300px] rounded-full bg-accent-purple/5 blur-[100px]" />
         </div>
-      ) : !data?.data?.length ? (
-        <EmptyState
-          icon={<Music className="h-12 w-12" />}
-          title="No tracks found"
-          description="Try selecting a different genre or check back later."
-        />
-      ) : (
-        <>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {data.data.map((submission) => (
-              <TrackCard
-                key={submission.id}
-                id={submission.id}
-                trackTitle={submission.track_title}
-                artistName={
-                  (submission.profiles as { display_name: string } | null)?.display_name ?? 'Unknown'
-                }
-                genre={submission.genre}
-                platform={submission.platform}
-                status={submission.status}
-                voteCount={submission.vote_count}
-                createdAt={submission.created_at}
-              />
-            ))}
+        <div className="relative mx-auto max-w-7xl px-6 pt-12 pb-8">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-purple/10">
+              <Headphones className="h-5 w-5 text-accent-purple" />
+            </div>
+            <h1 className="text-3xl font-bold">Browse Tracks</h1>
           </div>
-          <Pagination
-            page={page}
-            totalPages={data.totalPages}
-            onPageChange={setPage}
-            className="mt-8"
+          <p className="text-hex-muted max-w-xl">
+            Discover community-curated music. Filter by genre and find your next favorite track.
+          </p>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-6 py-8">
+        <GenreFilter
+          selected={genre}
+          onChange={(g) => {
+            setGenre(g);
+            setPage(1);
+          }}
+          className="mb-8"
+        />
+
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <Spinner size="lg" />
+            <p className="text-sm text-hex-muted">Loading tracks...</p>
+          </div>
+        ) : !data?.data?.length ? (
+          <EmptyState
+            icon={<Music className="h-10 w-10" />}
+            title="No tracks found"
+            description="Try selecting a different genre or check back later for new submissions."
           />
-        </>
-      )}
+        ) : (
+          <>
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-sm text-hex-muted">
+                <span className="font-semibold text-hex-text">{data.data.length}</span> tracks
+                {genre && (
+                  <>
+                    {' '}
+                    in <span className="text-accent-purple">{genre}</span>
+                  </>
+                )}
+              </p>
+              <div className="flex items-center gap-2 text-xs text-hex-muted">
+                <Search className="h-3.5 w-3.5" />
+                Page {page} of {data.totalPages}
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {data.data.map((submission) => (
+                <TrackCard
+                  key={submission.id}
+                  id={submission.id}
+                  trackTitle={submission.track_title}
+                  artistName={
+                    (submission.profiles as { display_name: string } | null)?.display_name ??
+                    'Unknown'
+                  }
+                  genre={submission.genre}
+                  platform={submission.platform}
+                  status={submission.status}
+                  voteCount={submission.vote_count}
+                  createdAt={submission.created_at}
+                />
+              ))}
+            </div>
+
+            <Pagination
+              page={page}
+              totalPages={data.totalPages}
+              onPageChange={setPage}
+              className="mt-10"
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 }

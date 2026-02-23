@@ -13,10 +13,10 @@ export function GenreFilter({ selected, onChange, className }: GenreFilterProps)
       <button
         onClick={() => onChange('')}
         className={cn(
-          'rounded-full px-3 py-1 text-sm transition-colors',
+          'rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200',
           !selected
-            ? 'bg-accent-purple text-white'
-            : 'border border-hex-border text-hex-muted hover:text-hex-text',
+            ? 'gradient-primary text-white shadow-md shadow-accent-purple/20'
+            : 'border border-hex-border text-hex-muted hover:text-hex-text hover:border-hex-border-light',
         )}
       >
         All
@@ -26,10 +26,10 @@ export function GenreFilter({ selected, onChange, className }: GenreFilterProps)
           key={genre}
           onClick={() => onChange(genre)}
           className={cn(
-            'rounded-full px-3 py-1 text-sm capitalize transition-colors',
+            'rounded-full px-4 py-1.5 text-sm font-medium capitalize transition-all duration-200',
             selected === genre
-              ? 'bg-accent-purple text-white'
-              : 'border border-hex-border text-hex-muted hover:text-hex-text',
+              ? 'gradient-primary text-white shadow-md shadow-accent-purple/20'
+              : 'border border-hex-border text-hex-muted hover:text-hex-text hover:border-hex-border-light',
           )}
         >
           {genre}

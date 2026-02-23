@@ -4,9 +4,10 @@ import { useAuth } from '@/hooks/use-auth';
 import { signupSchema } from '@/lib/validators';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { FormField } from '@/components/ui/form-field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { FormField } from '@/components/ui/form-field';
+import { Mail, Lock, User, Eye, EyeOff, Headphones, ArrowRight, Music, Users } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export function SignupPage() {
   const { signUp } = useAuth();
@@ -18,6 +19,7 @@ export function SignupPage() {
     displayName: '',
     role: 'artist' as 'artist' | 'curator',
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -59,27 +61,75 @@ export function SignupPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-md items-center px-6">
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Create Account</CardTitle>
-          <CardDescription>Join hexwave as an artist or curator</CardDescription>
-        </CardHeader>
-        <form onSubmit={(e) => void handleSubmit(e)}>
-          <CardContent className="space-y-4">
+    <div className="relative min-h-[85vh] flex items-center justify-center px-6 py-12">
+      {/* Background glow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-accent-purple/5 blur-[120px]" />
+      </div>
+
+      <div className="relative w-full max-w-md animate-slide-up">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2.5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-primary shadow-lg shadow-accent-purple/20">
+              <Headphones className="h-5 w-5 text-white" />
+            </div>
+          </Link>
+          <h1 className="mt-4 text-2xl font-bold">Create your account</h1>
+          <p className="mt-2 text-sm text-hex-muted">
+            Join hexwave as an artist or curator
+          </p>
+        </div>
+
+        {/* Card */}
+        <div className="glass-card rounded-2xl p-8">
+          <form onSubmit={(e) => void handleSubmit(e)} className="space-y-5">
             {serverError && (
               <Alert variant="error">
                 <AlertDescription>{serverError}</AlertDescription>
               </Alert>
             )}
+
+            {/* Role selector */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => updateField('role', 'artist')}
+                className={cn(
+                  'flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200',
+                  form.role === 'artist'
+                    ? 'border-accent-purple bg-accent-purple/10 text-accent-purple'
+                    : 'border-hex-border text-hex-muted hover:border-hex-border-light hover:text-hex-text',
+                )}
+              >
+                <Music className="h-4 w-4" />
+                Artist
+              </button>
+              <button
+                type="button"
+                onClick={() => updateField('role', 'curator')}
+                className={cn(
+                  'flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200',
+                  form.role === 'curator'
+                    ? 'border-accent-pink bg-accent-pink/10 text-accent-pink'
+                    : 'border-hex-border text-hex-muted hover:border-hex-border-light hover:text-hex-text',
+                )}
+              >
+                <Users className="h-4 w-4" />
+                Curator
+              </button>
+            </div>
+
             <FormField label="Display Name" htmlFor="displayName" error={errors.displayName}>
               <Input
                 id="displayName"
                 value={form.displayName}
                 onChange={(e) => updateField('displayName', e.target.value)}
                 placeholder="Your display name"
+                icon={<User className="h-4 w-4" />}
               />
             </FormField>
+
             <FormField label="Email" htmlFor="email" error={errors.email}>
               <Input
                 id="email"
@@ -87,66 +137,70 @@ export function SignupPage() {
                 value={form.email}
                 onChange={(e) => updateField('email', e.target.value)}
                 placeholder="you@example.com"
+                icon={<Mail className="h-4 w-4" />}
               />
             </FormField>
+
             <FormField label="Password" htmlFor="password" error={errors.password}>
               <Input
                 id="password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={form.password}
                 onChange={(e) => updateField('password', e.target.value)}
                 placeholder="At least 8 characters"
+                icon={<Lock className="h-4 w-4" />}
+                suffix={
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="hover:text-hex-text transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                }
               />
             </FormField>
-            <FormField label="Confirm Password" htmlFor="confirmPassword" error={errors.confirmPassword}>
+
+            <FormField
+              label="Confirm Password"
+              htmlFor="confirmPassword"
+              error={errors.confirmPassword}
+            >
               <Input
                 id="confirmPassword"
                 type="password"
                 value={form.confirmPassword}
                 onChange={(e) => updateField('confirmPassword', e.target.value)}
                 placeholder="Confirm your password"
+                icon={<Lock className="h-4 w-4" />}
               />
             </FormField>
-            <FormField label="I am a..." htmlFor="role" error={errors.role}>
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2 text-sm text-hex-text cursor-pointer">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="artist"
-                    checked={form.role === 'artist'}
-                    onChange={() => updateField('role', 'artist')}
-                    className="accent-accent-purple"
-                  />
-                  Artist
-                </label>
-                <label className="flex items-center gap-2 text-sm text-hex-text cursor-pointer">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="curator"
-                    checked={form.role === 'curator'}
-                    onChange={() => updateField('role', 'curator')}
-                    className="accent-accent-purple"
-                  />
-                  Curator
-                </label>
-              </div>
-            </FormField>
-          </CardContent>
-          <CardFooter className="flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={loading}>
+
+            <Button
+              type="submit"
+              variant="accent"
+              className="w-full group"
+              size="lg"
+              disabled={loading}
+            >
               {loading ? 'Creating account...' : 'Create Account'}
+              {!loading && (
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              )}
             </Button>
-            <p className="text-sm text-hex-muted">
-              Already have an account?{' '}
-              <Link to="/login" className="text-accent-purple hover:underline">
-                Sign in
-              </Link>
-            </p>
-          </CardFooter>
-        </form>
-      </Card>
+          </form>
+        </div>
+
+        <p className="mt-6 text-center text-sm text-hex-muted">
+          Already have an account?{' '}
+          <Link
+            to="/login"
+            className="font-medium text-accent-purple hover:text-accent-purple/80 transition-colors"
+          >
+            Sign in
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

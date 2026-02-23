@@ -27,13 +27,16 @@ export function VoteButton({ submissionId, voteCount, className }: VoteButtonPro
   return (
     <Button
       variant={hasVoted ? 'accent' : 'outline'}
-      size="sm"
       onClick={handleVote}
       disabled={!user || toggleVote.isPending}
-      className={cn('gap-2', className)}
+      className={cn(
+        'gap-2.5 rounded-xl px-5 py-2.5 transition-all duration-200',
+        hasVoted && 'glow-purple',
+        className,
+      )}
     >
       <ThumbsUp className={cn('h-4 w-4', hasVoted && 'fill-current')} />
-      {voteCount}
+      <span className="font-bold">{voteCount}</span>
     </Button>
   );
 }

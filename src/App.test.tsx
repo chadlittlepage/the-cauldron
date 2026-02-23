@@ -54,7 +54,8 @@ function renderApp(route = '/') {
 describe('App', () => {
   it('renders the site title in header', () => {
     renderApp();
-    expect(screen.getByText('hexwave')).toBeInTheDocument();
+    expect(screen.getAllByText('hex').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('wave').length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders navigation links', () => {
@@ -67,13 +68,13 @@ describe('App', () => {
 
   it('renders the hero section', () => {
     renderApp();
-    expect(screen.getByText('Curated by the Community')).toBeInTheDocument();
+    expect(screen.getByText('Worth Hearing')).toBeInTheDocument();
     expect(screen.getByText('Submit Your Track')).toBeInTheDocument();
   });
 
   it('renders login page', () => {
     renderApp('/login');
-    expect(screen.getByText('Welcome back to hexwave')).toBeInTheDocument();
+    expect(screen.getByText('Welcome back')).toBeInTheDocument();
   });
 
   it('renders signup page', () => {

@@ -16,6 +16,10 @@ import { ChartsPage } from '@/pages/charts';
 import { CuratorsPage } from '@/pages/curators';
 import { CuratorProfilePage } from '@/pages/curator-profile';
 import { NotFoundPage } from '@/pages/not-found';
+import { AboutPage } from '@/pages/about';
+import { BecomeCuratorPage } from '@/pages/become-curator';
+import { TermsPage } from '@/pages/terms';
+import { PrivacyPage } from '@/pages/privacy';
 
 // Artist dashboard
 import { ArtistDashboardPage } from '@/pages/dashboard/artist-dashboard';
@@ -56,6 +60,10 @@ function App() {
         <Route path="/charts" element={<ChartsPage />} />
         <Route path="/curators" element={<CuratorsPage />} />
         <Route path="/curator/:id" element={<CuratorProfilePage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/become-curator" element={<BecomeCuratorPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
 
         {/* Auth */}
         <Route path="/login" element={<LoginPage />} />

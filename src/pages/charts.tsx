@@ -4,8 +4,8 @@ import { ChartTable } from '@/components/chart/chart-table';
 import { PeriodSelector } from '@/components/chart/period-selector';
 import { Spinner } from '@/components/ui/spinner';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Tabs } from '@/components/ui/tabs';
-import { BarChart3 } from 'lucide-react';
+import { BarChart3, Trophy } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import type { ChartType } from '@/types/database';
 
 function now() {
@@ -27,61 +27,71 @@ export function ChartsPage() {
     chartType === 'monthly' ? periods?.monthly ?? [current.month] : periods?.yearly ?? [current.year];
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10">
-      <h1 className="text-3xl font-bold">Charts</h1>
-      <p className="mt-2 text-hex-muted">Top tracks ranked by community votes</p>
-
-      <div className="mt-6 flex items-center gap-4">
-        <Tabs
-          tabs={[
-            {
-              value: 'monthly',
-              label: 'Monthly',
-              content: null,
-            },
-            {
-              value: 'yearly',
-              label: 'Yearly',
-              content: null,
-            },
-          ]}
-          defaultValue={chartType}
-        />
-        <div className="flex gap-2">
-          <button
-            onClick={() => { setChartType('monthly'); setPeriod(current.month); }}
-            className={`rounded-md px-3 py-1.5 text-sm ${chartType === 'monthly' ? 'bg-accent-purple text-white' : 'text-hex-muted hover:text-hex-text'}`}
-          >
-            Monthly
-          </button>
-          <button
-            onClick={() => { setChartType('yearly'); setPeriod(current.year); }}
-            className={`rounded-md px-3 py-1.5 text-sm ${chartType === 'yearly' ? 'bg-accent-purple text-white' : 'text-hex-muted hover:text-hex-text'}`}
-          >
-            Yearly
-          </button>
+    <div className="relative">
+      {/* Hero */}
+      <div className="relative border-b border-white/5 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 w-[400px] h-[300px] rounded-full bg-accent-orange/5 blur-[100px]" />
         </div>
-        <PeriodSelector
-          periods={availablePeriods}
-          selected={period}
-          onChange={setPeriod}
-          className="w-40"
-        />
+        <div className="relative mx-auto max-w-7xl px-6 pt-12 pb-8">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-orange/10">
+              <Trophy className="h-5 w-5 text-accent-orange" />
+            </div>
+            <h1 className="text-3xl font-bold">Charts</h1>
+          </div>
+          <p className="text-hex-muted max-w-xl">
+            Top tracks ranked by community votes. Updated monthly.
+          </p>
+        </div>
       </div>
 
-      {isLoading ? (
-        <div className="flex justify-center py-20">
-          <Spinner size="lg" />
+      <div className="mx-auto max-w-7xl px-6 py-8">
+        <div className="flex flex-wrap items-center gap-4 mb-8">
+          {/* Chart type toggle */}
+          <div className="flex rounded-lg bg-hex-surface/60 p-1">
+            {(['monthly', 'yearly'] as const).map((type) => (
+              <button
+                key={type}
+                onClick={() => {
+                  setChartType(type);
+                  setPeriod(type === 'monthly' ? current.month : current.year);
+                }}
+                className={cn(
+                  'rounded-md px-4 py-2 text-sm font-medium transition-all duration-200',
+                  chartType === type
+                    ? 'bg-accent-purple text-white shadow-md shadow-accent-purple/20'
+                    : 'text-hex-muted hover:text-hex-text',
+                )}
+              >
+                {type === 'monthly' ? 'Monthly' : 'Yearly'}
+              </button>
+            ))}
+          </div>
+
+          <PeriodSelector
+            periods={availablePeriods}
+            selected={period}
+            onChange={setPeriod}
+            className="w-48"
+          />
         </div>
-      ) : !entries?.length ? (
-        <EmptyState
-          icon={<BarChart3 className="h-12 w-12" />}
-          title="No chart data"
-          description="Charts are generated at the end of each month."
-        />
-      ) : (
-        <ChartTable entries={entries as never} className="mt-8" />
-      )}
+
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <Spinner size="lg" />
+            <p className="text-sm text-hex-muted">Loading charts...</p>
+          </div>
+        ) : !entries?.length ? (
+          <EmptyState
+            icon={<BarChart3 className="h-10 w-10" />}
+            title="No chart data"
+            description="Charts are generated at the end of each month based on community votes."
+          />
+        ) : (
+          <ChartTable entries={entries as never} className="mt-2" />
+        )}
+      </div>
     </div>
   );
 }
