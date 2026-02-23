@@ -59,6 +59,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+  color-scheme: dark;
 }
 
 * {
@@ -169,6 +171,20 @@ body {
   border-color: rgba(139, 92, 246, 0.3);
 }
 
+@media (max-width: 768px) {
+  .blur-\[120px\] {
+    filter: blur(60px);
+  }
+  .glass {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .glass-card {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+}
+
 /* Glow effects */
 .glow-purple {
   box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), 0 0 60px rgba(139, 92, 246, 0.05);
@@ -221,4 +237,11 @@ textarea:focus-visible,
 select:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px var(--color-hex-dark), 0 0 0 4px var(--color-accent-purple);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
