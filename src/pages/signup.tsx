@@ -174,6 +174,7 @@ export function SignupPage() {
             <FormField label="Display Name" htmlFor="displayName" error={errors.displayName}>
               <Input
                 id="displayName"
+                autoComplete="name"
                 value={form.displayName}
                 onChange={(e) => updateField('displayName', e.target.value)}
                 placeholder="Your display name"
@@ -185,6 +186,7 @@ export function SignupPage() {
               <Input
                 id="email"
                 type="email"
+                autoComplete="email"
                 value={form.email}
                 onChange={(e) => updateField('email', e.target.value)}
                 placeholder="you@example.com"
@@ -196,6 +198,7 @@ export function SignupPage() {
               <Input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
+                autoComplete="new-password"
                 value={form.password}
                 onChange={(e) => updateField('password', e.target.value)}
                 placeholder="At least 8 characters"
@@ -221,6 +224,7 @@ export function SignupPage() {
               <Input
                 id="confirmPassword"
                 type="password"
+                autoComplete="new-password"
                 value={form.confirmPassword}
                 onChange={(e) => updateField('confirmPassword', e.target.value)}
                 placeholder="Confirm your password"

@@ -34,7 +34,7 @@ export function StarRating({
           onClick={() => onChange?.(star)}
           aria-label={`Rate ${star} out of ${max}`}
           className={cn(
-            'transition-colors',
+            'p-1.5 transition-colors',
             readonly ? 'cursor-default' : 'cursor-pointer hover:text-accent-orange',
           )}
         >
