@@ -95,12 +95,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       const profile = await fetchProfile(session.user.id);
       if (!profile) {
-        // Token is invalid or profile missing — sign out cleanly
         await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
         clearState();
         return;
       }
       setState({ user: session.user, profile, session, loading: false });
+    }).catch(() => {
+      // LockManager timeout or other unhandled auth error — clear stale state
+      try {
+        const key = Object.keys(localStorage).find(
+          (k) => k.startsWith('sb-') && k.endsWith('-auth-token'),
+        );
+        if (key) localStorage.removeItem(key);
+      } catch { /* ignore */ }
+      clearState();
     });
 
     const {

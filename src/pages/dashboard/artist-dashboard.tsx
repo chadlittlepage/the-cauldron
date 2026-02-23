@@ -23,11 +23,28 @@ export function ArtistDashboardPage() {
   }
 
   if (isError) {
+    const message = error instanceof Error ? error.message : 'Failed to load dashboard';
+    const isAuthError = message.includes('JWT') || message.includes('token') || message.includes('auth') || message.includes('lock');
+
+    if (isAuthError) {
+      return (
+        <div className="flex flex-col items-center justify-center py-24 gap-4">
+          <Alert variant="error" className="max-w-md">
+            <AlertTitle>Session expired</AlertTitle>
+            <AlertDescription>Please sign in again.</AlertDescription>
+          </Alert>
+          <Link to="/login">
+            <Button variant="accent">Sign In</Button>
+          </Link>
+        </div>
+      );
+    }
+
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Alert variant="error" className="max-w-md">
           <AlertTitle>Something went wrong</AlertTitle>
-          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load dashboard'}</AlertDescription>
+          <AlertDescription>{message}</AlertDescription>
         </Alert>
       </div>
     );
