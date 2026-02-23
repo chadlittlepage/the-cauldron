@@ -2,16 +2,24 @@ import { useAdminPayouts } from '@/hooks/use-admin';
 import { DataTable } from '@/components/admin/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Spinner } from '@/components/ui/spinner';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 export function ManagePayoutsPage() {
-  const { data: payouts, isLoading } = useAdminPayouts();
+  const { data: payouts, isLoading, isError, error } = useAdminPayouts();
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
       <h1 className="text-3xl font-bold">Manage Payouts</h1>
       <p className="mt-2 text-hex-muted">Curator payment history</p>
 
-      {isLoading ? (
+      {isError ? (
+        <div className="flex flex-col items-center justify-center py-24 gap-4">
+          <Alert variant="error" className="max-w-md">
+            <AlertTitle>Something went wrong</AlertTitle>
+            <AlertDescription>{error instanceof Error ? error.message : 'Failed to load payouts'}</AlertDescription>
+          </Alert>
+        </div>
+      ) : isLoading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : (
         <DataTable

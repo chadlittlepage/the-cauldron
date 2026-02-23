@@ -6,17 +6,29 @@ import { SubmissionList } from '@/components/dashboard/submission-list';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Music, ThumbsUp, Clock, Plus, ArrowRight, LayoutDashboard } from 'lucide-react';
 
 export function ArtistDashboardPage() {
   const { user, profile } = useAuth();
-  const { data: submissions, isLoading } = useArtistSubmissions(user?.id);
+  const { data: submissions, isLoading, isError, error } = useArtistSubmissions(user?.id);
 
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Spinner size="lg" />
         <p className="text-sm text-hex-muted">Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <Alert variant="error" className="max-w-md">
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load dashboard'}</AlertDescription>
+        </Alert>
       </div>
     );
   }

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { StarRating } from '@/components/ui/star-rating';
 import { StatCard } from '@/components/dashboard/stat-card';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { ThumbsUp, Star, MessageSquare, ArrowLeft } from 'lucide-react';
 import type { MusicPlatform, SubmissionStatus } from '@/types/database';
 
@@ -19,7 +20,7 @@ const statusVariant: Record<SubmissionStatus, 'warning' | 'default' | 'success' 
 
 export function SubmissionDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { data: track, isLoading } = useSubmission(id);
+  const { data: track, isLoading, isError, error } = useSubmission(id);
   const { data: reviews } = useSubmissionReviews(id);
 
   if (isLoading) {
@@ -27,6 +28,17 @@ export function SubmissionDetailPage() {
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Spinner size="lg" />
         <p className="text-sm text-hex-muted">Loading submission...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <Alert variant="error" className="max-w-md">
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load submission'}</AlertDescription>
+        </Alert>
       </div>
     );
   }

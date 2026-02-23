@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { StarRating } from '@/components/ui/star-rating';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +14,7 @@ interface ReviewCardProps {
   createdAt: string;
 }
 
-export function ReviewCard({
+export const ReviewCard = memo(function ReviewCard({
   submissionId,
   trackTitle,
   genre,
@@ -50,4 +51,4 @@ export function ReviewCard({
       <p className="mt-4 text-sm text-hex-muted leading-relaxed">{feedback}</p>
     </div>
   );
-}
+});

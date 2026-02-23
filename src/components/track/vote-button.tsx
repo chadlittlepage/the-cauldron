@@ -29,6 +29,7 @@ export function VoteButton({ submissionId, voteCount, className }: VoteButtonPro
       variant={hasVoted ? 'accent' : 'outline'}
       onClick={handleVote}
       disabled={!user || toggleVote.isPending}
+      aria-label={hasVoted ? `Remove vote (${voteCount} votes)` : `Vote (${voteCount} votes)`}
       className={cn(
         'gap-2.5 rounded-xl px-5 py-2.5 transition-all duration-200',
         hasVoted && 'glow-purple',

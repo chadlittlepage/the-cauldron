@@ -5,13 +5,14 @@ import { GenreFilter } from '@/components/track/genre-filter';
 import { Pagination } from '@/components/ui/pagination';
 import { Spinner } from '@/components/ui/spinner';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Music, Search, Headphones } from 'lucide-react';
 
 export function BrowsePage() {
   const [genre, setGenre] = useState('');
   const [page, setPage] = useState(1);
 
-  const { data, isLoading } = useSubmissions({
+  const { data, isLoading, isError, error } = useSubmissions({
     genre: genre || undefined,
     status: 'accepted',
     page,
@@ -47,7 +48,14 @@ export function BrowsePage() {
           className="mb-8"
         />
 
-        {isLoading ? (
+        {isError ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <Alert variant="error" className="max-w-md">
+              <AlertTitle>Something went wrong</AlertTitle>
+              <AlertDescription>{error instanceof Error ? error.message : 'Failed to load tracks'}</AlertDescription>
+            </Alert>
+          </div>
+        ) : isLoading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <Spinner size="lg" />
             <p className="text-sm text-hex-muted">Loading tracks...</p>

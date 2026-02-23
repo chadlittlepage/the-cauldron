@@ -5,6 +5,7 @@ import { PeriodSelector } from '@/components/chart/period-selector';
 import { Spinner } from '@/components/ui/spinner';
 import { EmptyState } from '@/components/ui/empty-state';
 import { BarChart3, Trophy } from 'lucide-react';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import type { ChartType } from '@/types/database';
 
@@ -21,7 +22,7 @@ export function ChartsPage() {
   const [chartType, setChartType] = useState<ChartType>('monthly');
   const [period, setPeriod] = useState(chartType === 'monthly' ? current.month : current.year);
   const { data: periods } = useChartPeriods();
-  const { data: entries, isLoading } = useCharts(chartType, period);
+  const { data: entries, isLoading, isError, error } = useCharts(chartType, period);
 
   const availablePeriods =
     chartType === 'monthly' ? periods?.monthly ?? [current.month] : periods?.yearly ?? [current.year];
@@ -77,7 +78,14 @@ export function ChartsPage() {
           />
         </div>
 
-        {isLoading ? (
+        {isError ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <Alert variant="error" className="max-w-md">
+              <AlertTitle>Something went wrong</AlertTitle>
+              <AlertDescription>{error instanceof Error ? error.message : 'Failed to load charts'}</AlertDescription>
+            </Alert>
+          </div>
+        ) : isLoading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <Spinner size="lg" />
             <p className="text-sm text-hex-muted">Loading charts...</p>
@@ -89,7 +97,12 @@ export function ChartsPage() {
             description="Charts are generated at the end of each month based on community votes."
           />
         ) : (
-          <ChartTable entries={entries as never} className="mt-2" />
+          <ChartTable entries={entries.map((e) => ({
+            id: e.id,
+            rank: e.rank,
+            vote_count: e.vote_count,
+            submissions: e.submissions,
+          }))} className="mt-2" />
         )}
       </div>
     </div>

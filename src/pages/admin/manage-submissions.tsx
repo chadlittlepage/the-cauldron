@@ -5,13 +5,14 @@ import { Badge } from '@/components/ui/badge';
 import { Select } from '@/components/ui/select';
 import { Pagination } from '@/components/ui/pagination';
 import { Spinner } from '@/components/ui/spinner';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { STATUSES } from '@/lib/constants';
 import type { SubmissionStatus } from '@/types/database';
 
 export function ManageSubmissionsPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useAdminSubmissions({ status: statusFilter || undefined, page });
+  const { data, isLoading, isError, error } = useAdminSubmissions({ status: statusFilter || undefined, page });
   const updateStatus = useUpdateSubmissionStatus();
 
   return (
@@ -31,7 +32,14 @@ export function ManageSubmissionsPage() {
         </Select>
       </div>
 
-      {isLoading ? (
+      {isError ? (
+        <div className="flex flex-col items-center justify-center py-24 gap-4">
+          <Alert variant="error" className="max-w-md">
+            <AlertTitle>Something went wrong</AlertTitle>
+            <AlertDescription>{error instanceof Error ? error.message : 'Failed to load submissions'}</AlertDescription>
+          </Alert>
+        </div>
+      ) : isLoading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : (
         <>

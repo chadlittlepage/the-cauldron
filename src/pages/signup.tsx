@@ -194,6 +194,7 @@ export function SignupPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="hover:text-hex-text transition-colors"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>

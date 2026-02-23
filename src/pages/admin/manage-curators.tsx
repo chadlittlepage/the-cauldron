@@ -3,10 +3,11 @@ import { DataTable } from '@/components/admin/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar } from '@/components/ui/avatar';
 import { Spinner } from '@/components/ui/spinner';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { CURATOR_MIN_LISTENERS } from '@/lib/constants';
 
 export function ManageCuratorsPage() {
-  const { data: curators, isLoading } = useAdminCurators();
+  const { data: curators, isLoading, isError, error } = useAdminCurators();
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
@@ -15,7 +16,14 @@ export function ManageCuratorsPage() {
         Curators need {CURATOR_MIN_LISTENERS.toLocaleString()}+ listeners to review
       </p>
 
-      {isLoading ? (
+      {isError ? (
+        <div className="flex flex-col items-center justify-center py-24 gap-4">
+          <Alert variant="error" className="max-w-md">
+            <AlertTitle>Something went wrong</AlertTitle>
+            <AlertDescription>{error instanceof Error ? error.message : 'Failed to load curators'}</AlertDescription>
+          </Alert>
+        </div>
+      ) : isLoading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : (
         <DataTable

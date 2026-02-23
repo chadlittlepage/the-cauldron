@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Music, ThumbsUp, ExternalLink } from 'lucide-react';
@@ -28,7 +29,7 @@ const platformColors: Record<MusicPlatform, string> = {
   other: 'text-hex-muted',
 };
 
-export function TrackCard({
+export const TrackCard = memo(function TrackCard({
   id,
   trackTitle,
   artistName,
@@ -82,4 +83,4 @@ export function TrackCard({
       </div>
     </Link>
   );
-}
+});

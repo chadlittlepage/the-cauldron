@@ -4,10 +4,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { CheckCircle, ThumbsUp, Music, ArrowRight, ListTodo } from 'lucide-react';
 
 export function ReviewQueuePage() {
-  const { data: queue, isLoading } = useReviewQueue();
+  const { data: queue, isLoading, isError, error } = useReviewQueue();
 
   return (
     <div className="relative">
@@ -24,7 +25,14 @@ export function ReviewQueuePage() {
         </div>
         <p className="text-hex-muted mb-8">Tracks waiting for your expert review</p>
 
-        {isLoading ? (
+        {isError ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <Alert variant="error" className="max-w-md">
+              <AlertTitle>Something went wrong</AlertTitle>
+              <AlertDescription>{error instanceof Error ? error.message : 'Failed to load review queue'}</AlertDescription>
+            </Alert>
+          </div>
+        ) : isLoading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <Spinner size="lg" />
             <p className="text-sm text-hex-muted">Loading queue...</p>

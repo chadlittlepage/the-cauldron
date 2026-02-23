@@ -2,16 +2,28 @@ import { useAuth } from '@/hooks/use-auth';
 import { useCuratorReviews } from '@/hooks/use-reviews';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { Spinner } from '@/components/ui/spinner';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { MessageSquare, Star, TrendingUp } from 'lucide-react';
 
 export function CuratorStatsPage() {
   const { user } = useAuth();
-  const { data: reviews, isLoading } = useCuratorReviews(user?.id);
+  const { data: reviews, isLoading, isError, error } = useCuratorReviews(user?.id);
 
   if (isLoading) {
     return (
       <div className="flex justify-center py-20">
         <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <Alert variant="error" className="max-w-md">
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load curator stats'}</AlertDescription>
+        </Alert>
       </div>
     );
   }

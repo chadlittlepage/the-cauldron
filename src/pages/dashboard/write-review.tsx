@@ -7,6 +7,7 @@ import { TrackEmbed } from '@/components/track/track-embed';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, MessageSquare } from 'lucide-react';
 import type { MusicPlatform } from '@/types/database';
 
@@ -14,7 +15,7 @@ export function WriteReviewPage() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { data: track, isLoading } = useSubmission(id);
+  const { data: track, isLoading, isError, error } = useSubmission(id);
   const createReview = useCreateReview();
 
   if (isLoading) {
@@ -22,6 +23,17 @@ export function WriteReviewPage() {
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Spinner size="lg" />
         <p className="text-sm text-hex-muted">Loading track...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <Alert variant="error" className="max-w-md">
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load track for review'}</AlertDescription>
+        </Alert>
       </div>
     );
   }

@@ -8,12 +8,13 @@ import { Spinner } from '@/components/ui/spinner';
 import { StarRating } from '@/components/ui/star-rating';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, Calendar, MessageSquare, Star } from 'lucide-react';
 import type { MusicPlatform } from '@/types/database';
 
 export function TrackDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { data: track, isLoading } = useSubmission(id);
+  const { data: track, isLoading, isError, error } = useSubmission(id);
   const { data: reviews } = useSubmissionReviews(id);
 
   if (isLoading) {
@@ -21,6 +22,17 @@ export function TrackDetailPage() {
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Spinner size="lg" />
         <p className="text-sm text-hex-muted">Loading track...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <Alert variant="error" className="max-w-md">
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load track'}</AlertDescription>
+        </Alert>
       </div>
     );
   }

@@ -41,6 +41,7 @@ export function Dialog({ open, onClose, children, className }: DialogProps) {
           size="icon"
           className="absolute right-4 top-4"
           onClick={onClose}
+          aria-label="Close dialog"
         >
           <X className="h-4 w-4" />
         </Button>

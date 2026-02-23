@@ -34,7 +34,11 @@ export function ReviewForm({ onSubmit, loading }: ReviewFormProps) {
       return;
     }
 
-    await onSubmit(rating, feedback);
+    try {
+      await onSubmit(rating, feedback);
+    } catch (err) {
+      setErrors({ _server: err instanceof Error ? err.message : 'Failed to submit review' });
+    }
   }
 
   return (

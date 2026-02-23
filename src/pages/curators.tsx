@@ -4,10 +4,11 @@ import { Avatar } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Spinner } from '@/components/ui/spinner';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Users, Star, ExternalLink } from 'lucide-react';
 
 export function CuratorsPage() {
-  const { data: curators, isLoading } = useCurators();
+  const { data: curators, isLoading, isError, error } = useCurators();
 
   return (
     <div className="relative">
@@ -30,7 +31,14 @@ export function CuratorsPage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-6 py-8">
-        {isLoading ? (
+        {isError ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <Alert variant="error" className="max-w-md">
+              <AlertTitle>Something went wrong</AlertTitle>
+              <AlertDescription>{error instanceof Error ? error.message : 'Failed to load curators'}</AlertDescription>
+            </Alert>
+          </div>
+        ) : isLoading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <Spinner size="lg" />
             <p className="text-sm text-hex-muted">Loading curators...</p>

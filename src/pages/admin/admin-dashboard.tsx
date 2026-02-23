@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useAdminStats } from '@/hooks/use-admin';
 import { StatsGrid } from '@/components/admin/stats-grid';
 import { Spinner } from '@/components/ui/spinner';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import {
   Shield,
   FileText,
@@ -19,13 +20,24 @@ const adminLinks = [
 ];
 
 export function AdminDashboardPage() {
-  const { data: stats, isLoading } = useAdminStats();
+  const { data: stats, isLoading, isError, error } = useAdminStats();
 
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Spinner size="lg" />
         <p className="text-sm text-hex-muted">Loading admin dashboard...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <Alert variant="error" className="max-w-md">
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load admin stats'}</AlertDescription>
+        </Alert>
       </div>
     );
   }
