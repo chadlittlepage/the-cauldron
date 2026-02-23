@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -20,30 +20,35 @@ import {
   ChevronRight,
 } from 'lucide-react';
 
-
-const featuredTracks = [
-  {
-    title: 'Sailor Song',
-    artist: 'Gigi Perez',
-    genres: ['Indie', 'Pop'],
-    spotifyId: '0UYnhUfnUj5adChuAXvLUB',
-    votes: 127,
-  },
-  {
-    title: 'Automatic',
-    artist: 'half·alive',
-    genres: ['Alternative', 'Indie'],
-    spotifyId: '4WDzpyln8Ac9JbElIEv2bl',
-    votes: 98,
-  },
-  {
-    title: 'Pushing It Down and Praying',
-    artist: 'Lizzy McAlpine',
-    genres: ['Singer-Songwriter', 'Folk'],
-    spotifyId: '4wO2JlPZw72Xlu6dGUW4Ce',
-    votes: 84,
-  },
+const trackPool = [
+  { title: 'Sailor Song', artist: 'Gigi Perez', genres: ['Indie', 'Pop'], spotifyId: '0UYnhUfnUj5adChuAXvLUB', votes: 127 },
+  { title: 'Automatic', artist: 'half·alive', genres: ['Alternative', 'Indie'], spotifyId: '4WDzpyln8Ac9JbElIEv2bl', votes: 98 },
+  { title: 'Pushing It Down and Praying', artist: 'Lizzy McAlpine', genres: ['Singer-Songwriter', 'Folk'], spotifyId: '4wO2JlPZw72Xlu6dGUW4Ce', votes: 84 },
+  { title: 'Pink Pony Club', artist: 'Chappell Roan', genres: ['Pop', 'Indie'], spotifyId: '3bXEBHJLOerDnqlJGi1RTC', votes: 142 },
+  { title: 'Motion Sickness', artist: 'Phoebe Bridgers', genres: ['Indie', 'Rock'], spotifyId: '31ISBBIljHSveIAx01Fmz2', votes: 115 },
+  { title: 'Heat Waves', artist: 'Glass Animals', genres: ['Alternative', 'Pop'], spotifyId: '02MWAaffLxlfxAUY7c5dvx', votes: 108 },
+  { title: 'Glimpse of Us', artist: 'Joji', genres: ['R&B', 'Pop'], spotifyId: '6xGruZOHLs39ZbVccQTuPZ', votes: 91 },
+  { title: 'Kyoto', artist: 'Phoebe Bridgers', genres: ['Indie', 'Rock'], spotifyId: '3JTdRMYAhNmMFOvnDXsVAX', votes: 103 },
+  { title: 'Mystery of Love', artist: 'Sufjan Stevens', genres: ['Indie', 'Folk'], spotifyId: '4RCWB05gEbQkRfnUCfhdHs', votes: 76 },
+  { title: 'Bags', artist: 'Clairo', genres: ['Indie', 'Pop'], spotifyId: '7rPzEczIS574IgPaiPieS3', votes: 89 },
+  { title: 'Nobody', artist: 'Mitski', genres: ['Indie', 'Pop'], spotifyId: '0Ry4J0PwoaryBjBabbDj3m', votes: 95 },
+  { title: 'Wasted On You', artist: 'Erika de Casier', genres: ['R&B', 'Electronic'], spotifyId: '3A6xLEPMSbqYGhEiNRTuMF', votes: 72 },
+  { title: 'Something Comforting', artist: 'Porter Robinson', genres: ['Electronic', 'Pop'], spotifyId: '0cEFSZLhVGF2VFnBIyweGt', votes: 110 },
+  { title: 'Line Without a Hook', artist: 'Ricky Montgomery', genres: ['Indie', 'Pop'], spotifyId: '5K8Bhkjn8JKo1Dap0dav9F', votes: 88 },
+  { title: 'Apocalypse', artist: 'Cigarettes After Sex', genres: ['Dream Pop', 'Indie'], spotifyId: '0yc6Gst2xkRu0eMLeRMGCX', votes: 101 },
 ];
+
+/** Fisher-Yates shuffle, returns a new array. */
+function shuffle<T>(arr: readonly T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const FEATURED_COUNT = 3;
 
 const pillStats = [
   { label: 'Submit Music', icon: Music, desc: 'Share your tracks' },
@@ -110,6 +115,7 @@ const howItWorks = [
 ];
 
 export function HomePage() {
+  const featuredTracks = useMemo(() => shuffle(trackPool).slice(0, FEATURED_COUNT), []);
   const [currentTrack, setCurrentTrack] = useState(0);
 
   function nextTrack() {
