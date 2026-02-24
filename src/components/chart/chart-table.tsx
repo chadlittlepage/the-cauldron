@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, ThumbsUp } from 'lucide-react';
@@ -28,6 +28,13 @@ const rankColors = [
 ];
 
 export function ChartTable({ entries, className }: ChartTableProps) {
+  const navigate = useNavigate();
+  const trackIds = entries.map((e) => e.submission_id);
+
+  function handleRowClick(submissionId: string) {
+    navigate(`/track/${submissionId}`, { state: { trackIds, source: 'charts' } });
+  }
+
   return (
     <Table className={className}>
       <TableHeader>
@@ -41,7 +48,19 @@ export function ChartTable({ entries, className }: ChartTableProps) {
       </TableHeader>
       <TableBody>
         {entries.map((entry) => (
-          <TableRow key={entry.id}>
+          <TableRow
+            key={entry.id}
+            role="link"
+            tabIndex={0}
+            onClick={() => handleRowClick(entry.submission_id)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleRowClick(entry.submission_id);
+              }
+            }}
+            className="cursor-pointer hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-purple focus-visible:ring-offset-2 focus-visible:ring-offset-hex-dark"
+          >
             <TableCell>
               <span
                 className={cn(
@@ -54,13 +73,8 @@ export function ChartTable({ entries, className }: ChartTableProps) {
                 {entry.rank <= 3 ? <Trophy className="h-4 w-4" /> : entry.rank}
               </span>
             </TableCell>
-            <TableCell>
-              <Link
-                to={`/track/${entry.submission_id}`}
-                className="font-semibold hover:text-accent-purple transition-colors"
-              >
-                {entry.submissions?.track_title ?? 'Unknown'}
-              </Link>
+            <TableCell className="font-semibold">
+              {entry.submissions?.track_title ?? 'Unknown'}
             </TableCell>
             <TableCell className="text-hex-muted">
               {(entry.submissions?.profiles as { display_name: string } | null)?.display_name ??

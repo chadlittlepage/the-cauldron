@@ -13,6 +13,7 @@ interface TrackCardProps {
   status: SubmissionStatus;
   voteCount: number;
   createdAt: string;
+  linkState?: Record<string, unknown>;
 }
 
 const statusVariant: Record<SubmissionStatus, 'warning' | 'default' | 'success' | 'error'> = {
@@ -38,10 +39,12 @@ export const TrackCard = memo(function TrackCard({
   status,
   voteCount,
   createdAt,
+  linkState,
 }: TrackCardProps) {
   return (
     <Link
       to={`/track/${id}`}
+      state={linkState}
       className="group block glass-card rounded-xl p-5 transition-all duration-300 hover:shadow-lg hover:shadow-accent-purple/5"
     >
       <div className="flex items-start justify-between gap-4">

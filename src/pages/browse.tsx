@@ -99,6 +99,7 @@ export function BrowsePage() {
                   status={submission.status}
                   voteCount={submission.vote_count}
                   createdAt={submission.created_at}
+                  linkState={{ trackIds: data.data.map((d) => d.id), source: 'browse' }}
                 />
               ))}
             </div>

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { MusicPlatform } from '@/types/database';
 import { ExternalLink, Music } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -28,6 +29,7 @@ function getEmbedUrl(url: string, platform: MusicPlatform): string | null {
 
 export function TrackEmbed({ url, platform, className }: TrackEmbedProps) {
   const embedUrl = getEmbedUrl(url, platform);
+  const [loaded, setLoaded] = useState(false);
 
   if (!embedUrl) {
     return (
@@ -54,12 +56,12 @@ export function TrackEmbed({ url, platform, className }: TrackEmbedProps) {
     );
   }
 
-  const height = platform === 'spotify' ? '152' : '166';
+  const height = platform === 'spotify' ? 152 : 166;
 
   return (
     <div
-      className={cn('rounded-xl overflow-hidden', className)}
-      style={{ background: '#000' }}
+      className={cn('relative rounded-xl overflow-hidden', className)}
+      style={{ background: '#000', height }}
     >
       <iframe
         src={embedUrl}
@@ -68,7 +70,11 @@ export function TrackEmbed({ url, platform, className }: TrackEmbedProps) {
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
         loading="eager"
         title={`${platform} embed`}
-        className="rounded-xl"
+        className={cn(
+          'rounded-xl transition-opacity duration-300',
+          loaded ? 'opacity-100' : 'opacity-0',
+        )}
+        onLoad={() => setLoaded(true)}
       />
     </div>
   );
