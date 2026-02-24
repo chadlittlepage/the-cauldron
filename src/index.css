@@ -37,10 +37,6 @@
 
 /* ──────────────────── Base ──────────────────── */
 
-button, a, [role="button"] {
-  touch-action: manipulation;
-}
-
 html {
   touch-action: manipulation;
 }

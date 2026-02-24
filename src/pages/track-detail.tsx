@@ -14,6 +14,19 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, ChevronLeft, ChevronRight, Calendar, MessageSquare, Star } from 'lucide-react';
 import type { MusicPlatform } from '@/types/database';
 
+interface TrackNavState {
+  trackIds?: string[];
+  source?: string;
+}
+
+function parseNavState(state: unknown): TrackNavState {
+  if (state && typeof state === 'object' && 'trackIds' in state) {
+    const s = state as TrackNavState;
+    if (Array.isArray(s.trackIds)) return s;
+  }
+  return {};
+}
+
 export function TrackDetailPage() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -21,16 +34,18 @@ export function TrackDetailPage() {
   const { data: track, isLoading, isError, error } = useSubmission(id);
   const { data: reviews } = useSubmissionReviews(id);
 
-  const trackIds = (location.state as { trackIds?: string[] } | null)?.trackIds;
-  const source = (location.state as { source?: string } | null)?.source;
+  const { trackIds, source } = parseNavState(location.state);
 
   const currentIndex = trackIds && id ? trackIds.indexOf(id) : -1;
   const prevId = trackIds && currentIndex > 0 ? trackIds[currentIndex - 1] : null;
   const nextId = trackIds && currentIndex >= 0 && currentIndex < trackIds.length - 1 ? trackIds[currentIndex + 1] : null;
 
+  // Stabilize navState — only recompute when the serialized IDs actually change
+  const trackIdsKey = trackIds?.join(',');
   const navState = useMemo(
     () => (trackIds ? { trackIds, source } : undefined),
-    [trackIds, source],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [trackIdsKey, source],
   );
 
   const goToPrev = useCallback(() => {
@@ -60,7 +75,7 @@ export function TrackDetailPage() {
   const hasNav = trackIds && currentIndex >= 0;
 
   return (
-    <div className="relative touch-action-pan-y" ref={swipeRef} style={{ touchAction: 'pan-y' }}>
+    <div className="relative" ref={swipeRef} style={{ touchAction: 'pan-y' }}>
       {/* Background glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-accent-purple/5 blur-[120px]" />
@@ -72,21 +87,22 @@ export function TrackDetailPage() {
           to={backTo}
           className="inline-flex items-center gap-2 text-sm text-hex-muted hover:text-hex-text transition-colors mb-8"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           {backLabel}
         </Link>
 
         {/* Prev / Next navigation — always visible when list context exists */}
         {hasNav && (
-          <div className="flex items-center justify-between mb-6">
+          <nav className="flex items-center justify-between mb-6" aria-label="Track navigation">
             <Button
               variant="ghost"
               size="sm"
               disabled={!prevId}
               onClick={goToPrev}
               className="gap-1"
+              aria-label="Previous track"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
               Prev
             </Button>
             <span className="text-sm text-hex-muted">
@@ -98,11 +114,12 @@ export function TrackDetailPage() {
               disabled={!nextId}
               onClick={goToNext}
               className="gap-1"
+              aria-label="Next track"
             >
               Next
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </Button>
-          </div>
+          </nav>
         )}
 
         {/* Content: loading / error / not-found / track */}
@@ -140,12 +157,12 @@ export function TrackDetailPage() {
                   <Badge variant="outline">{track.platform}</Badge>
                   {track.avg_rating && (
                     <Badge variant="accent" className="gap-1">
-                      <Star className="h-3 w-3 fill-current" />
+                      <Star className="h-3 w-3 fill-current" aria-hidden="true" />
                       {track.avg_rating} avg
                     </Badge>
                   )}
                   <span className="flex items-center gap-1.5 text-xs text-hex-muted">
-                    <Calendar className="h-3 w-3" />
+                    <Calendar className="h-3 w-3" aria-hidden="true" />
                     {new Date(track.created_at).toLocaleDateString()}
                   </span>
                 </div>
@@ -166,7 +183,7 @@ export function TrackDetailPage() {
             <section className="mt-14">
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-pink/10">
-                  <MessageSquare className="h-5 w-5 text-accent-pink" />
+                  <MessageSquare className="h-5 w-5 text-accent-pink" aria-hidden="true" />
                 </div>
                 <h2 className="text-xl font-bold">
                   Reviews ({track.review_count})
@@ -190,7 +207,7 @@ export function TrackDetailPage() {
                             size="sm"
                           />
                           <div>
-                            <p className="text-sm font-semibold">{curator?.display_name}</p>
+                            <p className="text-sm font-semibold">{curator?.display_name ?? 'Curator'}</p>
                             <StarRating value={review.rating} readonly size="sm" />
                           </div>
                         </div>

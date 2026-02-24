@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSubmissions } from '@/hooks/use-submissions';
 import { TrackCard } from '@/components/track/track-card';
 import { GenreFilter } from '@/components/track/genre-filter';
@@ -17,6 +17,12 @@ export function BrowsePage() {
     status: 'accepted',
     page,
   });
+
+  const submissions = data?.data;
+  const linkState = useMemo(
+    () => (submissions ? { trackIds: submissions.map((d) => d.id), source: 'browse' as const } : undefined),
+    [submissions],
+  );
 
   return (
     <div className="relative">
@@ -99,7 +105,7 @@ export function BrowsePage() {
                   status={submission.status}
                   voteCount={submission.vote_count}
                   createdAt={submission.created_at}
-                  linkState={{ trackIds: data.data.map((d) => d.id), source: 'browse' }}
+                  linkState={linkState}
                 />
               ))}
             </div>
