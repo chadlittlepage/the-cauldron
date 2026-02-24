@@ -70,7 +70,7 @@ export function CuratorDashboardPage() {
           />
           <StatCard
             label="Queue Size"
-            value={queue?.length ?? 0}
+            value={queue?.totalCount ?? 0}
             icon={<ListTodo className="h-5 w-5" />}
           />
         </div>
@@ -79,7 +79,7 @@ export function CuratorDashboardPage() {
         <div className="flex flex-wrap gap-3">
           <Link to="/dashboard/review-queue">
             <Button variant="accent" className="gap-2 group">
-              Review Queue ({queue?.length ?? 0})
+              Review Queue ({queue?.totalCount ?? 0})
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>

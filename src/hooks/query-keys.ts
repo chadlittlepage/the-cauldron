@@ -10,7 +10,7 @@ export const queryKeys = {
       ['submissions', 'list', filters] as const,
     detail: (id: string) => ['submissions', id] as const,
     byArtist: (artistId: string) => ['submissions', 'artist', artistId] as const,
-    reviewQueue: () => ['submissions', 'review-queue'] as const,
+    reviewQueue: (filters?: { page?: number }) => ['submissions', 'review-queue', filters] as const,
   },
   votes: {
     all: ['votes'] as const,
@@ -36,8 +36,8 @@ export const queryKeys = {
     stats: () => ['admin', 'stats'] as const,
     allSubmissions: (filters?: { status?: string; page?: number }) =>
       ['admin', 'submissions', filters] as const,
-    allCurators: () => ['admin', 'curators'] as const,
-    allPayouts: () => ['admin', 'payouts'] as const,
+    allCurators: (filters?: { page?: number }) => ['admin', 'curators', filters] as const,
+    allPayouts: (filters?: { page?: number }) => ['admin', 'payouts', filters] as const,
     analytics: () => ['admin', 'analytics'] as const,
   },
 } as const;

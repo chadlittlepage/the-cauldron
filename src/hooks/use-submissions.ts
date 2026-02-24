@@ -78,17 +78,20 @@ export function useArtistSubmissions(artistId: string | undefined) {
   });
 }
 
-export function useReviewQueue() {
+export function useReviewQueue(filters: { page?: number } = {}) {
+  const { page = 1 } = filters;
+
   return useQuery({
-    queryKey: queryKeys.submissions.reviewQueue(),
+    queryKey: queryKeys.submissions.reviewQueue(filters),
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error, count } = await supabase
         .from('submissions')
-        .select('*, profiles!submissions_artist_id_fkey(display_name)')
+        .select('*, profiles!submissions_artist_id_fkey(display_name)', { count: 'exact' })
         .in('status', ['pending', 'in_review'])
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: true })
+        .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
       if (error) throw error;
-      return data;
+      return { data, totalCount: count ?? 0, totalPages: Math.ceil((count ?? 0) / ITEMS_PER_PAGE) };
     },
   });
 }

@@ -1,14 +1,18 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useReviewQueue } from '@/hooks/use-submissions';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Pagination } from '@/components/ui/pagination';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { CheckCircle, ThumbsUp, Music, ArrowRight, ListTodo } from 'lucide-react';
 
 export function ReviewQueuePage() {
-  const { data: queue, isLoading, isError, error } = useReviewQueue();
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isError, error } = useReviewQueue({ page });
+  const queue = data?.data;
 
   return (
     <div className="relative">
@@ -80,6 +84,15 @@ export function ReviewQueuePage() {
                 </Link>
               </div>
             ))}
+
+            {data && data.totalPages > 1 && (
+              <Pagination
+                page={page}
+                totalPages={data.totalPages}
+                onPageChange={setPage}
+                className="mt-8"
+              />
+            )}
           </div>
         )}
       </div>

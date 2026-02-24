@@ -72,31 +72,37 @@ export function useUpdateSubmissionStatus() {
   });
 }
 
-export function useAdminCurators() {
+export function useAdminCurators(filters: { page?: number } = {}) {
+  const { page = 1 } = filters;
+
   return useQuery({
-    queryKey: queryKeys.admin.allCurators(),
+    queryKey: queryKeys.admin.allCurators(filters),
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error, count } = await supabase
         .from('profiles')
-        .select('*')
+        .select('*', { count: 'exact' })
         .eq('role', 'curator')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
       if (error) throw error;
-      return data;
+      return { data, totalCount: count ?? 0, totalPages: Math.ceil((count ?? 0) / ITEMS_PER_PAGE) };
     },
   });
 }
 
-export function useAdminPayouts() {
+export function useAdminPayouts(filters: { page?: number } = {}) {
+  const { page = 1 } = filters;
+
   return useQuery({
-    queryKey: queryKeys.admin.allPayouts(),
+    queryKey: queryKeys.admin.allPayouts(filters),
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error, count } = await supabase
         .from('curator_payouts')
-        .select('*, profiles!curator_payouts_curator_id_fkey(display_name, email)')
-        .order('created_at', { ascending: false });
+        .select('*, profiles!curator_payouts_curator_id_fkey(display_name, email)', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
       if (error) throw error;
-      return data;
+      return { data, totalCount: count ?? 0, totalPages: Math.ceil((count ?? 0) / ITEMS_PER_PAGE) };
     },
   });
 }
