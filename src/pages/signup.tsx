@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { signupSchema } from '@/lib/validators';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { CURATOR_MIN_LISTENERS } from '@/lib/constants';
 
 export function SignupPage() {
+  useDocumentTitle('Sign Up');
   const { signUp } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({

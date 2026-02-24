@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import { useAdminSubmissions, useUpdateSubmissionStatus } from '@/hooks/use-admin';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { DataTable } from '@/components/admin/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Select } from '@/components/ui/select';
 import { Pagination } from '@/components/ui/pagination';
-import { Spinner } from '@/components/ui/spinner';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { QueryError } from '@/components/ui/query-error';
+import { SkeletonTable } from '@/components/ui/skeleton';
 import { STATUSES } from '@/lib/constants';
 import type { SubmissionStatus } from '@/types/database';
 
 export function ManageSubmissionsPage() {
+  useDocumentTitle('Manage Submissions');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError, error } = useAdminSubmissions({ status: statusFilter || undefined, page });
+  const { data, isLoading, isError, error, refetch } = useAdminSubmissions({ status: statusFilter || undefined, page });
   const updateStatus = useUpdateSubmissionStatus();
 
   return (
@@ -33,14 +35,9 @@ export function ManageSubmissionsPage() {
       </div>
 
       {isError ? (
-        <div className="flex flex-col items-center justify-center py-24 gap-4">
-          <Alert variant="error" className="max-w-md">
-            <AlertTitle>Something went wrong</AlertTitle>
-            <AlertDescription>{error instanceof Error ? error.message : 'Failed to load submissions'}</AlertDescription>
-          </Alert>
-        </div>
+        <QueryError error={error} fallbackMessage="Failed to load submissions" onRetry={() => refetch()} />
       ) : isLoading ? (
-        <div className="flex justify-center py-20"><Spinner size="lg" /></div>
+        <SkeletonTable rows={5} />
       ) : (
         <>
           <DataTable

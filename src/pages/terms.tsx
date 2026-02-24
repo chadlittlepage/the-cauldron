@@ -1,4 +1,7 @@
+import { useDocumentTitle } from '@/hooks/use-document-title';
+
 export function TermsPage() {
+  useDocumentTitle('Terms of Service');
   return (
     <div className="relative">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">

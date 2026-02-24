@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCharts, useChartPeriods } from '@/hooks/use-charts';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { ChartTable } from '@/components/chart/chart-table';
 import { PeriodSelector } from '@/components/chart/period-selector';
 import { Spinner } from '@/components/ui/spinner';
@@ -18,6 +19,7 @@ function now() {
 }
 
 export function ChartsPage() {
+  useDocumentTitle('Charts');
   const current = now();
   const [chartType, setChartType] = useState<ChartType>('monthly');
   const [period, setPeriod] = useState(chartType === 'monthly' ? current.month : current.year);

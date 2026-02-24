@@ -70,8 +70,10 @@
 | Project ID | `4510938330431488` |
 | DSN | `https://62ed9dd0b91f8bf05e1e294905cf3313@o4510140548055040.ingest.us.sentry.io/4510938330431488` |
 | Platform | React |
-| Features | Error Monitoring, Session Replay (100% on error, 10% baseline), Performance Tracing (20% prod) |
+| Features | Error Monitoring, Session Replay (100% on error, 10% baseline), Performance Tracing (20% prod), Web Vitals (LCP, CLS, FID) |
 | Source Maps | Uploaded via `@sentry/vite-plugin` on production builds, deleted from dist after upload |
+| Edge Functions | All 4 Edge Functions report errors to Sentry via lightweight envelope API (`_shared/sentry.ts`) |
+| Web Vitals | Core Web Vitals (LCP, CLS, FID) reported to Sentry via PerformanceObserver in `src/lib/web-vitals.ts` |
 | Enabled | Production only (`import.meta.env.PROD`) |
 
 ## Payments (Not Yet Configured)
@@ -132,3 +134,70 @@
 | Mobile Swipe | `useSwipe` hook (50px threshold, direction locking) |
 | Back Link | Context-aware: "Back to Charts" or "Back to Browse" |
 | Direct URL | Nav row hidden gracefully when no list context |
+
+## Error Handling & Recovery
+| Feature | Implementation |
+|---------|---------------|
+| QueryError Component | Reusable `<QueryError>` with error message + "Try Again" retry button |
+| Retry Buttons | All data-fetching pages pass `refetch()` to QueryError for user-initiated retry |
+| Error Boundary | `<ErrorBoundary>` in `loading-boundary.tsx` with Sentry capture + "Try Again" button |
+| Optimistic Votes | Instant UI update via `onMutate`, rollback on error via `onError` |
+| Toast Notifications | `useSyncExternalStore`-based toast system for success/error/warning feedback |
+
+## SEO & Document Titles
+| Page | Title |
+|------|-------|
+| Home | `hexwave — Music Curation Platform` |
+| Browse | `Browse Tracks — hexwave` |
+| Track Detail | `{track_title} — hexwave` (dynamic) |
+| Charts | `Charts — hexwave` |
+| Curators | `Curators — hexwave` |
+| Login | `Sign In — hexwave` |
+| Signup | `Sign Up — hexwave` |
+| Dashboard | `Dashboard — hexwave` |
+| Curator Dashboard | `Curator Dashboard — hexwave` |
+| Review Queue | `Review Queue — hexwave` |
+| My Submissions | `My Submissions — hexwave` |
+| My Reviews | `My Reviews — hexwave` |
+| Admin Dashboard | `Admin Dashboard — hexwave` |
+| Manage Submissions | `Manage Submissions — hexwave` |
+| Manage Curators | `Manage Curators — hexwave` |
+| Manage Payouts | `Manage Payouts — hexwave` |
+| Analytics | `Analytics — hexwave` |
+| Profile Settings | `Profile Settings — hexwave` |
+| About | `About — hexwave` |
+| Terms | `Terms of Service — hexwave` |
+| Privacy | `Privacy Policy — hexwave` |
+| Implementation | `useDocumentTitle` hook in `src/hooks/use-document-title.ts` |
+
+## Skeleton Loaders
+| Component | Used On |
+|-----------|---------|
+| `SkeletonCard` | Browse, Curators (grid loading states) |
+| `SkeletonTable` | My Submissions, My Reviews, Review Queue, Manage Submissions/Curators/Payouts |
+| `SkeletonStats` | Artist Dashboard, Curator Dashboard, Admin Dashboard, Analytics |
+| `Skeleton` | Track Detail (custom layout skeleton) |
+
+## Bundle Budgets
+| Setting | Value |
+|---------|-------|
+| Chunk Size Warning | 250 KB (`vite.config.ts: chunkSizeWarningLimit`) |
+| Manual Chunks | `vendor` (React), `supabase`, `stripe`, `query`, `sentry` |
+| Source Maps | Generated for Sentry upload, deleted from production dist |
+
+## Environment Validation
+| Feature | Implementation |
+|---------|---------------|
+| Required Vars | `requireEnv()` throws on missing `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` |
+| Optional Vars | `optionalEnv()` returns fallback for `VITE_STRIPE_PUBLISHABLE_KEY`, `VITE_SENTRY_DSN`, `VITE_APP_URL` |
+| Central Config | All env access via `src/lib/env.ts` — no direct `import.meta.env.VITE_*` in components |
+
+## Test Coverage
+| Test File | Tests | What's Covered |
+|-----------|-------|---------------|
+| `src/hooks/use-toast.test.ts` | 7 | addToast, dismissToast, auto-dismiss, convenience helpers |
+| `src/hooks/use-document-title.test.ts` | 4 | Title setting, default title, re-render updates |
+| `src/components/ui/query-error.test.tsx` | 5 | Error rendering, fallback messages, retry button |
+| `src/lib/env.test.ts` | 3 | Env fallback logic, MODE/DEV values |
+| `src/App.test.tsx` | 5 | Route rendering, navigation, hero section |
+| Config | `vitest.config.ts` with 70% coverage thresholds |

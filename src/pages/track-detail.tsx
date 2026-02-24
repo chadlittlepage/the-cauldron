@@ -2,15 +2,16 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSubmission } from '@/hooks/use-submissions';
 import { useSubmissionReviews } from '@/hooks/use-reviews';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { useSwipe } from '@/hooks/use-swipe';
 import { TrackEmbed } from '@/components/track/track-embed';
 import { VoteButton } from '@/components/track/vote-button';
 import { Badge } from '@/components/ui/badge';
-import { Spinner } from '@/components/ui/spinner';
+import { QueryError } from '@/components/ui/query-error';
+import { Skeleton } from '@/components/ui/skeleton';
 import { StarRating } from '@/components/ui/star-rating';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, ChevronLeft, ChevronRight, Calendar, MessageSquare, Star } from 'lucide-react';
 import type { MusicPlatform } from '@/types/database';
 
@@ -27,12 +28,28 @@ function parseNavState(state: unknown): TrackNavState {
   return {};
 }
 
+function TrackDetailSkeleton() {
+  return (
+    <div className="space-y-6 py-4">
+      <Skeleton className="h-8 w-2/3" />
+      <Skeleton className="h-5 w-1/3" />
+      <div className="flex gap-2">
+        <Skeleton className="h-6 w-16 rounded-full" />
+        <Skeleton className="h-6 w-20 rounded-full" />
+      </div>
+      <Skeleton className="h-[352px] w-full rounded-xl" />
+    </div>
+  );
+}
+
 export function TrackDetailPage() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const { data: track, isLoading, isError, error } = useSubmission(id);
+  const { data: track, isLoading, isError, error, refetch } = useSubmission(id);
   const { data: reviews } = useSubmissionReviews(id);
+
+  useDocumentTitle(track?.track_title);
 
   const { trackIds, source } = parseNavState(location.state);
 
@@ -124,17 +141,9 @@ export function TrackDetailPage() {
 
         {/* Content: loading / error / not-found / track */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <Spinner size="lg" />
-            <p className="text-sm text-hex-muted">Loading track...</p>
-          </div>
+          <TrackDetailSkeleton />
         ) : isError ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <Alert variant="error" className="max-w-md">
-              <AlertTitle>Something went wrong</AlertTitle>
-              <AlertDescription>{error instanceof Error ? error.message : 'Failed to load track'}</AlertDescription>
-            </Alert>
-          </div>
+          <QueryError error={error} fallbackMessage="Failed to load track" onRetry={() => refetch()} />
         ) : !track ? (
           <div className="py-20 text-center">
             <h1 className="text-2xl font-bold">Track not found</h1>

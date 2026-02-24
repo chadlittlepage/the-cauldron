@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { Check } from 'lucide-react';
 
 function BulletItem({ children }: { children: React.ReactNode }) {
@@ -10,6 +11,7 @@ function BulletItem({ children }: { children: React.ReactNode }) {
 }
 
 export function PrivacyPage() {
+  useDocumentTitle('Privacy Policy');
   return (
     <div className="relative">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">

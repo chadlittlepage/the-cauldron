@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { Button } from '@/components/ui/button';
 import {
   Headphones,
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 
 export function AboutPage() {
+  useDocumentTitle('About');
   return (
     <div className="relative">
       {/* Hero */}

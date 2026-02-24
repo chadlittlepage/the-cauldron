@@ -1,29 +1,25 @@
 import { useAdminStats, useAdminAnalytics } from '@/hooks/use-admin';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { StatsGrid } from '@/components/admin/stats-grid';
+import { QueryError } from '@/components/ui/query-error';
+import { SkeletonStats } from '@/components/ui/skeleton';
 import { Spinner } from '@/components/ui/spinner';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 export function AnalyticsPage() {
-  const { data: stats, isLoading, isError, error } = useAdminStats();
+  useDocumentTitle('Analytics');
+  const { data: stats, isLoading, isError, error, refetch } = useAdminStats();
   const { data: analytics, isLoading: analyticsLoading } = useAdminAnalytics();
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-20">
-        <Spinner size="lg" />
+      <div className="mx-auto max-w-7xl px-6 py-10">
+        <SkeletonStats />
       </div>
     );
   }
 
   if (isError) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24 gap-4">
-        <Alert variant="error" className="max-w-md">
-          <AlertTitle>Something went wrong</AlertTitle>
-          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load analytics'}</AlertDescription>
-        </Alert>
-      </div>
-    );
+    return <QueryError error={error} fallbackMessage="Failed to load analytics" onRetry={() => refetch()} />;
   }
 
   const genreCounts = analytics?.genreBreakdown.map((g) => g.count) ?? [];

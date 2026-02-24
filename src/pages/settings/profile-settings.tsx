@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { useUpdateProfile } from '@/hooks/use-profile';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { profileSchema } from '@/lib/validators';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +11,7 @@ import { FormField } from '@/components/ui/form-field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export function ProfileSettingsPage() {
+  useDocumentTitle('Profile Settings');
   const { user, profile, refreshProfile } = useAuth();
   const updateProfile = useUpdateProfile();
   const [form, setForm] = useState({

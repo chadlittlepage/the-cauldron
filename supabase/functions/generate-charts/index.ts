@@ -1,5 +1,6 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { captureException } from '../_shared/sentry.ts';
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -65,6 +66,7 @@ serve(async (req: Request) => {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*' },
     });
   } catch (err) {
+    await captureException(err, { function: 'generate-charts' });
     return new Response(JSON.stringify({ error: (err as Error).message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*' },

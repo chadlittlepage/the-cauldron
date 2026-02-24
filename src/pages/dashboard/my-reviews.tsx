@@ -1,14 +1,16 @@
 import { useAuth } from '@/hooks/use-auth';
 import { useCuratorReviews } from '@/hooks/use-reviews';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { ReviewCard } from '@/components/review/review-card';
-import { Spinner } from '@/components/ui/spinner';
+import { QueryError } from '@/components/ui/query-error';
+import { SkeletonTable } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { MessageSquare } from 'lucide-react';
 
 export function MyReviewsPage() {
+  useDocumentTitle('My Reviews');
   const { user } = useAuth();
-  const { data: reviews, isLoading, isError, error } = useCuratorReviews(user?.id);
+  const { data: reviews, isLoading, isError, error, refetch } = useCuratorReviews(user?.id);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
@@ -16,16 +18,9 @@ export function MyReviewsPage() {
       <p className="mt-2 text-hex-muted">All reviews you&apos;ve written</p>
 
       {isError ? (
-        <div className="flex flex-col items-center justify-center py-24 gap-4">
-          <Alert variant="error" className="max-w-md">
-            <AlertTitle>Something went wrong</AlertTitle>
-            <AlertDescription>{error instanceof Error ? error.message : 'Failed to load reviews'}</AlertDescription>
-          </Alert>
-        </div>
+        <QueryError error={error} fallbackMessage="Failed to load reviews" onRetry={() => refetch()} />
       ) : isLoading ? (
-        <div className="flex justify-center py-20">
-          <Spinner size="lg" />
-        </div>
+        <SkeletonTable rows={5} />
       ) : !reviews?.length ? (
         <EmptyState
           icon={<MessageSquare className="h-12 w-12" />}

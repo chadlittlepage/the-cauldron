@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { loginSchema } from '@/lib/validators';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +10,7 @@ import { FormField } from '@/components/ui/form-field';
 import { Mail, Lock, Eye, EyeOff, Headphones, ArrowRight } from 'lucide-react';
 
 export function LoginPage() {
+  useDocumentTitle('Sign In');
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');

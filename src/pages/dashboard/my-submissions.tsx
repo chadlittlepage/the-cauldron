@@ -1,16 +1,18 @@
 import { useAuth } from '@/hooks/use-auth';
 import { useArtistSubmissions } from '@/hooks/use-submissions';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { SubmissionList } from '@/components/dashboard/submission-list';
-import { Spinner } from '@/components/ui/spinner';
+import { QueryError } from '@/components/ui/query-error';
+import { SkeletonTable } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Music } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 export function MySubmissionsPage() {
+  useDocumentTitle('My Submissions');
   const { user } = useAuth();
-  const { data: submissions, isLoading, isError, error } = useArtistSubmissions(user?.id);
+  const { data: submissions, isLoading, isError, error, refetch } = useArtistSubmissions(user?.id);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
@@ -18,16 +20,9 @@ export function MySubmissionsPage() {
       <p className="mt-2 text-hex-muted">All tracks you&apos;ve submitted to hexwave</p>
 
       {isError ? (
-        <div className="flex flex-col items-center justify-center py-24 gap-4">
-          <Alert variant="error" className="max-w-md">
-            <AlertTitle>Something went wrong</AlertTitle>
-            <AlertDescription>{error instanceof Error ? error.message : 'Failed to load submissions'}</AlertDescription>
-          </Alert>
-        </div>
+        <QueryError error={error} fallbackMessage="Failed to load submissions" onRetry={() => refetch()} />
       ) : isLoading ? (
-        <div className="flex justify-center py-20">
-          <Spinner size="lg" />
-        </div>
+        <SkeletonTable rows={5} />
       ) : !submissions?.length ? (
         <EmptyState
           icon={<Music className="h-12 w-12" />}

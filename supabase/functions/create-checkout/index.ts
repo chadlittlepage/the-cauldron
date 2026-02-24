@@ -1,6 +1,7 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import Stripe from 'https://esm.sh/stripe@14?target=deno';
+import { captureException } from '../_shared/sentry.ts';
 
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, { apiVersion: '2024-04-10' });
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -95,6 +96,7 @@ serve(async (req: Request) => {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*' },
     });
   } catch (err) {
+    await captureException(err, { function: 'create-checkout' });
     return new Response(JSON.stringify({ error: (err as Error).message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*' },

@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useReviewQueue } from '@/hooks/use-submissions';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/ui/spinner';
+import { QueryError } from '@/components/ui/query-error';
+import { SkeletonTable } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Pagination } from '@/components/ui/pagination';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { CheckCircle, ThumbsUp, Music, ArrowRight, ListTodo } from 'lucide-react';
 
 export function ReviewQueuePage() {
+  useDocumentTitle('Review Queue');
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError, error } = useReviewQueue({ page });
+  const { data, isLoading, isError, error, refetch } = useReviewQueue({ page });
   const queue = data?.data;
 
   return (
@@ -30,17 +32,9 @@ export function ReviewQueuePage() {
         <p className="text-hex-muted mb-8">Tracks waiting for your expert review</p>
 
         {isError ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <Alert variant="error" className="max-w-md">
-              <AlertTitle>Something went wrong</AlertTitle>
-              <AlertDescription>{error instanceof Error ? error.message : 'Failed to load review queue'}</AlertDescription>
-            </Alert>
-          </div>
+          <QueryError error={error} fallbackMessage="Failed to load review queue" onRetry={() => refetch()} />
         ) : isLoading ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <Spinner size="lg" />
-            <p className="text-sm text-hex-muted">Loading queue...</p>
-          </div>
+          <SkeletonTable rows={5} />
         ) : !queue?.length ? (
           <EmptyState
             icon={<CheckCircle className="h-10 w-10" />}

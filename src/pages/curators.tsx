@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useCurators } from '@/hooks/use-profile';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { Avatar } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Spinner } from '@/components/ui/spinner';
+import { QueryError } from '@/components/ui/query-error';
+import { SkeletonCard } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Users, Star, ExternalLink } from 'lucide-react';
 
 export function CuratorsPage() {
-  const { data: curators, isLoading, isError, error } = useCurators();
+  useDocumentTitle('Curators');
+  const { data: curators, isLoading, isError, error, refetch } = useCurators();
 
   return (
     <div className="relative">
@@ -32,16 +34,12 @@ export function CuratorsPage() {
 
       <div className="mx-auto max-w-7xl px-6 py-8">
         {isError ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <Alert variant="error" className="max-w-md">
-              <AlertTitle>Something went wrong</AlertTitle>
-              <AlertDescription>{error instanceof Error ? error.message : 'Failed to load curators'}</AlertDescription>
-            </Alert>
-          </div>
+          <QueryError error={error} fallbackMessage="Failed to load curators" onRetry={() => refetch()} />
         ) : isLoading ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <Spinner size="lg" />
-            <p className="text-sm text-hex-muted">Loading curators...</p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
           </div>
         ) : !curators?.length ? (
           <EmptyState

@@ -24,6 +24,9 @@ if (env.SENTRY_DSN) {
     replaysOnErrorSampleRate: 1.0,
     enabled: env.PROD,
   });
+
+  // Report Web Vitals to Sentry
+  import('./lib/web-vitals.ts').then(({ reportWebVitals }) => reportWebVitals());
 }
 
 // Prevent pinch-to-zoom on iOS (Safari ignores user-scalable=no since iOS 10)

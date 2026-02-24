@@ -1,18 +1,20 @@
 import { useMemo, useState } from 'react';
 import { useSubmissions } from '@/hooks/use-submissions';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { TrackCard } from '@/components/track/track-card';
 import { GenreFilter } from '@/components/track/genre-filter';
 import { Pagination } from '@/components/ui/pagination';
-import { Spinner } from '@/components/ui/spinner';
+import { QueryError } from '@/components/ui/query-error';
+import { SkeletonCard } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Music, Search, Headphones } from 'lucide-react';
 
 export function BrowsePage() {
+  useDocumentTitle('Browse Tracks');
   const [genre, setGenre] = useState('');
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, isError, error } = useSubmissions({
+  const { data, isLoading, isError, error, refetch } = useSubmissions({
     genre: genre || undefined,
     status: 'accepted',
     page,
@@ -55,16 +57,12 @@ export function BrowsePage() {
         />
 
         {isError ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <Alert variant="error" className="max-w-md">
-              <AlertTitle>Something went wrong</AlertTitle>
-              <AlertDescription>{error instanceof Error ? error.message : 'Failed to load tracks'}</AlertDescription>
-            </Alert>
-          </div>
+          <QueryError error={error} fallbackMessage="Failed to load tracks" onRetry={() => refetch()} />
         ) : isLoading ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <Spinner size="lg" />
-            <p className="text-sm text-hex-muted">Loading tracks...</p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
           </div>
         ) : !data?.data?.length ? (
           <EmptyState

@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { useAdminPayouts } from '@/hooks/use-admin';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { DataTable } from '@/components/admin/data-table';
 import { Badge } from '@/components/ui/badge';
-import { Spinner } from '@/components/ui/spinner';
+import { QueryError } from '@/components/ui/query-error';
+import { SkeletonTable } from '@/components/ui/skeleton';
 import { Pagination } from '@/components/ui/pagination';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 export function ManagePayoutsPage() {
+  useDocumentTitle('Manage Payouts');
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError, error } = useAdminPayouts({ page });
+  const { data, isLoading, isError, error, refetch } = useAdminPayouts({ page });
   const payouts = data?.data;
 
   return (
@@ -17,14 +19,9 @@ export function ManagePayoutsPage() {
       <p className="mt-2 text-hex-muted">Curator payment history</p>
 
       {isError ? (
-        <div className="flex flex-col items-center justify-center py-24 gap-4">
-          <Alert variant="error" className="max-w-md">
-            <AlertTitle>Something went wrong</AlertTitle>
-            <AlertDescription>{error instanceof Error ? error.message : 'Failed to load payouts'}</AlertDescription>
-          </Alert>
-        </div>
+        <QueryError error={error} fallbackMessage="Failed to load payouts" onRetry={() => refetch()} />
       ) : isLoading ? (
-        <div className="flex justify-center py-20"><Spinner size="lg" /></div>
+        <SkeletonTable rows={5} />
       ) : (
         <>
           <DataTable

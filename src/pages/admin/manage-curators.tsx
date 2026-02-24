@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { useAdminCurators } from '@/hooks/use-admin';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { DataTable } from '@/components/admin/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar } from '@/components/ui/avatar';
-import { Spinner } from '@/components/ui/spinner';
+import { QueryError } from '@/components/ui/query-error';
+import { SkeletonTable } from '@/components/ui/skeleton';
 import { Pagination } from '@/components/ui/pagination';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { CURATOR_MIN_LISTENERS } from '@/lib/constants';
 
 export function ManageCuratorsPage() {
+  useDocumentTitle('Manage Curators');
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError, error } = useAdminCurators({ page });
+  const { data, isLoading, isError, error, refetch } = useAdminCurators({ page });
   const curators = data?.data;
 
   return (
@@ -21,14 +23,9 @@ export function ManageCuratorsPage() {
       </p>
 
       {isError ? (
-        <div className="flex flex-col items-center justify-center py-24 gap-4">
-          <Alert variant="error" className="max-w-md">
-            <AlertTitle>Something went wrong</AlertTitle>
-            <AlertDescription>{error instanceof Error ? error.message : 'Failed to load curators'}</AlertDescription>
-          </Alert>
-        </div>
+        <QueryError error={error} fallbackMessage="Failed to load curators" onRetry={() => refetch()} />
       ) : isLoading ? (
-        <div className="flex justify-center py-20"><Spinner size="lg" /></div>
+        <SkeletonTable rows={5} />
       ) : (
         <>
           <DataTable

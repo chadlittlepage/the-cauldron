@@ -1,23 +1,25 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import { useArtistSubmissions } from '@/hooks/use-submissions';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { SubmissionList } from '@/components/dashboard/submission-list';
 import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/ui/spinner';
+import { QueryError } from '@/components/ui/query-error';
+import { SkeletonStats } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Music, ThumbsUp, Clock, Plus, ArrowRight, LayoutDashboard } from 'lucide-react';
 
 export function ArtistDashboardPage() {
+  useDocumentTitle('Dashboard');
   const { user, profile } = useAuth();
-  const { data: submissions, isLoading, isError, error } = useArtistSubmissions(user?.id);
+  const { data: submissions, isLoading, isError, error, refetch } = useArtistSubmissions(user?.id);
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 gap-4">
-        <Spinner size="lg" />
-        <p className="text-sm text-hex-muted">Loading dashboard...</p>
+      <div className="mx-auto max-w-7xl px-6 py-10">
+        <SkeletonStats />
       </div>
     );
   }
@@ -40,14 +42,7 @@ export function ArtistDashboardPage() {
       );
     }
 
-    return (
-      <div className="flex flex-col items-center justify-center py-24 gap-4">
-        <Alert variant="error" className="max-w-md">
-          <AlertTitle>Something went wrong</AlertTitle>
-          <AlertDescription>{message}</AlertDescription>
-        </Alert>
-      </div>
-    );
+    return <QueryError error={error} fallbackMessage="Failed to load dashboard" onRetry={() => refetch()} />;
   }
 
   const totalVotes = submissions?.reduce((sum, s) => sum + s.vote_count, 0) ?? 0;
