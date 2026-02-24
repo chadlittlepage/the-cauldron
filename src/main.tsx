@@ -6,6 +6,16 @@ import { AuthProvider } from './hooks/use-auth.ts';
 import './index.css';
 import App from './App.tsx';
 
+// Prevent pinch-to-zoom on iOS (Safari ignores user-scalable=no since iOS 10)
+document.addEventListener('gesturestart', (e) => e.preventDefault());
+document.addEventListener(
+  'touchstart',
+  (e) => {
+    if (e.touches.length > 1) e.preventDefault();
+  },
+  { passive: false },
+);
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
