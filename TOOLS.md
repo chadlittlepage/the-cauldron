@@ -102,3 +102,33 @@
 | Sentry DSN | `https://62ed9dd0b91f8bf05e1e294905cf3313@o4510140548055040.ingest.us.sentry.io/4510938330431488` |
 | Apple Developer Team ID | `72J767FV46` |
 | Apple Developer Email | `chad.littlepage@me.com` |
+
+## Security & Rate Limiting
+| Feature | Implementation |
+|---------|---------------|
+| Vote Cooldown | 1-second client-side cooldown via `useRef` timestamp |
+| Submission Guard | Ref-based double-submit prevention on track submit + review forms |
+| Edge Function CORS | Restricted to `APP_URL` env var (not wildcard `*`) |
+| CSP | Strict Content-Security-Policy via Vercel headers (Stripe, Spotify, Supabase, Sentry) |
+| Asset Caching | `Cache-Control: immutable, 1 year` on `/assets/*` |
+| RLS | Row Level Security on all database tables |
+| Auth Guards | `ProtectedRoute` (login required) + `RoleRoute` (role check) |
+| Mobile Zoom Lock | Viewport meta + JS gesture/touch prevention |
+
+## Pagination
+| Page | Hook | Items Per Page |
+|------|------|---------------|
+| Browse Tracks | `useSubmissions({ genre, status, page })` | 20 |
+| Admin Submissions | `useAdminSubmissions({ status, page })` | 20 |
+| Review Queue | `useReviewQueue({ page })` | 20 |
+| Manage Curators | `useAdminCurators({ page })` | 20 |
+| Manage Payouts | `useAdminPayouts({ page })` | 20 |
+
+## Track Navigation
+| Feature | Implementation |
+|---------|---------------|
+| Prev/Next Buttons | Track IDs passed via `location.state` from Browse/Charts |
+| Keyboard Nav | ArrowLeft/ArrowRight on track detail page |
+| Mobile Swipe | `useSwipe` hook (50px threshold, direction locking) |
+| Back Link | Context-aware: "Back to Charts" or "Back to Browse" |
+| Direct URL | Nav row hidden gracefully when no list context |
