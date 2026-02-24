@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import { useSubmission } from '@/hooks/use-submissions';
@@ -17,6 +18,7 @@ export function WriteReviewPage() {
   const navigate = useNavigate();
   const { data: track, isLoading, isError, error } = useSubmission(id);
   const createReview = useCreateReview();
+  const submitting = useRef(false);
 
   if (isLoading) {
     return (
@@ -50,14 +52,19 @@ export function WriteReviewPage() {
   }
 
   async function handleSubmit(rating: number, feedback: string) {
-    if (!user || !id) return;
-    await createReview.mutateAsync({
-      submission_id: id,
-      curator_id: user.id,
-      rating,
-      feedback,
-    });
-    navigate('/dashboard/review-queue');
+    if (!user || !id || submitting.current) return;
+    submitting.current = true;
+    try {
+      await createReview.mutateAsync({
+        submission_id: id,
+        curator_id: user.id,
+        rating,
+        feedback,
+      });
+      navigate('/dashboard/review-queue');
+    } finally {
+      submitting.current = false;
+    }
   }
 
   return (

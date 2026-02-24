@@ -8,7 +8,7 @@ serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, {
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*',
         'Access-Control-Allow-Headers': 'authorization, content-type',
         'Access-Control-Allow-Methods': 'POST',
       },
@@ -62,12 +62,12 @@ serve(async (req: Request) => {
     }
 
     return new Response(JSON.stringify({ success: true }), {
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*' },
     });
   } catch (err) {
     return new Response(JSON.stringify({ error: (err as Error).message }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*' },
     });
   }
 });

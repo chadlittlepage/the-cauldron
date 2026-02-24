@@ -1,8 +1,11 @@
+import { useCallback, useRef } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { useHasVoted, useToggleVote } from '@/hooks/use-votes';
 import { Button } from '@/components/ui/button';
 import { ThumbsUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+const VOTE_COOLDOWN_MS = 1000;
 
 interface VoteButtonProps {
   submissionId: string;
@@ -14,15 +17,19 @@ export function VoteButton({ submissionId, voteCount, className }: VoteButtonPro
   const { user } = useAuth();
   const { data: hasVoted } = useHasVoted(submissionId, user?.id);
   const toggleVote = useToggleVote();
+  const lastVoteAt = useRef(0);
 
-  function handleVote() {
+  const handleVote = useCallback(() => {
     if (!user) return;
+    const now = Date.now();
+    if (now - lastVoteAt.current < VOTE_COOLDOWN_MS) return;
+    lastVoteAt.current = now;
     toggleVote.mutate({
       submissionId,
       voterId: user.id,
       hasVoted: hasVoted ?? false,
     });
-  }
+  }, [user, submissionId, hasVoted, toggleVote]);
 
   return (
     <Button

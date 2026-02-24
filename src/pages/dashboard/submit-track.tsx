@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import { useCreateSubmission } from '@/hooks/use-submissions';
@@ -45,6 +45,7 @@ export function SubmitTrackPage() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState('');
+  const submitting = useRef(false);
 
   function updateField(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -80,6 +81,8 @@ export function SubmitTrackPage() {
   }
 
   async function handleSubmit() {
+    if (submitting.current) return;
+    submitting.current = true;
     setErrors({});
     setServerError('');
 
@@ -118,6 +121,8 @@ export function SubmitTrackPage() {
       }
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'Failed to create submission');
+    } finally {
+      submitting.current = false;
     }
   }
 
