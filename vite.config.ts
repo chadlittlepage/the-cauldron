@@ -1,10 +1,22 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import path from 'path';
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    mode === 'production' &&
+      sentryVitePlugin({
+        org: 'o4510140548055040',
+        project: 'hexwave',
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        sourcemaps: { filesToDeleteAfterUpload: ['./dist/**/*.map'] },
+        silent: !process.env.SENTRY_AUTH_TOKEN,
+      }),
+  ].filter(Boolean),
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -15,7 +27,7 @@ export default defineConfig(({ mode }) => ({
     strictPort: true,
   },
   build: {
-    sourcemap: mode !== 'production',
+    sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -23,6 +35,7 @@ export default defineConfig(({ mode }) => ({
           supabase: ['@supabase/supabase-js'],
           stripe: ['@stripe/stripe-js', '@stripe/react-stripe-js'],
           query: ['@tanstack/react-query'],
+          sentry: ['@sentry/react'],
         },
       },
     },

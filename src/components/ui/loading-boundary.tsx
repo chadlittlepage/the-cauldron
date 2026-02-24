@@ -1,5 +1,6 @@
 import { Suspense, Component } from 'react';
 import type { ReactNode, ErrorInfo } from 'react';
+import * as Sentry from '@sentry/react';
 import { Spinner } from './spinner';
 import { Alert, AlertTitle, AlertDescription } from './alert';
 import { Button } from './button';
@@ -25,7 +26,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught:', error, errorInfo);
+    Sentry.captureException(error, { extra: { componentStack: errorInfo.componentStack } });
   }
 
   render() {
