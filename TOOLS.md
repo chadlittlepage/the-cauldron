@@ -55,6 +55,25 @@
 | A Record | `@ → 216.198.79.1` (Vercel) |
 | CNAME | `www → 04ef5040f141ae61.vercel-dns-017.com` (Vercel) |
 
+## Error Tracking (Sentry)
+| Tool | URL |
+|------|-----|
+| Sentry Dashboard | https://cell-division.sentry.io |
+| Sentry Issues | https://cell-division.sentry.io/issues/?project=4510938330431488 |
+| Sentry Project Settings | https://cell-division.sentry.io/settings/projects/hexwave/ |
+| Sentry Performance | https://cell-division.sentry.io/performance/?project=4510938330431488 |
+| Sentry Session Replay | https://cell-division.sentry.io/replays/?project=4510938330431488 |
+| Sentry Releases | https://cell-division.sentry.io/releases/?project=4510938330431488 |
+| Sentry Auth Tokens | https://cell-division.sentry.io/settings/account/api/auth-tokens/ |
+| Organization | `cell-division` |
+| Project Slug | `hexwave` |
+| Project ID | `4510938330431488` |
+| DSN | `https://62ed9dd0b91f8bf05e1e294905cf3313@o4510140548055040.ingest.us.sentry.io/4510938330431488` |
+| Platform | React |
+| Features | Error Monitoring, Session Replay (100% on error, 10% baseline), Performance Tracing (20% prod) |
+| Source Maps | Uploaded via `@sentry/vite-plugin` on production builds, deleted from dist after upload |
+| Enabled | Production only (`import.meta.env.PROD`) |
+
 ## Payments (Not Yet Configured)
 | Tool | URL |
 |------|-----|
@@ -77,5 +96,9 @@
 | Supabase URL | `https://jitgzcumsjaxemjbjhit.supabase.co` |
 | Supabase Site URL | `https://hexwave.io` |
 | Supabase Redirect URLs | `https://hexwave.io/**`, `https://www.hexwave.io/**`, `https://hexwave.vercel.app/**`, `http://localhost:5173/**` |
+| Sentry Org Slug | `cell-division` |
+| Sentry Project Slug | `hexwave` |
+| Sentry Project ID | `4510938330431488` |
+| Sentry DSN | `https://62ed9dd0b91f8bf05e1e294905cf3313@o4510140548055040.ingest.us.sentry.io/4510938330431488` |
 | Apple Developer Team ID | `72J767FV46` |
 | Apple Developer Email | `chad.littlepage@me.com` |
