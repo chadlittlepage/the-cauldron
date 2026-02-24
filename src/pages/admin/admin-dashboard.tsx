@@ -10,6 +10,7 @@ import {
   Users,
   DollarSign,
   BarChart3,
+  Bug,
   ArrowRight,
 } from 'lucide-react';
 
@@ -18,6 +19,7 @@ const adminLinks = [
   { to: '/admin/curators', label: 'Manage Curators', icon: Users, color: 'bg-accent-pink/10 text-accent-pink' },
   { to: '/admin/payouts', label: 'Manage Payouts', icon: DollarSign, color: 'bg-accent-orange/10 text-accent-orange' },
   { to: '/admin/analytics', label: 'Analytics', icon: BarChart3, color: 'bg-accent-cyan/10 text-accent-cyan' },
+  { to: '/admin/debug', label: 'Debug Console', icon: Bug, color: 'bg-accent-orange/10 text-accent-orange' },
 ];
 
 export function AdminDashboardPage() {

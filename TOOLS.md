@@ -192,6 +192,21 @@
 | Optional Vars | `optionalEnv()` returns fallback for `VITE_STRIPE_PUBLISHABLE_KEY`, `VITE_SENTRY_DSN`, `VITE_APP_URL` |
 | Central Config | All env access via `src/lib/env.ts` — no direct `import.meta.env.VITE_*` in components |
 
+## Debug Console (`/admin/debug`)
+| Tab | Features |
+|-----|----------|
+| System Health | Supabase connection status (green/red dot + latency, auto-refresh 30s), Edge Function status grid (create-checkout, stripe-webhook, create-payout, generate-charts — each with status + latency), Sentry recent unresolved issues (title, event count, last seen) with fallback link |
+| Data Inspector | Table selector dropdown (profiles, submissions, reviews, payments, votes, curator_payouts, charts), search by ID, dynamic columns via Object.keys, paginated DataTable |
+| Audit Trail | Filter by action type (status change, role change, payout created, profile updated, submission deleted, manual action), DataTable with admin name, action, target, expandable JSON metadata, timestamp, pagination |
+
+| Audit Logging | Mechanism |
+|---------------|-----------|
+| Submission status change | DB trigger (automatic) |
+| Submission deletion | DB trigger (automatic) |
+| Profile role change | DB trigger (automatic) |
+| Payout creation | Direct insert in create-payout Edge Function |
+| Manual admin actions | Client-side `useLogAuditAction` mutation |
+
 ## Test Coverage
 | Test File | Tests | What's Covered |
 |-----------|-------|---------------|

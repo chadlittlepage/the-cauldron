@@ -8,6 +8,14 @@ export type ChartType = 'monthly' | 'yearly';
 
 export type PaymentStatus = 'pending' | 'succeeded' | 'failed' | 'refunded';
 
+export type AuditAction =
+  | 'submission_status_change'
+  | 'curator_role_change'
+  | 'payout_created'
+  | 'profile_updated'
+  | 'submission_deleted'
+  | 'manual_action';
+
 export interface Database {
   public: {
     Tables: {
@@ -180,6 +188,31 @@ export interface Database {
           },
         ];
       };
+      admin_audit_logs: {
+        Row: {
+          id: string;
+          admin_id: string;
+          action: AuditAction;
+          target_type: string;
+          target_id: string;
+          metadata: Record<string, unknown>;
+          created_at: string;
+        };
+        Insert: Omit<
+          Database['public']['Tables']['admin_audit_logs']['Row'],
+          'id' | 'created_at'
+        >;
+        Update: Partial<Database['public']['Tables']['admin_audit_logs']['Insert']>;
+        Relationships: [
+          {
+            foreignKeyName: 'admin_audit_logs_admin_id_fkey';
+            columns: ['admin_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       curator_payouts: {
         Row: {
           id: string;
@@ -269,6 +302,7 @@ export interface Database {
       music_platform: MusicPlatform;
       chart_type: ChartType;
       payment_status: PaymentStatus;
+      audit_action: AuditAction;
     };
     CompositeTypes: Record<string, never>;
   };

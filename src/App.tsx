@@ -66,6 +66,7 @@ const ManageSubmissionsPage = lazy(() => import('@/pages/admin/manage-submission
 const ManageCuratorsPage = lazy(() => import('@/pages/admin/manage-curators').then((m) => ({ default: m.ManageCuratorsPage })));
 const ManagePayoutsPage = lazy(() => import('@/pages/admin/manage-payouts').then((m) => ({ default: m.ManagePayoutsPage })));
 const AnalyticsPage = lazy(() => import('@/pages/admin/analytics').then((m) => ({ default: m.AnalyticsPage })));
+const DebugConsolePage = lazy(() => import('@/pages/admin/debug-console').then((m) => ({ default: m.DebugConsolePage })));
 
 function App() {
   return (
@@ -164,6 +165,10 @@ function App() {
           <Route
             path="/admin/analytics"
             element={<RoleRoute role="admin"><AnalyticsPage /></RoleRoute>}
+          />
+          <Route
+            path="/admin/debug"
+            element={<RoleRoute role="admin"><DebugConsolePage /></RoleRoute>}
           />
 
           {/* 404 */}

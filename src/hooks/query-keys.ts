@@ -40,4 +40,13 @@ export const queryKeys = {
     allPayouts: (filters?: { page?: number }) => ['admin', 'payouts', filters] as const,
     analytics: () => ['admin', 'analytics'] as const,
   },
+  debug: {
+    supabaseHealth: () => ['debug', 'supabaseHealth'] as const,
+    edgeFunctionHealth: () => ['debug', 'edgeFunctionHealth'] as const,
+    sentryIssues: () => ['debug', 'sentryIssues'] as const,
+    tableData: (table: string, opts?: { id?: string; page?: number }) =>
+      ['debug', 'tableData', table, opts] as const,
+    auditLogs: (opts?: { action?: string; page?: number }) =>
+      ['debug', 'auditLogs', opts] as const,
+  },
 } as const;
