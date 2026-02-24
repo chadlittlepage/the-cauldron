@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
     tailwindcss(),
     mode === 'production' &&
       sentryVitePlugin({
-        org: 'o4510140548055040',
+        org: 'cell-division',
         project: 'hexwave',
         authToken: process.env.SENTRY_AUTH_TOKEN,
         sourcemaps: { filesToDeleteAfterUpload: ['./dist/**/*.map'] },
