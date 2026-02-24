@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
+import { toast } from './use-toast';
 
 export function useHasVoted(submissionId: string | undefined, userId: string | undefined) {
   return useQuery({
@@ -47,7 +48,29 @@ export function useToggleVote() {
         return { action: 'added' as const };
       }
     },
-    onSuccess: (_data, variables) => {
+    onMutate: async (variables) => {
+      const hasVotedKey = queryKeys.votes.hasVoted(variables.submissionId, variables.voterId);
+
+      // Cancel in-flight queries so they don't overwrite our optimistic update
+      await queryClient.cancelQueries({ queryKey: hasVotedKey });
+
+      // Snapshot previous value for rollback
+      const previousHasVoted = queryClient.getQueryData<boolean>(hasVotedKey);
+
+      // Optimistically flip the vote status
+      queryClient.setQueryData(hasVotedKey, !variables.hasVoted);
+
+      return { previousHasVoted, hasVotedKey };
+    },
+    onError: (_error, _variables, context) => {
+      // Roll back to previous value on failure
+      if (context) {
+        queryClient.setQueryData(context.hasVotedKey, context.previousHasVoted);
+      }
+      toast.error('Failed to update vote');
+    },
+    onSettled: (_data, _error, variables) => {
+      // Always refetch to ensure server state is correct
       queryClient.invalidateQueries({
         queryKey: queryKeys.votes.hasVoted(variables.submissionId, variables.voterId),
       });

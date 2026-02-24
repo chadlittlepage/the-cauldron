@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
+import { toast } from './use-toast';
 import type { SubmissionStatus } from '@/types/database';
 import { ITEMS_PER_PAGE } from '@/lib/constants';
 
@@ -64,10 +65,14 @@ export function useUpdateSubmissionStatus() {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.submissions.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.allSubmissions() });
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats() });
+      toast.success(`Submission ${variables.status}`);
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : 'Failed to update submission');
     },
   });
 }

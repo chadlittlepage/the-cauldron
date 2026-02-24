@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
+import { toast } from './use-toast';
 import type { InsertTables, SubmissionStatus } from '@/types/database';
 import { ITEMS_PER_PAGE, DEMO_ARTIST_ID } from '@/lib/constants';
 
@@ -114,6 +115,10 @@ export function useCreateSubmission() {
       queryClient.invalidateQueries({
         queryKey: queryKeys.submissions.byArtist(variables.artist_id),
       });
+      toast.success('Track submitted');
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : 'Failed to submit track');
     },
   });
 }

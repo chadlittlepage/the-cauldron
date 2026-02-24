@@ -19,6 +19,11 @@ export function VoteButton({ submissionId, voteCount, className }: VoteButtonPro
   const toggleVote = useToggleVote();
   const lastVoteAt = useRef(0);
 
+  // During optimistic update, hasVoted is already flipped in cache.
+  // The prop voteCount is stale until refetch, so we don't try to derive it —
+  // the number updates on the next render after invalidation.
+  const voted = hasVoted ?? false;
+
   const handleVote = useCallback(() => {
     if (!user) return;
     const now = Date.now();
@@ -27,23 +32,23 @@ export function VoteButton({ submissionId, voteCount, className }: VoteButtonPro
     toggleVote.mutate({
       submissionId,
       voterId: user.id,
-      hasVoted: hasVoted ?? false,
+      hasVoted: voted,
     });
-  }, [user, submissionId, hasVoted, toggleVote]);
+  }, [user, submissionId, voted, toggleVote]);
 
   return (
     <Button
-      variant={hasVoted ? 'accent' : 'outline'}
+      variant={voted ? 'accent' : 'outline'}
       onClick={handleVote}
-      disabled={!user || toggleVote.isPending}
-      aria-label={hasVoted ? `Remove vote (${voteCount} votes)` : `Vote (${voteCount} votes)`}
+      disabled={!user}
+      aria-label={voted ? `Remove vote (${voteCount} votes)` : `Vote (${voteCount} votes)`}
       className={cn(
         'gap-2.5 rounded-xl px-5 py-2.5 transition-all duration-200',
-        hasVoted && 'glow-purple',
+        voted && 'glow-purple',
         className,
       )}
     >
-      <ThumbsUp className={cn('h-4 w-4', hasVoted && 'fill-current')} />
+      <ThumbsUp className={cn('h-4 w-4', voted && 'fill-current')} />
       <span className="font-bold">{voteCount}</span>
     </Button>
   );

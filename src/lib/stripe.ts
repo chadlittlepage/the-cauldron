@@ -1,7 +1,6 @@
 import { loadStripe } from '@stripe/stripe-js';
+import { env } from '@/lib/env';
 
-const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-
-export const stripePromise = stripePublishableKey
-  ? loadStripe(stripePublishableKey)
+export const stripePromise = env.STRIPE_PUBLISHABLE_KEY
+  ? loadStripe(env.STRIPE_PUBLISHABLE_KEY)
   : null;

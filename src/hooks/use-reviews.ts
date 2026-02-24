@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
+import { toast } from './use-toast';
 import type { InsertTables } from '@/types/database';
 import { DEMO_CURATOR_ID } from '@/lib/constants';
 
@@ -70,6 +71,10 @@ export function useCreateReview() {
         queryKey: queryKeys.submissions.detail(data.submission_id),
       });
       queryClient.invalidateQueries({ queryKey: queryKeys.submissions.reviewQueue() });
+      toast.success('Review submitted');
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : 'Failed to submit review');
     },
   });
 }
