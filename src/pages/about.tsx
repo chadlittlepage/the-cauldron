@@ -63,8 +63,8 @@ export function AboutPage() {
               <Heart className="h-6 w-6 text-accent-pink mb-3" />
               <h3 className="font-bold mb-2">Fair & Transparent</h3>
               <p className="text-sm text-hex-muted">
-                No hidden algorithms. No pay-to-win. Every submission costs the same $2, and every
-                track gets equal opportunity for exposure.
+                No hidden algorithms. No pay-to-win. Every submission is free, and every track gets
+                equal opportunity for exposure.
               </p>
             </div>
             <div className="glass-card rounded-xl p-6">
@@ -91,7 +91,7 @@ export function AboutPage() {
               <ul className="space-y-3 text-sm text-hex-muted">
                 <li className="flex items-start gap-2">
                   <Zap className="h-4 w-4 text-accent-purple shrink-0 mt-0.5" />
-                  Submit any track for just $2
+                  Submit any track for free
                 </li>
                 <li className="flex items-start gap-2">
                   <Zap className="h-4 w-4 text-accent-purple shrink-0 mt-0.5" />

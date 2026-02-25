@@ -53,7 +53,7 @@ e2e/                # Playwright E2E tests
 ```
 
 ## User Roles
-- **artist**: Submits tracks ($2), views dashboard, sees review feedback
+- **artist**: Submits tracks, views dashboard, sees review feedback
 - **curator**: Reviews submission queue, rates tracks, receives payouts (requires 1000+ listeners)
 - **admin**: Manages curators, views all submissions, analytics, payouts
 
@@ -95,7 +95,7 @@ SENTRY_AUTH_TOKEN           # Sentry auth token for source map uploads (CI + loc
 ## External Services
 - **Sentry**: Org `cell-division`, Project `hexwave` — error tracking + session replay + performance
 - **Supabase**: Auth, Postgres, RLS, Edge Functions, Storage
-- **Stripe**: Payment processing via Edge Functions (server-enforced $2.00)
+- **Stripe**: Payment processing via Edge Functions (currently unused, kept for future use)
 - **Vercel**: Hosting, CDN, security headers, SPA rewrites
 
 ## Branch Strategy

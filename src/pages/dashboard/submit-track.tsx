@@ -15,7 +15,6 @@ import {
   Music,
   Link as LinkIcon,
   FileText,
-  CreditCard,
   ArrowRight,
   ArrowLeft,
   Check,
@@ -27,11 +26,10 @@ const STEPS = [
   { label: 'Track Info', icon: Music },
   { label: 'Link', icon: LinkIcon },
   { label: 'Details', icon: FileText },
-  { label: 'Payment', icon: CreditCard },
 ];
 
 export function SubmitTrackPage() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const createSubmission = useCreateSubmission();
 
@@ -106,23 +104,17 @@ export function SubmitTrackPage() {
     }
 
     try {
-      const isAdmin = profile?.role === 'admin';
-      const submission = await createSubmission.mutateAsync({
+      await createSubmission.mutateAsync({
         artist_id: user.id,
         track_title: form.trackTitle,
         track_url: form.trackUrl,
         platform: form.platform,
         genre: form.genre,
         description: form.description || null,
-        payment_id: isAdmin ? 'admin_bypass' : null,
-        paid_at: isAdmin ? new Date().toISOString() : null,
+        payment_id: null,
+        paid_at: null,
       });
-      // Admins skip payment, go straight to dashboard
-      if (isAdmin) {
-        navigate('/dashboard/submissions');
-      } else {
-        navigate(`/payment/checkout/${submission.id}`);
-      }
+      navigate('/dashboard/submissions');
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'Failed to create submission');
     } finally {
@@ -148,41 +140,43 @@ export function SubmitTrackPage() {
         </div>
 
         {/* Step indicator */}
-        <div className="flex items-center justify-between mb-10 max-w-md mx-auto">
-          {STEPS.map((s, idx) => (
-            <div key={s.label} className="flex items-center">
-              <div className="flex flex-col items-center">
-                <div
-                  className={cn(
-                    'flex h-10 w-10 items-center justify-center rounded-xl border-2 transition-all duration-300',
-                    idx < step
-                      ? 'border-accent-purple bg-accent-purple text-white'
-                      : idx === step
-                        ? 'border-accent-purple bg-accent-purple/10 text-accent-purple'
-                        : 'border-hex-border text-hex-muted',
-                  )}
-                >
-                  {idx < step ? <Check className="h-4 w-4" /> : <s.icon className="h-4 w-4" />}
+        <div className="mb-10 max-w-sm mx-auto">
+          <div className="flex items-center">
+            {STEPS.map((s, idx) => (
+              <div key={s.label} className="contents">
+                <div className="flex flex-col items-center">
+                  <div
+                    className={cn(
+                      'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 transition-all duration-300',
+                      idx < step
+                        ? 'border-accent-purple bg-accent-purple text-white'
+                        : idx === step
+                          ? 'border-accent-purple bg-accent-purple/10 text-accent-purple'
+                          : 'border-hex-border text-hex-muted',
+                    )}
+                  >
+                    {idx < step ? <Check className="h-4 w-4" /> : <s.icon className="h-4 w-4" />}
+                  </div>
+                  <span
+                    className={cn(
+                      'mt-2 text-xs font-medium',
+                      idx <= step ? 'text-hex-text' : 'text-hex-muted',
+                    )}
+                  >
+                    {s.label}
+                  </span>
                 </div>
-                <span
-                  className={cn(
-                    'mt-2 text-xs font-medium',
-                    idx <= step ? 'text-hex-text' : 'text-hex-muted',
-                  )}
-                >
-                  {s.label}
-                </span>
+                {idx < STEPS.length - 1 && (
+                  <div
+                    className={cn(
+                      'h-px flex-1 mx-3 self-start mt-5',
+                      idx < step ? 'bg-accent-purple' : 'bg-hex-border',
+                    )}
+                  />
+                )}
               </div>
-              {idx < STEPS.length - 1 && (
-                <div
-                  className={cn(
-                    'h-px w-12 mx-2 mt-[-16px]',
-                    idx < step ? 'bg-accent-purple' : 'bg-hex-border',
-                  )}
-                />
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Form card */}
@@ -276,43 +270,6 @@ export function SubmitTrackPage() {
             </div>
           )}
 
-          {/* Step 3: Payment */}
-          {step === 3 && (
-            <div className="space-y-6 animate-fade-in text-center">
-              <div className="rounded-xl bg-hex-surface/80 p-6">
-                <h3 className="font-semibold text-lg mb-4">Submission Summary</h3>
-                <div className="space-y-3 text-sm text-left">
-                  <div className="flex justify-between">
-                    <span className="text-hex-muted">Track</span>
-                    <span className="font-medium">{form.trackTitle}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-hex-muted">Genre</span>
-                    <span className="font-medium capitalize">{form.genre}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-hex-muted">Platform</span>
-                    <span className="font-medium capitalize">{form.platform}</span>
-                  </div>
-                  <div className="border-t border-hex-border my-3" />
-                  <div className="flex justify-between text-base">
-                    <span className="font-semibold">Submission Fee</span>
-                    {profile?.role === 'admin' ? (
-                      <span className="font-bold text-success text-lg">Free (Admin)</span>
-                    ) : (
-                      <span className="font-bold gradient-text text-lg">$2.00</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              {profile?.role !== 'admin' && (
-                <p className="text-xs text-hex-muted">
-                  You&apos;ll be redirected to Stripe for secure payment processing.
-                </p>
-              )}
-            </div>
-          )}
-
           {/* Navigation */}
           <div className="flex justify-between mt-8">
             {step > 0 ? (
@@ -337,16 +294,8 @@ export function SubmitTrackPage() {
                 className="gap-2 group"
                 size="lg"
               >
-                {createSubmission.isPending
-                  ? 'Processing...'
-                  : profile?.role === 'admin'
-                    ? 'Submit Track'
-                    : 'Continue to Payment'}
-                {profile?.role === 'admin' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <CreditCard className="h-4 w-4" />
-                )}
+                {createSubmission.isPending ? 'Processing...' : 'Submit Track'}
+                <Check className="h-4 w-4" />
               </Button>
             )}
           </div>

@@ -854,7 +854,7 @@ const features = [
     icon: Music,
     title: 'Submit Your Music',
     description:
-      'Share your tracks with a passionate community for just $2. Get real feedback from verified curators.',
+      'Share your tracks with a passionate community. Get real feedback from verified curators.',
     color: 'text-accent-purple',
     bg: 'bg-accent-purple/10',
     glow: 'group-hover:shadow-accent-purple/10',
@@ -950,8 +950,8 @@ export function HomePage() {
             </h1>
 
             <p className="mx-auto mt-6 max-w-xl text-lg text-hex-muted leading-relaxed">
-              Submit tracks for $2, get reviewed by expert curators, and let the community decide
-              what rises to the top.
+              Submit your tracks, get reviewed by expert curators, and let the community decide what
+              rises to the top.
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">

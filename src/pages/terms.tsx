@@ -34,9 +34,8 @@ export function TermsPage() {
           <section>
             <h2 className="text-xl font-bold text-hex-text mb-3">3. Submissions</h2>
             <p>
-              Artists may submit tracks for a non-refundable fee of $2.00 per submission. By
-              submitting, you confirm that you own or have rights to the submitted music. The
-              submission fee covers the cost of curation and platform maintenance.
+              Artists may submit tracks for free. By submitting, you confirm that you own or have
+              rights to the submitted music.
             </p>
           </section>
 

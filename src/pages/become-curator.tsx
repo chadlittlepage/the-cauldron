@@ -187,7 +187,7 @@ export function BecomeCuratorPage() {
               {
                 icon: Zap,
                 label: 'Submitted',
-                desc: 'Artist pays $2, track enters queue',
+                desc: 'Artist submits track, enters queue',
                 color: 'text-accent-orange',
               },
               {
