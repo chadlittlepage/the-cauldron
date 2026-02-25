@@ -25,6 +25,126 @@ const AVATAR_SEEDS = [
   'Groove',
   'Reverb',
   'Chorus',
+  'Acoustic',
+  'Amp',
+  'Aria',
+  'Ballad',
+  'Banjo',
+  'Beat',
+  'Blues',
+  'Bongo',
+  'Brass',
+  'Bridge',
+  'Cadence',
+  'Cello',
+  'Chord',
+  'Clef',
+  'Coda',
+  'Cymbal',
+  'Disco',
+  'Drum',
+  'Dubstep',
+  'Dulcimer',
+  'Encore',
+  'Ensemble',
+  'Fade',
+  'Fiddle',
+  'Flute',
+  'Folk',
+  'Forte',
+  'Funk',
+  'Fuzz',
+  'Gig',
+  'Glissando',
+  'Gospel',
+  'Grunge',
+  'Guitar',
+  'Harp',
+  'Hook',
+  'Horn',
+  'Hymn',
+  'Jazz',
+  'Jingle',
+  'Key',
+  'Kick',
+  'Lick',
+  'Loop',
+  'Lullaby',
+  'Lyric',
+  'Mandolin',
+  'March',
+  'Measure',
+  'Mic',
+  'Mixdown',
+  'Moog',
+  'Mute',
+  'Note',
+  'Octave',
+  'Opera',
+  'Orchestra',
+  'Organ',
+  'Overdrive',
+  'Pedal',
+  'Piano',
+  'Piccolo',
+  'Pitch',
+  'Polka',
+  'Pop',
+  'Prelude',
+  'Punk',
+  'Quartet',
+  'Raga',
+  'Rap',
+  'Reel',
+  'Reggae',
+  'Remix',
+  'Riff',
+  'Rock',
+  'Rumba',
+  'Salsa',
+  'Samba',
+  'Scale',
+  'Serenade',
+  'Ska',
+  'Snare',
+  'Solo',
+  'Sonata',
+  'Soul',
+  'Speaker',
+  'Staccato',
+  'Stage',
+  'Steel',
+  'Strings',
+  'Strum',
+  'Sub',
+  'Suite',
+  'Sway',
+  'Tabla',
+  'Tango',
+  'Tenor',
+  'Tone',
+  'Track',
+  'Tremolo',
+  'Trill',
+  'Trio',
+  'Trombone',
+  'Trumpet',
+  'Tuba',
+  'Tune',
+  'Ukulele',
+  'Valve',
+  'Vibe',
+  'Viola',
+  'Violin',
+  'Vocal',
+  'Volume',
+  'Waltz',
+  'Wah',
+  'Wave',
+  'Whistle',
+  'Woodwind',
+  'Xylophone',
+  'Zither',
 ];
 
 export function ProfileSettingsPage() {
@@ -40,6 +160,7 @@ export function ProfileSettingsPage() {
   const [success, setSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
 
   function updateField(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -169,24 +290,48 @@ export function ProfileSettingsPage() {
                 </div>
               </div>
               <div className="mt-4">
-                <p className="mb-2 text-sm font-medium text-hex-muted">Or choose an avatar</p>
-                <div className="grid grid-cols-6 gap-3">
-                  {AVATAR_SEEDS.map((seed) => {
-                    const url = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
-                    const isSelected = form.avatarUrl === url;
-                    return (
-                      <button
-                        key={seed}
-                        type="button"
-                        title={seed}
-                        className={`rounded-full overflow-hidden transition-all ${isSelected ? 'ring-2 ring-[#4a556c] ring-offset-2 ring-offset-hex-bg' : 'hover:ring-2 hover:ring-hex-muted/50 hover:ring-offset-2 hover:ring-offset-hex-bg'}`}
-                        onClick={() => updateField('avatarUrl', url)}
-                      >
-                        <img src={url} alt={seed} className="h-12 w-12 rounded-full bg-hex-card" />
-                      </button>
-                    );
-                  })}
-                </div>
+                <button
+                  type="button"
+                  className="flex items-center gap-2 text-sm font-medium text-hex-muted hover:text-hex-fg transition-colors"
+                  onClick={() => setAvatarPickerOpen((prev) => !prev)}
+                >
+                  <svg
+                    className={`h-4 w-4 transition-transform ${avatarPickerOpen ? 'rotate-90' : ''}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                  Or choose an avatar
+                </button>
+                {avatarPickerOpen && (
+                  <div className="mt-3 max-h-64 overflow-y-auto rounded-lg border border-hex-border p-3">
+                    <div className="grid grid-cols-6 gap-3">
+                      {AVATAR_SEEDS.map((seed) => {
+                        const url = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+                        const isSelected = form.avatarUrl === url;
+                        return (
+                          <button
+                            key={seed}
+                            type="button"
+                            title={seed}
+                            className={`rounded-full overflow-hidden transition-all ${isSelected ? 'ring-2 ring-[#4a556c] ring-offset-2 ring-offset-hex-bg' : 'hover:ring-2 hover:ring-hex-muted/50 hover:ring-offset-2 hover:ring-offset-hex-bg'}`}
+                            onClick={() => updateField('avatarUrl', url)}
+                          >
+                            <img
+                              src={url}
+                              alt={seed}
+                              className="h-12 w-12 rounded-full bg-hex-card"
+                              loading="lazy"
+                            />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             </FormField>
           </CardContent>
