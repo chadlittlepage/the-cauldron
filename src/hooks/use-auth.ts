@@ -11,6 +11,19 @@ import type { AuthResponse, Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import type { Tables } from '@/types/database';
 
+function getAuthTokenKey(): string | undefined {
+  return Object.keys(localStorage).find(
+    (k) => k.startsWith('sb-') && k.endsWith('-auth-token'),
+  );
+}
+
+function removeAuthToken() {
+  try {
+    const key = getAuthTokenKey();
+    if (key) localStorage.removeItem(key);
+  } catch { /* ignore localStorage errors */ }
+}
+
 /**
  * Read the Supabase session from localStorage synchronously so the very first
  * render already knows whether the user is logged in.  This eliminates the
@@ -19,9 +32,7 @@ import type { Tables } from '@/types/database';
  */
 function getStoredSession(): { user: User; session: Session } | null {
   try {
-    const key = Object.keys(localStorage).find(
-      (k) => k.startsWith('sb-') && k.endsWith('-auth-token'),
-    );
+    const key = getAuthTokenKey();
     if (!key) return null;
     const raw = localStorage.getItem(key);
     if (!raw) return null;
@@ -74,7 +85,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   const fetchProfile = useCallback(async (userId: string) => {
-    const { data } = await supabase.from('profiles').select('*').eq('id', userId).single();
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
+    if (error) throw error;
     return data;
   }, []);
 
@@ -102,12 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setState({ user: session.user, profile, session, loading: false });
     }).catch(() => {
       // LockManager timeout or other unhandled auth error — clear stale state
-      try {
-        const key = Object.keys(localStorage).find(
-          (k) => k.startsWith('sb-') && k.endsWith('-auth-token'),
-        );
-        if (key) localStorage.removeItem(key);
-      } catch { /* ignore */ }
+      removeAuthToken();
       clearState();
     });
 
@@ -117,8 +124,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (event === 'INITIAL_SESSION') return;
 
       if (session?.user) {
-        const profile = await fetchProfile(session.user.id);
-        setState({ user: session.user, profile, session, loading: false });
+        try {
+          const profile = await fetchProfile(session.user.id);
+          setState({ user: session.user, profile, session, loading: false });
+        } catch {
+          clearState();
+        }
       } else {
         clearState();
       }
@@ -154,14 +165,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setState({ user: null, profile: null, session: null, loading: false });
 
     // Remove the Supabase auth token from localStorage directly as a safety net.
-    try {
-      const key = Object.keys(localStorage).find(
-        (k) => k.startsWith('sb-') && k.endsWith('-auth-token'),
-      );
-      if (key) localStorage.removeItem(key);
-    } catch {
-      // Ignore localStorage errors
-    }
+    removeAuthToken();
 
     // Tell the SDK to clean up. scope: 'local' avoids a network call.
     await supabase.auth.signOut({ scope: 'local' }).catch(() => {});

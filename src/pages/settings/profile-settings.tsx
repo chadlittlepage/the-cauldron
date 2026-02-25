@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { useUpdateProfile } from '@/hooks/use-profile';
 import { useDocumentTitle } from '@/hooks/use-document-title';
+import { uploadAvatar } from '@/lib/image-upload';
 import { profileSchema } from '@/lib/validators';
+import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -21,9 +23,35 @@ export function ProfileSettingsPage() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function updateField(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
+  }
+
+  async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    setUploading(true);
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next.avatarUrl;
+      return next;
+    });
+
+    try {
+      const url = await uploadAvatar(file, user.id);
+      setForm((prev) => ({ ...prev, avatarUrl: url }));
+    } catch (err) {
+      setErrors((prev) => ({
+        ...prev,
+        avatarUrl: err instanceof Error ? err.message : 'Upload failed',
+      }));
+    } finally {
+      setUploading(false);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -96,13 +124,35 @@ export function ProfileSettingsPage() {
                 placeholder="Tell us about yourself..."
               />
             </FormField>
-            <FormField label="Avatar URL" htmlFor="avatarUrl" error={errors.avatarUrl}>
-              <Input
-                id="avatarUrl"
-                value={form.avatarUrl}
-                onChange={(e) => updateField('avatarUrl', e.target.value)}
-                placeholder="https://..."
-              />
+            <FormField label="Avatar" htmlFor="avatarUpload" error={errors.avatarUrl}>
+              <div className="flex items-center gap-4">
+                <Avatar
+                  src={form.avatarUrl || null}
+                  alt={form.displayName || 'Avatar'}
+                  fallback={form.displayName || '?'}
+                  size="lg"
+                />
+                <div className="flex flex-col gap-2">
+                  <input
+                    ref={fileInputRef}
+                    id="avatarUpload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => void handleAvatarUpload(e)}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={uploading}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {uploading ? 'Uploading...' : 'Upload Image'}
+                  </Button>
+                  <p className="text-xs text-hex-muted">Max 5 MB. Resized to 512px.</p>
+                </div>
+              </div>
             </FormField>
           </CardContent>
           <CardFooter>

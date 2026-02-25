@@ -96,10 +96,14 @@ export function SubmitTrackPage() {
         }
       }
       setErrors(fieldErrors);
+      submitting.current = false;
       return;
     }
 
-    if (!user) return;
+    if (!user) {
+      submitting.current = false;
+      return;
+    }
 
     try {
       const isAdmin = profile?.role === 'admin';

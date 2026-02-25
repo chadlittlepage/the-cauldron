@@ -2,16 +2,21 @@ import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import Stripe from 'https://esm.sh/stripe@14?target=deno';
 import { captureException } from '../_shared/sentry.ts';
+import { createRateLimiter, rateLimitResponse } from '../_shared/rate-limit.ts';
 
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, { apiVersion: '2024-04-10' });
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const corsOrigin = corsOrigin;
+
+// 5 checkout sessions per user per minute
+const checkoutLimiter = createRateLimiter(60_000, 5);
 
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, {
       headers: {
-        'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*',
+        'Access-Control-Allow-Origin': corsOrigin,
         'Access-Control-Allow-Headers': 'authorization, content-type',
         'Access-Control-Allow-Methods': 'POST',
       },
@@ -30,6 +35,11 @@ serve(async (req: Request) => {
 
     if (authError || !user) {
       return new Response(JSON.stringify({ error: 'Invalid auth token' }), { status: 401 });
+    }
+
+    // Rate limit: 5 checkout sessions per user per minute
+    if (!checkoutLimiter.check(user.id)) {
+      return rateLimitResponse(corsOrigin);
     }
 
     const { submission_id } = await req.json();
@@ -93,13 +103,13 @@ serve(async (req: Request) => {
     });
 
     return new Response(JSON.stringify({ url: session.url }), {
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': corsOrigin },
     });
   } catch (err) {
     await captureException(err, { function: 'create-checkout' });
-    return new Response(JSON.stringify({ error: (err as Error).message }), {
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': corsOrigin },
     });
   }
 });

@@ -207,6 +207,31 @@
 | Profile role change | DB trigger (automatic) |
 | Payout creation | Direct insert in create-payout Edge Function |
 
+## Scalability
+| Feature | Implementation |
+|---------|---------------|
+| Analytics Indexes | Composite indexes on `reviews(curator_id, created_at)` and `payments(status, created_at)` |
+| Analytics Date Filters | `get_submissions_by_genre` scoped to 12 months, `get_top_curators` scoped to 6 months |
+| Query Cache Persistence | `@tanstack/react-query-persist-client` with localStorage, 5-min maxAge, version buster |
+| Avatar Lazy Loading | `loading="lazy"` + `decoding="async"` on all avatar `<img>` tags |
+| Pagination | All list pages paginated at 20 items (Browse, Review Queue, Admin pages) |
+
+## Image Upload
+| Feature | Implementation |
+|---------|---------------|
+| Avatar Upload | `src/lib/image-upload.ts` — client-side resize via Canvas API |
+| Max File Size | 5 MB |
+| Output Format | WebP at 85% quality, max 512x512px |
+| Storage | Supabase Storage `avatars` bucket (public read, user-scoped write) |
+| Migration | `supabase/migrations/00019_avatars_storage.sql` |
+
+## Database Type Generation
+| Feature | Implementation |
+|---------|---------------|
+| Command | `npm run gen:types` |
+| Output | `src/types/database.generated.ts` |
+| Source | Live Supabase schema via `supabase gen types typescript` |
+
 ## Test Coverage
 | Test File | Tests | What's Covered |
 |-----------|-------|---------------|
