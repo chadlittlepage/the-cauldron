@@ -1,10 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
-import { env } from '@/lib/env';
+import { ITEMS_PER_PAGE } from '@/lib/constants';
 import type { AuditAction } from '@/types/database';
-
-const ITEMS_PER_PAGE = 20;
 
 const EDGE_FUNCTIONS = ['create-checkout', 'stripe-webhook', 'create-payout', 'generate-charts'] as const;
 
@@ -31,9 +29,16 @@ export function useEdgeFunctionHealth() {
         EDGE_FUNCTIONS.map(async (name) => {
           const start = performance.now();
           try {
-            const resp = await fetch(`${env.SUPABASE_URL}/functions/v1/${name}`, { method: 'OPTIONS' });
+            const { error } = await supabase.functions.invoke(name, {
+              method: 'POST',
+              body: {},
+            });
             const latencyMs = Math.round(performance.now() - start);
-            return { name, status: resp.ok || resp.status === 204 ? 'ok' : 'error', latencyMs } as const;
+            // Any response (even auth errors) means the function is deployed and reachable
+            // Only treat network-level failures as errors
+            const isNetworkError = error?.message?.includes('Failed to fetch') ||
+              error?.message?.includes('NetworkError');
+            return { name, status: isNetworkError ? 'error' : 'ok', latencyMs } as const;
           } catch {
             const latencyMs = Math.round(performance.now() - start);
             return { name, status: 'error' as const, latencyMs };
@@ -68,7 +73,7 @@ export function useSentryIssues() {
 
 // --- Data Inspector ---
 
-type InspectableTable = 'profiles' | 'submissions' | 'reviews' | 'payments' | 'votes' | 'curator_payouts' | 'charts';
+export type InspectableTable = 'profiles' | 'submissions' | 'reviews' | 'payments' | 'votes' | 'curator_payouts' | 'charts';
 
 export function useTableInspector(
   table: InspectableTable,

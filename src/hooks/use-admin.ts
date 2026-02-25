@@ -55,7 +55,7 @@ export function useUpdateSubmissionStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: SubmissionStatus }) => {
+    mutationFn: async ({ id, status, oldStatus }: { id: string; status: SubmissionStatus; oldStatus?: string }) => {
       const { data, error } = await supabase
         .from('submissions')
         .update({ status })
@@ -63,13 +63,26 @@ export function useUpdateSubmissionStatus() {
         .select()
         .single();
       if (error) throw error;
-      return data;
+      return { ...data, _oldStatus: oldStatus };
     },
-    onSuccess: (_data, variables) => {
+    onSuccess: async (data, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.submissions.all });
-      queryClient.invalidateQueries({ queryKey: queryKeys.admin.allSubmissions() });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'submissions'] });
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats() });
       toast.success(`Submission ${variables.status}`);
+
+      // Log to audit trail
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('admin_audit_logs').insert({
+          admin_id: user.id,
+          action: 'submission_status_change' as const,
+          target_type: 'submission',
+          target_id: variables.id,
+          metadata: { old_status: data._oldStatus ?? 'unknown', new_status: variables.status },
+        });
+        queryClient.invalidateQueries({ queryKey: ['debug', 'auditLogs'] });
+      }
     },
     onError: (err) => {
       toast.error(err instanceof Error ? err.message : 'Failed to update submission');

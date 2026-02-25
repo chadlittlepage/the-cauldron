@@ -69,6 +69,7 @@ export function ManageSubmissionsPage() {
                       updateStatus.mutate({
                         id: row.id,
                         status: e.target.value as SubmissionStatus,
+                        oldStatus: row.status,
                       })
                     }
                     className="w-32"

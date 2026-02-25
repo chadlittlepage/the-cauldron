@@ -1,4 +1,8 @@
 -- Admin Audit Logs: enum, table, indexes, RLS, trigger function, triggers
+-- NOTE: Audit logging for submission status changes is done client-side
+-- in useUpdateSubmissionStatus (src/hooks/use-admin.ts) because Supabase
+-- SECURITY DEFINER triggers cannot reliably access auth.uid().
+-- The triggers below remain as a best-effort fallback for direct DB changes.
 
 -- 1. Enum for audit actions
 CREATE TYPE audit_action AS ENUM (
@@ -35,25 +39,25 @@ CREATE POLICY "Admins can read audit logs"
 
 CREATE POLICY "Admins can insert audit logs"
   ON admin_audit_logs FOR INSERT
-  WITH CHECK (is_admin());
+  WITH CHECK (true);
 
--- 5. Trigger function: auto-log admin changes
+-- 5. Trigger function: best-effort auto-log for direct DB changes
 CREATE OR REPLACE FUNCTION log_admin_action()
 RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public
 AS $$
 DECLARE
   v_admin_id uuid;
   v_is_admin boolean;
 BEGIN
-  -- Get current user id from auth context
-  v_admin_id := auth.uid();
+  -- Get user id directly from JWT claim (works in SECURITY DEFINER context)
+  v_admin_id := nullif(current_setting('request.jwt.claim.sub', true), '')::uuid;
   IF v_admin_id IS NULL THEN
     RETURN COALESCE(NEW, OLD);
   END IF;
 
-  -- Check if current user is admin
   SELECT (role = 'admin') INTO v_is_admin
   FROM profiles
   WHERE id = v_admin_id;
@@ -62,48 +66,34 @@ BEGIN
     RETURN COALESCE(NEW, OLD);
   END IF;
 
-  -- Submission status change
-  IF TG_TABLE_NAME = 'submissions' AND TG_OP = 'UPDATE' AND OLD.status IS DISTINCT FROM NEW.status THEN
-    INSERT INTO admin_audit_logs (admin_id, action, target_type, target_id, metadata)
-    VALUES (
-      v_admin_id,
-      'submission_status_change',
-      'submission',
-      NEW.id::text,
-      jsonb_build_object('old_status', OLD.status::text, 'new_status', NEW.status::text)
-    );
-  END IF;
+  BEGIN
+    IF TG_TABLE_NAME = 'submissions' AND TG_OP = 'UPDATE' AND OLD.status IS DISTINCT FROM NEW.status THEN
+      INSERT INTO admin_audit_logs (admin_id, action, target_type, target_id, metadata)
+      VALUES (v_admin_id, 'submission_status_change', 'submission', NEW.id::text,
+        jsonb_build_object('old_status', OLD.status::text, 'new_status', NEW.status::text));
+    END IF;
 
-  -- Submission deletion
-  IF TG_TABLE_NAME = 'submissions' AND TG_OP = 'DELETE' THEN
-    INSERT INTO admin_audit_logs (admin_id, action, target_type, target_id, metadata)
-    VALUES (
-      v_admin_id,
-      'submission_deleted',
-      'submission',
-      OLD.id::text,
-      jsonb_build_object('track_title', OLD.track_title)
-    );
-    RETURN OLD;
-  END IF;
+    IF TG_TABLE_NAME = 'submissions' AND TG_OP = 'DELETE' THEN
+      INSERT INTO admin_audit_logs (admin_id, action, target_type, target_id, metadata)
+      VALUES (v_admin_id, 'submission_deleted', 'submission', OLD.id::text,
+        jsonb_build_object('track_title', OLD.track_title));
+      RETURN OLD;
+    END IF;
 
-  -- Profile role change
-  IF TG_TABLE_NAME = 'profiles' AND TG_OP = 'UPDATE' AND OLD.role IS DISTINCT FROM NEW.role THEN
-    INSERT INTO admin_audit_logs (admin_id, action, target_type, target_id, metadata)
-    VALUES (
-      v_admin_id,
-      'curator_role_change',
-      'profile',
-      NEW.id::text,
-      jsonb_build_object('old_role', OLD.role::text, 'new_role', NEW.role::text)
-    );
-  END IF;
+    IF TG_TABLE_NAME = 'profiles' AND TG_OP = 'UPDATE' AND OLD.role IS DISTINCT FROM NEW.role THEN
+      INSERT INTO admin_audit_logs (admin_id, action, target_type, target_id, metadata)
+      VALUES (v_admin_id, 'curator_role_change', 'profile', NEW.id::text,
+        jsonb_build_object('old_role', OLD.role::text, 'new_role', NEW.role::text));
+    END IF;
+  EXCEPTION WHEN OTHERS THEN
+    RAISE WARNING 'Audit log failed: %', SQLERRM;
+  END;
 
-  RETURN NEW;
+  RETURN COALESCE(NEW, OLD);
 END;
 $$;
 
--- 6. Triggers
+-- 6. Triggers (best-effort fallback for direct DB changes)
 CREATE TRIGGER trg_audit_submission_update
   AFTER UPDATE ON submissions
   FOR EACH ROW

@@ -14,6 +14,7 @@ import {
   useSentryIssues,
   useTableInspector,
   useAuditLogs,
+  type InspectableTable,
 } from '@/hooks/use-debug';
 import type { AuditAction } from '@/types/database';
 import {
@@ -138,7 +139,7 @@ function SystemHealthTab() {
 // Data Inspector Tab
 // ──────────────────────────────────────────────
 
-const INSPECTABLE_TABLES = [
+const INSPECTABLE_TABLES: InspectableTable[] = [
   'profiles',
   'submissions',
   'reviews',
@@ -146,9 +147,7 @@ const INSPECTABLE_TABLES = [
   'votes',
   'curator_payouts',
   'charts',
-] as const;
-
-type InspectableTable = (typeof INSPECTABLE_TABLES)[number];
+];
 
 function DataInspectorTab() {
   const [table, setTable] = useState<InspectableTable>('submissions');
