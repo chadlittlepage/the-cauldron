@@ -7,7 +7,7 @@ import { createRateLimiter, rateLimitResponse } from '../_shared/rate-limit.ts';
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, { apiVersion: '2024-04-10' });
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-const corsOrigin = corsOrigin;
+const corsOrigin = Deno.env.get('APP_URL') || '*';
 
 // 5 checkout sessions per user per minute
 const checkoutLimiter = createRateLimiter(60_000, 5);

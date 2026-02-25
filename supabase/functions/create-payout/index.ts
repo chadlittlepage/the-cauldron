@@ -5,7 +5,7 @@ import { createRateLimiter, rateLimitResponse } from '../_shared/rate-limit.ts';
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-const corsOrigin = corsOrigin;
+const corsOrigin = Deno.env.get('APP_URL') || '*';
 
 // 10 payouts per admin per minute
 const payoutLimiter = createRateLimiter(60_000, 10);
