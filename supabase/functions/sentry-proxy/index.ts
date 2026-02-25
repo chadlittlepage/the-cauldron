@@ -1,6 +1,4 @@
-import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { captureException } from '../_shared/sentry.ts';
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -8,19 +6,19 @@ const sentryAuthToken = Deno.env.get('SENTRY_AUTH_TOKEN') ?? '';
 const sentryOrg = 'cell-division';
 const sentryProject = 'hexwave';
 
-serve(async (req: Request) => {
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*',
-    'Access-Control-Allow-Headers': 'authorization, content-type',
-    'Access-Control-Allow-Methods': 'GET',
-  };
+const corsHeaders = {
+  'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*',
+  'Access-Control-Allow-Headers': 'authorization, content-type, apikey, x-client-info',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
 
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Verify caller is admin
+    // Verify caller is admin using the user's JWT from the request
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Missing auth token' }), {
@@ -29,12 +27,13 @@ serve(async (req: Request) => {
       });
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Invalid auth token' }), {
+      return new Response(JSON.stringify({ error: 'Invalid auth token', detail: authError?.message }), {
         status: 401,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
@@ -96,7 +95,7 @@ serve(async (req: Request) => {
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   } catch (err) {
-    await captureException(err, { function: 'sentry-proxy' });
+    console.error('sentry-proxy error:', err);
     return new Response(JSON.stringify({ error: (err as Error).message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },

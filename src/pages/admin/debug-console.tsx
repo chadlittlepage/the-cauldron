@@ -21,6 +21,7 @@ import {
   Bug,
   Search,
   ExternalLink,
+  AlertTriangle,
 } from 'lucide-react';
 
 // ──────────────────────────────────────────────
@@ -30,6 +31,7 @@ import {
 function SystemHealthTab() {
   const supaHealth = useSupabaseHealth();
   const edgeHealth = useEdgeFunctionHealth();
+  const [sentryCountdown, setSentryCountdown] = useState<number | null>(null);
   const sentry = useSentryIssues();
 
   return (
@@ -78,7 +80,70 @@ function SystemHealthTab() {
 
       {/* Sentry Issues */}
       <section>
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-hex-muted mb-3">Sentry Issues</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-hex-muted">Sentry Issues</h3>
+          {sentryCountdown !== null ? (
+            <div className="flex items-center gap-2">
+              <div className="h-1.5 w-28 rounded-full bg-white/10 overflow-hidden">
+                <div
+                  className="h-full bg-accent-orange rounded-full transition-all duration-1000 ease-linear"
+                  style={{ width: `${(sentryCountdown / 30) * 100}%` }}
+                />
+              </div>
+              <span className="text-xs text-hex-muted tabular-nums">{sentryCountdown}s</span>
+            </div>
+          ) : (
+            <button
+              onClick={async () => {
+                try {
+                  const dsn = import.meta.env.VITE_SENTRY_DSN;
+                  if (!dsn) return;
+                  const dsnUrl = new URL(dsn);
+                  const projectId = dsnUrl.pathname.replace('/', '');
+                  const publicKey = dsnUrl.username;
+                  const host = dsnUrl.host;
+
+                  await fetch(`https://${host}/api/${projectId}/store/?sentry_key=${publicKey}&sentry_version=7`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      event_id: crypto.randomUUID().replace(/-/g, ''),
+                      timestamp: new Date().toISOString(),
+                      platform: 'javascript',
+                      level: 'error',
+                      exception: {
+                        values: [{
+                          type: 'Error',
+                          value: 'Test error from Debug Console',
+                          mechanism: { type: 'generic', handled: true },
+                        }],
+                      },
+                      tags: { source: 'debug-console' },
+                    }),
+                  });
+
+                  setSentryCountdown(30);
+                  const interval = setInterval(() => {
+                    setSentryCountdown((prev) => {
+                      if (prev === null || prev <= 1) {
+                        clearInterval(interval);
+                        sentry.refetch();
+                        return null;
+                      }
+                      return prev - 1;
+                    });
+                  }, 1000);
+                } catch {
+                  // silently fail
+                }
+              }}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-accent-orange/10 px-3 py-1.5 text-xs font-medium text-accent-orange hover:bg-accent-orange/20 transition-colors"
+            >
+              <AlertTriangle className="h-3 w-3" />
+              Send Test Error
+            </button>
+          )}
+        </div>
         {sentry.isLoading ? (
           <SkeletonTable rows={3} />
         ) : sentry.isError ? (

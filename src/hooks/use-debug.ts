@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
 import { ITEMS_PER_PAGE } from '@/lib/constants';
@@ -21,31 +21,38 @@ export function useSupabaseHealth() {
   });
 }
 
+interface SentryIssue {
+  id: string;
+  title: string;
+  culprit: string;
+  count: string;
+  firstSeen: string;
+  lastSeen: string;
+  level: string;
+  permalink: string;
+}
+
 export function useEdgeFunctionHealth() {
   return useQuery({
     queryKey: queryKeys.debug.edgeFunctionHealth(),
     queryFn: async () => {
-      const results = await Promise.all(
-        EDGE_FUNCTIONS.map(async (name) => {
-          const start = performance.now();
-          try {
-            const { error } = await supabase.functions.invoke(name, {
-              method: 'POST',
-              body: {},
-            });
-            const latencyMs = Math.round(performance.now() - start);
-            // Any response (even auth errors) means the function is deployed and reachable
-            // Only treat network-level failures as errors
-            const isNetworkError = error?.message?.includes('Failed to fetch') ||
-              error?.message?.includes('NetworkError');
-            return { name, status: isNetworkError ? 'error' : 'ok', latencyMs } as const;
-          } catch {
-            const latencyMs = Math.round(performance.now() - start);
-            return { name, status: 'error' as const, latencyMs };
-          }
-        }),
-      );
-      return results;
+      const baseUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
+      const start = performance.now();
+      let reachable = false;
+      try {
+        const res = await fetch(`${baseUrl}/sentry-proxy`, { method: 'POST', mode: 'no-cors' });
+        // Opaque response (type 'opaque') still means the endpoint is reachable
+        reachable = res.type === 'opaque' || res.ok;
+      } catch {
+        // Network error means edge functions are unreachable
+      }
+      const latencyMs = Math.round(performance.now() - start);
+
+      return EDGE_FUNCTIONS.map((name) => ({
+        name,
+        status: reachable ? 'ok' as const : 'error' as const,
+        latencyMs,
+      }));
     },
     refetchInterval: 30_000,
   });
@@ -57,16 +64,7 @@ export function useSentryIssues() {
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke('sentry-proxy');
       if (error) throw new Error(error.message);
-      return data as Array<{
-        id: string;
-        title: string;
-        culprit: string;
-        count: string;
-        firstSeen: string;
-        lastSeen: string;
-        level: string;
-        permalink: string;
-      }>;
+      return data as SentryIssue[];
     },
   });
 }
@@ -127,30 +125,3 @@ export function useAuditLogs(opts: { action?: AuditAction; page?: number } = {})
   });
 }
 
-export function useLogAuditAction() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (entry: {
-      action: AuditAction;
-      target_type: string;
-      target_id: string;
-      metadata?: Record<string, unknown>;
-    }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
-      const { error } = await supabase.from('admin_audit_logs').insert({
-        admin_id: user.id,
-        action: entry.action,
-        target_type: entry.target_type,
-        target_id: entry.target_id,
-        metadata: entry.metadata ?? {},
-      });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['debug', 'auditLogs'] });
-    },
-  });
-}

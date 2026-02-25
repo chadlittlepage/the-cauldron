@@ -72,7 +72,7 @@
 | Platform | React |
 | Features | Error Monitoring, Session Replay (100% on error, 10% baseline), Performance Tracing (20% prod), Web Vitals (LCP, CLS, FID) |
 | Source Maps | Uploaded via `@sentry/vite-plugin` on production builds, deleted from dist after upload |
-| Edge Functions | All 4 Edge Functions report errors to Sentry via lightweight envelope API (`_shared/sentry.ts`) |
+| Edge Functions | 4 Edge Functions report errors to Sentry via lightweight envelope API (`_shared/sentry.ts`); `sentry-proxy` proxies Sentry Issues API for Debug Console |
 | Web Vitals | Core Web Vitals (LCP, CLS, FID) reported to Sentry via PerformanceObserver in `src/lib/web-vitals.ts` |
 | Enabled | Production only (`import.meta.env.PROD`) |
 
@@ -164,6 +164,7 @@
 | Manage Curators | `Manage Curators — hexwave` |
 | Manage Payouts | `Manage Payouts — hexwave` |
 | Analytics | `Analytics — hexwave` |
+| Debug Console | `Debug Console — hexwave` |
 | Profile Settings | `Profile Settings — hexwave` |
 | About | `About — hexwave` |
 | Terms | `Terms of Service — hexwave` |
@@ -195,17 +196,16 @@
 ## Debug Console (`/admin/debug`)
 | Tab | Features |
 |-----|----------|
-| System Health | Supabase connection status (green/red dot + latency, auto-refresh 30s), Edge Function status grid (create-checkout, stripe-webhook, create-payout, generate-charts — each with status + latency), Sentry recent unresolved issues (title, event count, last seen) with fallback link |
+| System Health | Supabase connection status (green/red dot + latency, auto-refresh 30s), Edge Function status grid (create-checkout, stripe-webhook, create-payout, generate-charts — reachability + latency), Sentry recent unresolved issues (title, event count, last seen) with "Send Test Error" button (30s countdown + auto-refresh) and fallback link |
 | Data Inspector | Table selector dropdown (profiles, submissions, reviews, payments, votes, curator_payouts, charts), search by ID, dynamic columns via Object.keys, paginated DataTable |
 | Audit Trail | Filter by action type (status change, role change, payout created, profile updated, submission deleted, manual action), DataTable with admin name, action, target, expandable JSON metadata, timestamp, pagination |
 
 | Audit Logging | Mechanism |
 |---------------|-----------|
-| Submission status change | DB trigger (automatic) |
+| Submission status change | Client-side insert in `useUpdateSubmissionStatus` (primary) + DB trigger (fallback) |
 | Submission deletion | DB trigger (automatic) |
 | Profile role change | DB trigger (automatic) |
 | Payout creation | Direct insert in create-payout Edge Function |
-| Manual admin actions | Client-side `useLogAuditAction` mutation |
 
 ## Test Coverage
 | Test File | Tests | What's Covered |
