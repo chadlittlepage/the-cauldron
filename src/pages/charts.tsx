@@ -27,7 +27,9 @@ export function ChartsPage() {
   const { data: entries, isLoading, isError, error } = useCharts(chartType, period);
 
   const availablePeriods =
-    chartType === 'monthly' ? periods?.monthly ?? [current.month] : periods?.yearly ?? [current.year];
+    chartType === 'monthly'
+      ? (periods?.monthly ?? [current.month])
+      : (periods?.yearly ?? [current.year]);
 
   return (
     <div className="relative">
@@ -84,7 +86,9 @@ export function ChartsPage() {
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <Alert variant="error" className="max-w-md">
               <AlertTitle>Something went wrong</AlertTitle>
-              <AlertDescription>{error instanceof Error ? error.message : 'Failed to load charts'}</AlertDescription>
+              <AlertDescription>
+                {error instanceof Error ? error.message : 'Failed to load charts'}
+              </AlertDescription>
             </Alert>
           </div>
         ) : isLoading ? (
@@ -99,13 +103,16 @@ export function ChartsPage() {
             description="Charts are generated at the end of each month based on community votes."
           />
         ) : (
-          <ChartTable entries={entries.map((e) => ({
-            id: e.id,
-            submission_id: e.submission_id,
-            rank: e.rank,
-            vote_count: e.vote_count,
-            submissions: e.submissions,
-          }))} className="mt-2" />
+          <ChartTable
+            entries={entries.map((e) => ({
+              id: e.id,
+              submission_id: e.submission_id,
+              rank: e.rank,
+              vote_count: e.vote_count,
+              submissions: e.submissions,
+            }))}
+            className="mt-2"
+          />
         )}
       </div>
     </div>

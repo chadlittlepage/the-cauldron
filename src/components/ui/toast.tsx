@@ -25,7 +25,12 @@ export function Toast({ message, variant, onDismiss }: ToastProps) {
       )}
     >
       <span className="flex-1">{message}</span>
-      <button type="button" onClick={onDismiss} className="text-hex-muted hover:text-hex-text transition-colors" aria-label="Dismiss notification">
+      <button
+        type="button"
+        onClick={onDismiss}
+        className="text-hex-muted hover:text-hex-text transition-colors"
+        aria-label="Dismiss notification"
+      >
         <X className="h-4 w-4" />
       </button>
     </div>

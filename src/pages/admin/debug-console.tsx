@@ -17,12 +17,7 @@ import {
   type InspectableTable,
 } from '@/hooks/use-debug';
 import type { AuditAction } from '@/types/database';
-import {
-  Bug,
-  Search,
-  ExternalLink,
-  AlertTriangle,
-} from 'lucide-react';
+import { Bug, Search, ExternalLink, AlertTriangle } from 'lucide-react';
 
 // ──────────────────────────────────────────────
 // System Health Tab
@@ -38,7 +33,9 @@ function SystemHealthTab() {
     <div className="space-y-8">
       {/* Supabase connection */}
       <section>
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-hex-muted mb-3">Supabase Connection</h3>
+        <h3 className="text-sm font-semibold uppercase tracking-wider text-hex-muted mb-3">
+          Supabase Connection
+        </h3>
         <div className="glass-card rounded-xl p-4 flex items-center gap-3">
           <span
             className={`h-3 w-3 rounded-full ${supaHealth.data?.connected ? 'bg-success shadow-sm shadow-success/40' : 'bg-error shadow-sm shadow-error/40'}`}
@@ -51,37 +48,43 @@ function SystemHealthTab() {
                 : 'Disconnected'}
           </span>
           {supaHealth.data?.latencyMs != null && (
-            <Badge variant="outline" className="ml-auto">{supaHealth.data.latencyMs}ms</Badge>
+            <Badge variant="outline" className="ml-auto">
+              {supaHealth.data.latencyMs}ms
+            </Badge>
           )}
         </div>
       </section>
 
       {/* Edge Functions */}
       <section>
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-hex-muted mb-3">Edge Functions</h3>
+        <h3 className="text-sm font-semibold uppercase tracking-wider text-hex-muted mb-3">
+          Edge Functions
+        </h3>
         <div className="grid gap-3 sm:grid-cols-2">
-          {edgeHealth.isLoading ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="glass-card rounded-xl p-4 animate-pulse h-14" />
-            ))
-          ) : (
-            edgeHealth.data?.map((fn) => (
-              <div key={fn.name} className="glass-card rounded-xl p-4 flex items-center gap-3">
-                <span
-                  className={`h-3 w-3 rounded-full ${fn.status === 'ok' ? 'bg-success shadow-sm shadow-success/40' : 'bg-error shadow-sm shadow-error/40'}`}
-                />
-                <span className="text-sm font-medium font-mono">{fn.name}</span>
-                <Badge variant="outline" className="ml-auto">{fn.latencyMs}ms</Badge>
-              </div>
-            ))
-          )}
+          {edgeHealth.isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="glass-card rounded-xl p-4 animate-pulse h-14" />
+              ))
+            : edgeHealth.data?.map((fn) => (
+                <div key={fn.name} className="glass-card rounded-xl p-4 flex items-center gap-3">
+                  <span
+                    className={`h-3 w-3 rounded-full ${fn.status === 'ok' ? 'bg-success shadow-sm shadow-success/40' : 'bg-error shadow-sm shadow-error/40'}`}
+                  />
+                  <span className="text-sm font-medium font-mono">{fn.name}</span>
+                  <Badge variant="outline" className="ml-auto">
+                    {fn.latencyMs}ms
+                  </Badge>
+                </div>
+              ))}
         </div>
       </section>
 
       {/* Sentry Issues */}
       <section>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-hex-muted">Sentry Issues</h3>
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-hex-muted">
+            Sentry Issues
+          </h3>
           {sentryCountdown !== null ? (
             <div className="flex items-center gap-2">
               <div className="h-1.5 w-28 rounded-full bg-white/10 overflow-hidden">
@@ -103,24 +106,29 @@ function SystemHealthTab() {
                   const publicKey = dsnUrl.username;
                   const host = dsnUrl.host;
 
-                  await fetch(`https://${host}/api/${projectId}/store/?sentry_key=${publicKey}&sentry_version=7`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      event_id: crypto.randomUUID().replace(/-/g, ''),
-                      timestamp: new Date().toISOString(),
-                      platform: 'javascript',
-                      level: 'error',
-                      exception: {
-                        values: [{
-                          type: 'Error',
-                          value: 'Test error from Debug Console',
-                          mechanism: { type: 'generic', handled: true },
-                        }],
-                      },
-                      tags: { source: 'debug-console' },
-                    }),
-                  });
+                  await fetch(
+                    `https://${host}/api/${projectId}/store/?sentry_key=${publicKey}&sentry_version=7`,
+                    {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        event_id: crypto.randomUUID().replace(/-/g, ''),
+                        timestamp: new Date().toISOString(),
+                        platform: 'javascript',
+                        level: 'error',
+                        exception: {
+                          values: [
+                            {
+                              type: 'Error',
+                              value: 'Test error from Debug Console',
+                              mechanism: { type: 'generic', handled: true },
+                            },
+                          ],
+                        },
+                        tags: { source: 'debug-console' },
+                      }),
+                    },
+                  );
 
                   setSentryCountdown(30);
                   const interval = setInterval(() => {
@@ -231,7 +239,8 @@ function DataInspectorTab() {
           accessor: (row: Record<string, unknown>) => {
             const val = row[key];
             if (val === null) return <span className="text-hex-muted italic">null</span>;
-            if (typeof val === 'object') return <code className="text-xs">{JSON.stringify(val)}</code>;
+            if (typeof val === 'object')
+              return <code className="text-xs">{JSON.stringify(val)}</code>;
             return String(val);
           },
           className: 'max-w-[200px] truncate',
@@ -251,7 +260,9 @@ function DataInspectorTab() {
           className="sm:w-48"
         >
           {INSPECTABLE_TABLES.map((t) => (
-            <option key={t} value={t}>{t}</option>
+            <option key={t} value={t}>
+              {t}
+            </option>
           ))}
         </Select>
         <Input
@@ -269,7 +280,11 @@ function DataInspectorTab() {
       {isLoading ? (
         <SkeletonTable rows={5} />
       ) : isError ? (
-        <QueryError error={error} fallbackMessage="Failed to load table data" onRetry={() => refetch()} />
+        <QueryError
+          error={error}
+          fallbackMessage="Failed to load table data"
+          onRetry={() => refetch()}
+        />
       ) : data?.data && data.data.length > 0 ? (
         <>
           <div className="overflow-x-auto">
@@ -279,7 +294,12 @@ function DataInspectorTab() {
               keyExtractor={(row) => String((row as Record<string, unknown>).id ?? Math.random())}
             />
           </div>
-          <Pagination page={page} totalPages={data.totalPages} onPageChange={setPage} className="mt-4" />
+          <Pagination
+            page={page}
+            totalPages={data.totalPages}
+            onPageChange={setPage}
+            className="mt-4"
+          />
         </>
       ) : (
         <div className="glass-card rounded-xl p-8 text-center">
@@ -336,14 +356,20 @@ function AuditTrailTab() {
         className="sm:w-56"
       >
         {AUDIT_ACTIONS.map((a) => (
-          <option key={a.value} value={a.value}>{a.label}</option>
+          <option key={a.value} value={a.value}>
+            {a.label}
+          </option>
         ))}
       </Select>
 
       {isLoading ? (
         <SkeletonTable rows={5} />
       ) : isError ? (
-        <QueryError error={error} fallbackMessage="Failed to load audit logs" onRetry={() => refetch()} />
+        <QueryError
+          error={error}
+          fallbackMessage="Failed to load audit logs"
+          onRetry={() => refetch()}
+        />
       ) : data?.data && data.data.length > 0 ? (
         <>
           <DataTable
@@ -406,7 +432,12 @@ function AuditTrailTab() {
             </div>
           )}
 
-          <Pagination page={page} totalPages={data.totalPages} onPageChange={setPage} className="mt-4" />
+          <Pagination
+            page={page}
+            totalPages={data.totalPages}
+            onPageChange={setPage}
+            className="mt-4"
+          />
         </>
       ) : (
         <div className="glass-card rounded-xl p-8 text-center">

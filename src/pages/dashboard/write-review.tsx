@@ -34,7 +34,9 @@ export function WriteReviewPage() {
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Alert variant="error" className="max-w-md">
           <AlertTitle>Something went wrong</AlertTitle>
-          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load track for review'}</AlertDescription>
+          <AlertDescription>
+            {error instanceof Error ? error.message : 'Failed to load track for review'}
+          </AlertDescription>
         </Alert>
       </div>
     );

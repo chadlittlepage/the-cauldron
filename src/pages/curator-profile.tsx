@@ -26,7 +26,9 @@ export function CuratorProfilePage() {
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Alert variant="error" className="max-w-md">
           <AlertTitle>Something went wrong</AlertTitle>
-          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load curator profile'}</AlertDescription>
+          <AlertDescription>
+            {error instanceof Error ? error.message : 'Failed to load curator profile'}
+          </AlertDescription>
         </Alert>
       </div>
     );
@@ -65,9 +67,15 @@ export function CuratorProfilePage() {
         {reviews?.length ? (
           <div className="mt-6 space-y-4">
             {reviews.map((review) => {
-              const submission = review.submissions as { track_title: string; genre: string } | null;
+              const submission = review.submissions as {
+                track_title: string;
+                genre: string;
+              } | null;
               return (
-                <div key={review.id} className="rounded-lg border border-hex-border bg-hex-card p-5">
+                <div
+                  key={review.id}
+                  className="rounded-lg border border-hex-border bg-hex-card p-5"
+                >
                   <div className="flex items-center justify-between">
                     <Link
                       to={`/track/${review.submission_id}`}

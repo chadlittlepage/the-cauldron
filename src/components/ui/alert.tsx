@@ -3,22 +3,19 @@ import type { HTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-const alertVariants = cva(
-  'relative w-full rounded-lg border p-4 text-sm',
-  {
-    variants: {
-      variant: {
-        default: 'border-hex-border bg-hex-surface text-hex-text',
-        success: 'border-success/50 bg-success/10 text-success',
-        warning: 'border-warning/50 bg-warning/10 text-warning',
-        error: 'border-error/50 bg-error/10 text-error',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
+const alertVariants = cva('relative w-full rounded-lg border p-4 text-sm', {
+  variants: {
+    variant: {
+      default: 'border-hex-border bg-hex-surface text-hex-text',
+      success: 'border-success/50 bg-success/10 text-success',
+      warning: 'border-warning/50 bg-warning/10 text-warning',
+      error: 'border-error/50 bg-error/10 text-error',
     },
   },
-);
+  defaultVariants: {
+    variant: 'default',
+  },
+});
 
 interface AlertProps extends HTMLAttributes<HTMLDivElement>, VariantProps<typeof alertVariants> {}
 
@@ -29,7 +26,11 @@ Alert.displayName = 'Alert';
 
 const AlertTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    <h5 ref={ref} className={cn('mb-1 font-medium leading-none tracking-tight', className)} {...props} />
+    <h5
+      ref={ref}
+      className={cn('mb-1 font-medium leading-none tracking-tight', className)}
+      {...props}
+    />
   ),
 );
 AlertTitle.displayName = 'AlertTitle';

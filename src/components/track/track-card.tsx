@@ -66,9 +66,7 @@ export const TrackCard = memo(function TrackCard({
             <Badge variant="outline" className={platformColors[platform]}>
               {platform}
             </Badge>
-            <Badge variant={statusVariant[status]}>
-              {status.replace('_', ' ')}
-            </Badge>
+            <Badge variant={statusVariant[status]}>{status.replace('_', ' ')}</Badge>
           </div>
         </div>
 

@@ -31,10 +31,7 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<
-          Database['public']['Tables']['profiles']['Row'],
-          'created_at' | 'updated_at'
-        >;
+        Insert: Omit<Database['public']['Tables']['profiles']['Row'], 'created_at' | 'updated_at'>;
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>;
         Relationships: [];
       };
@@ -198,10 +195,7 @@ export interface Database {
           metadata: Record<string, unknown>;
           created_at: string;
         };
-        Insert: Omit<
-          Database['public']['Tables']['admin_audit_logs']['Row'],
-          'id' | 'created_at'
-        >;
+        Insert: Omit<Database['public']['Tables']['admin_audit_logs']['Row'], 'id' | 'created_at'>;
         Update: Partial<Database['public']['Tables']['admin_audit_logs']['Insert']>;
         Relationships: [
           {

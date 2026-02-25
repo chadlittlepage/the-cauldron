@@ -32,7 +32,11 @@ export function ReviewQueuePage() {
         <p className="text-hex-muted mb-8">Tracks waiting for your expert review</p>
 
         {isError ? (
-          <QueryError error={error} fallbackMessage="Failed to load review queue" onRetry={() => refetch()} />
+          <QueryError
+            error={error}
+            fallbackMessage="Failed to load review queue"
+            onRetry={() => refetch()}
+          />
         ) : isLoading ? (
           <SkeletonTable rows={5} />
         ) : !queue?.length ? (

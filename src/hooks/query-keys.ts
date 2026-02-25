@@ -46,7 +46,6 @@ export const queryKeys = {
     sentryIssues: () => ['debug', 'sentryIssues'] as const,
     tableData: (table: string, opts?: { id?: string; page?: number }) =>
       ['debug', 'tableData', table, opts] as const,
-    auditLogs: (opts?: { action?: string; page?: number }) =>
-      ['debug', 'auditLogs', opts] as const,
+    auditLogs: (opts?: { action?: string; page?: number }) => ['debug', 'auditLogs', opts] as const,
   },
 } as const;

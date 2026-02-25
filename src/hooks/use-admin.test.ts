@@ -41,7 +41,11 @@ function createWrapper() {
 
 function mockQueryBuilder(result: { data: unknown; error: unknown; count?: number | null }) {
   const resolvedResult = { ...result, count: result.count ?? null };
-  const builder: Record<string, ReturnType<typeof vi.fn> | ((r: (v: unknown) => void, j?: (e: unknown) => void) => Promise<unknown>)> = {
+  const builder: Record<
+    string,
+    | ReturnType<typeof vi.fn>
+    | ((r: (v: unknown) => void, j?: (e: unknown) => void) => Promise<unknown>)
+  > = {
     then: (resolve: (v: unknown) => void, reject?: (e: unknown) => void) =>
       Promise.resolve(resolvedResult).then(resolve, reject),
   };
@@ -60,13 +64,18 @@ describe('useAdminStats', () => {
   it('fetches aggregated admin stats', async () => {
     const submissionsResult = { data: null, error: null, count: 42 };
     const curatorsResult = { data: null, error: null, count: 5 };
-    const paymentsResult = { data: [{ amount_cents: 200 }, { amount_cents: 200 }], error: null, count: 2 };
+    const paymentsResult = {
+      data: [{ amount_cents: 200 }, { amount_cents: 200 }],
+      error: null,
+      count: 2,
+    };
 
     // Each Promise.all call gets its own builder, so we return different builders per from() call
     let callCount = 0;
     mockFrom.mockImplementation(() => {
       callCount++;
-      const result = callCount === 1 ? submissionsResult : callCount === 2 ? curatorsResult : paymentsResult;
+      const result =
+        callCount === 1 ? submissionsResult : callCount === 2 ? curatorsResult : paymentsResult;
       const builder: Record<string, unknown> = {
         then: (resolve: (v: unknown) => void, reject?: (e: unknown) => void) =>
           Promise.resolve(result).then(resolve, reject),
@@ -94,7 +103,9 @@ describe('useAdminSubmissions', () => {
     const mockData = [{ id: '1', track_title: 'Track 1' }];
     mockQueryBuilder({ data: mockData, error: null, count: 1 });
 
-    const { result } = renderHook(() => useAdminSubmissions({ page: 1 }), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useAdminSubmissions({ page: 1 }), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({ data: mockData, totalCount: 1, totalPages: 1 });
@@ -104,10 +115,9 @@ describe('useAdminSubmissions', () => {
     const mockData = [{ id: '2', status: 'accepted' }];
     mockQueryBuilder({ data: mockData, error: null, count: 1 });
 
-    const { result } = renderHook(
-      () => useAdminSubmissions({ status: 'accepted', page: 1 }),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useAdminSubmissions({ status: 'accepted', page: 1 }), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data?.data).toEqual(mockData);
@@ -154,7 +164,9 @@ describe('useAdminCurators', () => {
     const mockData = [{ id: 'c-1', display_name: 'Curator 1', role: 'curator' }];
     mockQueryBuilder({ data: mockData, error: null, count: 1 });
 
-    const { result } = renderHook(() => useAdminCurators({ page: 1 }), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useAdminCurators({ page: 1 }), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({ data: mockData, totalCount: 1, totalPages: 1 });

@@ -37,7 +37,9 @@ export function SubmissionDetailPage() {
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Alert variant="error" className="max-w-md">
           <AlertTitle>Something went wrong</AlertTitle>
-          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load submission'}</AlertDescription>
+          <AlertDescription>
+            {error instanceof Error ? error.message : 'Failed to load submission'}
+          </AlertDescription>
         </Alert>
       </div>
     );
@@ -77,9 +79,21 @@ export function SubmissionDetailPage() {
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          <StatCard label="Votes" value={track.vote_count} icon={<ThumbsUp className="h-5 w-5" />} />
-          <StatCard label="Reviews" value={track.review_count} icon={<MessageSquare className="h-5 w-5" />} />
-          <StatCard label="Avg Rating" value={track.avg_rating ?? 'N/A'} icon={<Star className="h-5 w-5" />} />
+          <StatCard
+            label="Votes"
+            value={track.vote_count}
+            icon={<ThumbsUp className="h-5 w-5" />}
+          />
+          <StatCard
+            label="Reviews"
+            value={track.review_count}
+            icon={<MessageSquare className="h-5 w-5" />}
+          />
+          <StatCard
+            label="Avg Rating"
+            value={track.avg_rating ?? 'N/A'}
+            icon={<Star className="h-5 w-5" />}
+          />
         </div>
 
         <div className="mt-8">

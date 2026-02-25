@@ -4,7 +4,9 @@ import { supabase } from '@/lib/supabase';
 export function useCheckout() {
   return useMutation({
     mutationFn: async (submissionId: string) => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) throw new Error('Not authenticated');
 
       const response = await supabase.functions.invoke('create-checkout', {

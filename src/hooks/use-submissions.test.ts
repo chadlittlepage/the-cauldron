@@ -16,7 +16,12 @@ vi.mock('@/lib/supabase', () => ({
   },
 }));
 
-import { useSubmissions, useSubmission, useArtistSubmissions, useReviewQueue } from './use-submissions';
+import {
+  useSubmissions,
+  useSubmission,
+  useArtistSubmissions,
+  useReviewQueue,
+} from './use-submissions';
 
 function createWrapper() {
   const queryClient = new QueryClient({
@@ -31,7 +36,11 @@ function createWrapper() {
  * builder, and `await builder` resolves the query. */
 function mockQueryBuilder(result: { data: unknown; error: unknown; count?: number | null }) {
   const resolvedResult = { ...result, count: result.count ?? null };
-  const builder: Record<string, ReturnType<typeof vi.fn> | ((r: (v: unknown) => void, j?: (e: unknown) => void) => Promise<unknown>)> = {
+  const builder: Record<
+    string,
+    | ReturnType<typeof vi.fn>
+    | ((r: (v: unknown) => void, j?: (e: unknown) => void) => Promise<unknown>)
+  > = {
     then: (resolve: (v: unknown) => void, reject?: (e: unknown) => void) =>
       Promise.resolve(resolvedResult).then(resolve, reject),
   };
@@ -68,10 +77,9 @@ describe('useSubmissions', () => {
     const filtered = [{ id: '1', track_title: 'Electronic Track', genre: 'electronic' }];
     mockQueryBuilder({ data: filtered, error: null, count: 1 });
 
-    const { result } = renderHook(
-      () => useSubmissions({ genre: 'electronic', page: 1 }),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useSubmissions({ genre: 'electronic', page: 1 }), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data?.data).toEqual(filtered);
@@ -82,10 +90,9 @@ describe('useSubmissions', () => {
     const filtered = [{ id: '2', track_title: 'Pending Track', status: 'pending' }];
     mockQueryBuilder({ data: filtered, error: null, count: 1 });
 
-    const { result } = renderHook(
-      () => useSubmissions({ status: 'pending', page: 1 }),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useSubmissions({ status: 'pending', page: 1 }), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data?.data).toEqual(filtered);
@@ -133,14 +140,18 @@ describe('useArtistSubmissions', () => {
     const mockData = [{ id: '1', track_title: 'My Track', artist_id: 'user-1' }];
     mockQueryBuilder({ data: mockData, error: null });
 
-    const { result } = renderHook(() => useArtistSubmissions('user-1'), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useArtistSubmissions('user-1'), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockData);
   });
 
   it('is disabled when artistId is undefined', () => {
-    const { result } = renderHook(() => useArtistSubmissions(undefined), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useArtistSubmissions(undefined), {
+      wrapper: createWrapper(),
+    });
     expect(result.current.fetchStatus).toBe('idle');
   });
 });

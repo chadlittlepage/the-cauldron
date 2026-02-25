@@ -14,7 +14,10 @@ export function ManageSubmissionsPage() {
   useDocumentTitle('Manage Submissions');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError, error, refetch } = useAdminSubmissions({ status: statusFilter || undefined, page });
+  const { data, isLoading, isError, error, refetch } = useAdminSubmissions({
+    status: statusFilter || undefined,
+    page,
+  });
   const updateStatus = useUpdateSubmissionStatus();
 
   return (
@@ -24,18 +27,27 @@ export function ManageSubmissionsPage() {
       <div className="mt-6 flex gap-4">
         <Select
           value={statusFilter}
-          onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+          onChange={(e) => {
+            setStatusFilter(e.target.value);
+            setPage(1);
+          }}
           className="w-48"
         >
           <option value="">All statuses</option>
           {STATUSES.map((s) => (
-            <option key={s.value} value={s.value}>{s.label}</option>
+            <option key={s.value} value={s.value}>
+              {s.label}
+            </option>
           ))}
         </Select>
       </div>
 
       {isError ? (
-        <QueryError error={error} fallbackMessage="Failed to load submissions" onRetry={() => refetch()} />
+        <QueryError
+          error={error}
+          fallbackMessage="Failed to load submissions"
+          onRetry={() => refetch()}
+        />
       ) : isLoading ? (
         <SkeletonTable rows={5} />
       ) : (
@@ -75,7 +87,9 @@ export function ManageSubmissionsPage() {
                     className="w-32"
                   >
                     {STATUSES.map((s) => (
-                      <option key={s.value} value={s.value}>{s.label}</option>
+                      <option key={s.value} value={s.value}>
+                        {s.label}
+                      </option>
                     ))}
                   </Select>
                 ),
@@ -91,7 +105,12 @@ export function ManageSubmissionsPage() {
               },
             ]}
           />
-          <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} className="mt-6" />
+          <Pagination
+            page={page}
+            totalPages={data?.totalPages ?? 1}
+            onPageChange={setPage}
+            className="mt-6"
+          />
         </>
       )}
     </div>

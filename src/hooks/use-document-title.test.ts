@@ -25,10 +25,9 @@ describe('useDocumentTitle', () => {
   });
 
   it('updates title on re-render with new value', () => {
-    const { rerender } = renderHook(
-      ({ title }: { title?: string }) => useDocumentTitle(title),
-      { initialProps: { title: 'Page A' } },
-    );
+    const { rerender } = renderHook(({ title }: { title?: string }) => useDocumentTitle(title), {
+      initialProps: { title: 'Page A' },
+    });
     expect(document.title).toBe('Page A — hexwave');
 
     rerender({ title: 'Page B' });

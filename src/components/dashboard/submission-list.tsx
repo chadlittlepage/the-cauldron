@@ -40,9 +40,7 @@ export function SubmissionList({
                 </h3>
                 <div className="mt-1.5 flex gap-2">
                   <Badge variant="outline">{sub.genre}</Badge>
-                  <Badge variant={statusVariant[sub.status]}>
-                    {sub.status.replace('_', ' ')}
-                  </Badge>
+                  <Badge variant={statusVariant[sub.status]}>{sub.status.replace('_', ' ')}</Badge>
                 </div>
               </div>
             </div>

@@ -43,7 +43,9 @@ describe('useSubmissionReviews', () => {
     mockEq.mockReturnValue({ order: mockOrder });
     mockSelect.mockReturnValue({ eq: mockEq });
 
-    const { result } = renderHook(() => useSubmissionReviews('sub-1'), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useSubmissionReviews('sub-1'), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockData);
@@ -54,14 +56,18 @@ describe('useSubmissionReviews', () => {
     mockEq.mockReturnValue({ order: mockOrder });
     mockSelect.mockReturnValue({ eq: mockEq });
 
-    const { result } = renderHook(() => useSubmissionReviews('sub-empty'), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useSubmissionReviews('sub-empty'), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual([]);
   });
 
   it('is disabled when submissionId is undefined', () => {
-    const { result } = renderHook(() => useSubmissionReviews(undefined), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useSubmissionReviews(undefined), {
+      wrapper: createWrapper(),
+    });
 
     expect(result.current.fetchStatus).toBe('idle');
   });
@@ -71,7 +77,9 @@ describe('useSubmissionReviews', () => {
     mockEq.mockReturnValue({ order: mockOrder });
     mockSelect.mockReturnValue({ eq: mockEq });
 
-    const { result } = renderHook(() => useSubmissionReviews('sub-1'), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useSubmissionReviews('sub-1'), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error?.message).toBe('DB error');
@@ -80,14 +88,14 @@ describe('useSubmissionReviews', () => {
 
 describe('useCuratorReviews', () => {
   it('fetches reviews by curator', async () => {
-    const mockData = [
-      { id: 'r1', rating: 5, submissions: { track_title: 'Cool Song' } },
-    ];
+    const mockData = [{ id: 'r1', rating: 5, submissions: { track_title: 'Cool Song' } }];
     mockOrder.mockResolvedValue({ data: mockData, error: null });
     mockEq.mockReturnValue({ order: mockOrder });
     mockSelect.mockReturnValue({ eq: mockEq });
 
-    const { result } = renderHook(() => useCuratorReviews('curator-1'), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useCuratorReviews('curator-1'), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockData);

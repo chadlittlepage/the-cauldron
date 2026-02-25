@@ -90,11 +90,7 @@ export function useCreateSubmission() {
 
   return useMutation({
     mutationFn: async (input: InsertTables<'submissions'>) => {
-      const { data, error } = await supabase
-        .from('submissions')
-        .insert(input)
-        .select()
-        .single();
+      const { data, error } = await supabase.from('submissions').insert(input).select().single();
       if (error) throw error;
       return data;
     },

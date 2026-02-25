@@ -144,9 +144,7 @@ export function SubmitTrackPage() {
             <Headphones className="h-6 w-6 text-accent-purple" />
           </div>
           <h1 className="text-2xl font-bold">Submit a Track</h1>
-          <p className="mt-2 text-sm text-hex-muted">
-            Share your music with the hexwave community
-          </p>
+          <p className="mt-2 text-sm text-hex-muted">Share your music with the hexwave community</p>
         </div>
 
         {/* Step indicator */}
@@ -164,11 +162,7 @@ export function SubmitTrackPage() {
                         : 'border-hex-border text-hex-muted',
                   )}
                 >
-                  {idx < step ? (
-                    <Check className="h-4 w-4" />
-                  ) : (
-                    <s.icon className="h-4 w-4" />
-                  )}
+                  {idx < step ? <Check className="h-4 w-4" /> : <s.icon className="h-4 w-4" />}
                 </div>
                 <span
                   className={cn(

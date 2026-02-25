@@ -13,7 +13,11 @@ Table.displayName = 'Table';
 
 const TableHeader = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
   ({ className, ...props }, ref) => (
-    <thead ref={ref} className={cn('border-b border-hex-border bg-hex-surface/50', className)} {...props} />
+    <thead
+      ref={ref}
+      className={cn('border-b border-hex-border bg-hex-surface/50', className)}
+      {...props}
+    />
   ),
 );
 TableHeader.displayName = 'TableHeader';
@@ -29,7 +33,10 @@ const TableRow = forwardRef<HTMLTableRowElement, HTMLAttributes<HTMLTableRowElem
   ({ className, ...props }, ref) => (
     <tr
       ref={ref}
-      className={cn('border-b border-hex-border/50 transition-colors hover:bg-white/[0.02]', className)}
+      className={cn(
+        'border-b border-hex-border/50 transition-colors hover:bg-white/[0.02]',
+        className,
+      )}
       {...props}
     />
   ),
@@ -40,7 +47,10 @@ const TableHead = forwardRef<HTMLTableCellElement, ThHTMLAttributes<HTMLTableCel
   ({ className, ...props }, ref) => (
     <th
       ref={ref}
-      className={cn('h-11 px-4 text-left align-middle text-xs font-semibold uppercase tracking-wider text-hex-muted', className)}
+      className={cn(
+        'h-11 px-4 text-left align-middle text-xs font-semibold uppercase tracking-wider text-hex-muted',
+        className,
+      )}
       {...props}
     />
   ),

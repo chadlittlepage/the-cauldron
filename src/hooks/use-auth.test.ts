@@ -35,8 +35,7 @@ vi.mock('@/lib/supabase', () => ({
 import { AuthProvider, useAuth } from './use-auth';
 
 function createWrapper() {
-  return ({ children }: { children: ReactNode }) =>
-    createElement(AuthProvider, null, children);
+  return ({ children }: { children: ReactNode }) => createElement(AuthProvider, null, children);
 }
 
 const mockUser = { id: 'user-1', email: 'test@example.com' };
@@ -172,9 +171,9 @@ describe('signIn', () => {
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
-    await expect(
-      act(() => result.current.signIn('test@example.com', 'wrong')),
-    ).rejects.toThrow('Invalid credentials');
+    await expect(act(() => result.current.signIn('test@example.com', 'wrong'))).rejects.toThrow(
+      'Invalid credentials',
+    );
   });
 });
 

@@ -23,7 +23,10 @@ export function AuthCallbackPage() {
       if (code) {
         const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
         if (cancelled) return;
-        if (exchangeError) { setError(exchangeError.message); return; }
+        if (exchangeError) {
+          setError(exchangeError.message);
+          return;
+        }
         navigate('/dashboard', { replace: true });
         return;
       }
@@ -41,14 +44,19 @@ export function AuthCallbackPage() {
             refresh_token: refreshToken,
           });
           if (cancelled) return;
-          if (sessionError) { setError(sessionError.message); return; }
+          if (sessionError) {
+            setError(sessionError.message);
+            return;
+          }
           navigate('/dashboard', { replace: true });
           return;
         }
       }
 
       // Check existing session
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (cancelled) return;
       if (session) {
         navigate('/dashboard', { replace: true });
@@ -56,7 +64,9 @@ export function AuthCallbackPage() {
       }
 
       // Wait for auth state change
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN' && session) {
           subscription.unsubscribe();
           navigate('/dashboard', { replace: true });
@@ -70,7 +80,9 @@ export function AuthCallbackPage() {
     }
 
     handleCallback();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [navigate, searchParams]);
 
   if (error) {

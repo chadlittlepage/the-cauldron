@@ -33,7 +33,10 @@ beforeEach(() => {
 describe('useCheckout', () => {
   it('returns checkout URL on success', async () => {
     mockAuth.getSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } });
-    mockFunctions.invoke.mockResolvedValue({ data: { url: 'https://checkout.stripe.com/pay' }, error: null });
+    mockFunctions.invoke.mockResolvedValue({
+      data: { url: 'https://checkout.stripe.com/pay' },
+      error: null,
+    });
 
     const { result } = renderHook(() => useCheckout(), { wrapper: createWrapper() });
 

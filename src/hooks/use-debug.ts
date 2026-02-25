@@ -4,7 +4,12 @@ import { queryKeys } from './query-keys';
 import { ITEMS_PER_PAGE } from '@/lib/constants';
 import type { AuditAction } from '@/types/database';
 
-const EDGE_FUNCTIONS = ['create-checkout', 'stripe-webhook', 'create-payout', 'generate-charts'] as const;
+const EDGE_FUNCTIONS = [
+  'create-checkout',
+  'stripe-webhook',
+  'create-payout',
+  'generate-charts',
+] as const;
 
 // --- System Health ---
 
@@ -13,7 +18,9 @@ export function useSupabaseHealth() {
     queryKey: queryKeys.debug.supabaseHealth(),
     queryFn: async () => {
       const start = performance.now();
-      const { error } = await supabase.from('profiles').select('id', { count: 'exact', head: true });
+      const { error } = await supabase
+        .from('profiles')
+        .select('id', { count: 'exact', head: true });
       const latencyMs = Math.round(performance.now() - start);
       return { connected: !error, latencyMs };
     },
@@ -50,7 +57,7 @@ export function useEdgeFunctionHealth() {
 
       return EDGE_FUNCTIONS.map((name) => ({
         name,
-        status: reachable ? 'ok' as const : 'error' as const,
+        status: reachable ? ('ok' as const) : ('error' as const),
         latencyMs,
       }));
     },
@@ -71,7 +78,14 @@ export function useSentryIssues() {
 
 // --- Data Inspector ---
 
-export type InspectableTable = 'profiles' | 'submissions' | 'reviews' | 'payments' | 'votes' | 'curator_payouts' | 'charts';
+export type InspectableTable =
+  | 'profiles'
+  | 'submissions'
+  | 'reviews'
+  | 'payments'
+  | 'votes'
+  | 'curator_payouts'
+  | 'charts';
 
 export function useTableInspector(
   table: InspectableTable,
@@ -94,7 +108,11 @@ export function useTableInspector(
 
       const { data, error, count } = await query;
       if (error) throw error;
-      return { data: data ?? [], totalCount: count ?? 0, totalPages: Math.ceil((count ?? 0) / ITEMS_PER_PAGE) };
+      return {
+        data: data ?? [],
+        totalCount: count ?? 0,
+        totalPages: Math.ceil((count ?? 0) / ITEMS_PER_PAGE),
+      };
     },
     enabled: !!table,
   });
@@ -120,8 +138,11 @@ export function useAuditLogs(opts: { action?: AuditAction; page?: number } = {})
 
       const { data, error, count } = await query;
       if (error) throw error;
-      return { data: data ?? [], totalCount: count ?? 0, totalPages: Math.ceil((count ?? 0) / ITEMS_PER_PAGE) };
+      return {
+        data: data ?? [],
+        totalCount: count ?? 0,
+        totalPages: Math.ceil((count ?? 0) / ITEMS_PER_PAGE),
+      };
     },
   });
 }
-

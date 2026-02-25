@@ -31,7 +31,9 @@ export function CheckoutPage() {
       ) : (
         <>
           <Spinner size="lg" />
-          <p className="mt-4 text-hex-muted">Redirecting to payment ({SUBMISSION_FEE_DISPLAY})...</p>
+          <p className="mt-4 text-hex-muted">
+            Redirecting to payment ({SUBMISSION_FEE_DISPLAY})...
+          </p>
         </>
       )}
     </div>

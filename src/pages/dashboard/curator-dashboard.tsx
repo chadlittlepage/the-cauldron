@@ -12,8 +12,20 @@ import { MessageSquare, Star, ListTodo, ArrowRight, Users } from 'lucide-react';
 export function CuratorDashboardPage() {
   useDocumentTitle('Curator Dashboard');
   const { user, profile } = useAuth();
-  const { data: reviews, isLoading: reviewsLoading, isError: reviewsError, error: reviewsErr, refetch: refetchReviews } = useCuratorReviews(user?.id);
-  const { data: queue, isLoading: queueLoading, isError: queueError, error: queueErr, refetch: refetchQueue } = useReviewQueue();
+  const {
+    data: reviews,
+    isLoading: reviewsLoading,
+    isError: reviewsError,
+    error: reviewsErr,
+    refetch: refetchReviews,
+  } = useCuratorReviews(user?.id);
+  const {
+    data: queue,
+    isLoading: queueLoading,
+    isError: queueError,
+    error: queueErr,
+    refetch: refetchQueue,
+  } = useReviewQueue();
 
   if (reviewsLoading || queueLoading) {
     return (
@@ -29,7 +41,10 @@ export function CuratorDashboardPage() {
       <QueryError
         error={err}
         fallbackMessage="Failed to load curator dashboard"
-        onRetry={() => { refetchReviews(); refetchQueue(); }}
+        onRetry={() => {
+          refetchReviews();
+          refetchQueue();
+        }}
       />
     );
   }

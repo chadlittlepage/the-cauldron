@@ -94,7 +94,9 @@ export function Header() {
               </Link>
               <div className="flex items-center gap-3 ml-1 pl-3 border-l border-hex-border">
                 <span className="text-sm font-medium text-hex-text">
-                  {profile?.display_name ?? (user.user_metadata as Record<string, string>).display_name ?? ''}
+                  {profile?.display_name ??
+                    (user.user_metadata as Record<string, string>).display_name ??
+                    ''}
                 </span>
                 <Button
                   variant="ghost"
@@ -168,7 +170,10 @@ export function Header() {
                     Settings
                   </Link>
                   <button
-                    onClick={() => { handleSignOut(); setMobileOpen(false); }}
+                    onClick={() => {
+                      handleSignOut();
+                      setMobileOpen(false);
+                    }}
                     className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-hex-muted hover:text-error hover:bg-white/5"
                   >
                     <LogOut className="h-4 w-4" />

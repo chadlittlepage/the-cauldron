@@ -26,7 +26,11 @@ export function ArtistDashboardPage() {
 
   if (isError) {
     const message = error instanceof Error ? error.message : 'Failed to load dashboard';
-    const isAuthError = message.includes('JWT') || message.includes('token') || message.includes('auth') || message.includes('lock');
+    const isAuthError =
+      message.includes('JWT') ||
+      message.includes('token') ||
+      message.includes('auth') ||
+      message.includes('lock');
 
     if (isAuthError) {
       return (
@@ -42,7 +46,13 @@ export function ArtistDashboardPage() {
       );
     }
 
-    return <QueryError error={error} fallbackMessage="Failed to load dashboard" onRetry={() => refetch()} />;
+    return (
+      <QueryError
+        error={error}
+        fallbackMessage="Failed to load dashboard"
+        onRetry={() => refetch()}
+      />
+    );
   }
 
   const totalVotes = submissions?.reduce((sum, s) => sum + s.vote_count, 0) ?? 0;
@@ -100,11 +110,7 @@ export function ArtistDashboardPage() {
             value={totalVotes}
             icon={<ThumbsUp className="h-5 w-5" />}
           />
-          <StatCard
-            label="Pending Review"
-            value={pending}
-            icon={<Clock className="h-5 w-5" />}
-          />
+          <StatCard label="Pending Review" value={pending} icon={<Clock className="h-5 w-5" />} />
         </div>
 
         {/* Submissions */}

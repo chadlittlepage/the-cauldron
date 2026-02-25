@@ -17,9 +17,13 @@ export function reportWebVitals() {
     // CLS
     const clsObserver = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        Sentry.metrics.distribution('web_vital.cls', (entry as PerformanceEntry & { value: number }).value ?? 0, {
-          unit: 'none',
-        });
+        Sentry.metrics.distribution(
+          'web_vital.cls',
+          (entry as PerformanceEntry & { value: number }).value ?? 0,
+          {
+            unit: 'none',
+          },
+        );
       }
     });
     clsObserver.observe({ type: 'layout-shift', buffered: true });

@@ -38,10 +38,9 @@ describe('useHasVoted', () => {
   it('returns true when user has voted', async () => {
     mockRpc.mockResolvedValue({ data: true, error: null });
 
-    const { result } = renderHook(
-      () => useHasVoted('sub-1', 'user-1'),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useHasVoted('sub-1', 'user-1'), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toBe(true);
@@ -54,10 +53,9 @@ describe('useHasVoted', () => {
   it('returns false when user has not voted', async () => {
     mockRpc.mockResolvedValue({ data: false, error: null });
 
-    const { result } = renderHook(
-      () => useHasVoted('sub-1', 'user-2'),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useHasVoted('sub-1', 'user-2'), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toBe(false);
@@ -66,29 +64,26 @@ describe('useHasVoted', () => {
   it('defaults to false on null response', async () => {
     mockRpc.mockResolvedValue({ data: null, error: null });
 
-    const { result } = renderHook(
-      () => useHasVoted('sub-1', 'user-3'),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useHasVoted('sub-1', 'user-3'), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toBe(false);
   });
 
   it('is disabled when submissionId is undefined', () => {
-    const { result } = renderHook(
-      () => useHasVoted(undefined, 'user-1'),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useHasVoted(undefined, 'user-1'), {
+      wrapper: createWrapper(),
+    });
 
     expect(result.current.fetchStatus).toBe('idle');
   });
 
   it('is disabled when userId is undefined', () => {
-    const { result } = renderHook(
-      () => useHasVoted('sub-1', undefined),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useHasVoted('sub-1', undefined), {
+      wrapper: createWrapper(),
+    });
 
     expect(result.current.fetchStatus).toBe('idle');
   });
@@ -96,10 +91,9 @@ describe('useHasVoted', () => {
   it('propagates RPC errors', async () => {
     mockRpc.mockResolvedValue({ data: null, error: new Error('RPC failed') });
 
-    const { result } = renderHook(
-      () => useHasVoted('sub-1', 'user-1'),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useHasVoted('sub-1', 'user-1'), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error?.message).toBe('RPC failed');

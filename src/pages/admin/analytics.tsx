@@ -19,7 +19,13 @@ export function AnalyticsPage() {
   }
 
   if (isError) {
-    return <QueryError error={error} fallbackMessage="Failed to load analytics" onRetry={() => refetch()} />;
+    return (
+      <QueryError
+        error={error}
+        fallbackMessage="Failed to load analytics"
+        onRetry={() => refetch()}
+      />
+    );
   }
 
   const genreCounts = analytics?.genreBreakdown.map((g) => g.count) ?? [];
@@ -54,7 +60,9 @@ export function AnalyticsPage() {
               <div className="space-y-3">
                 {analytics.genreBreakdown.map((g) => (
                   <div key={g.genre} className="flex items-center gap-3">
-                    <span className="w-24 text-sm text-hex-muted capitalize truncate">{g.genre}</span>
+                    <span className="w-24 text-sm text-hex-muted capitalize truncate">
+                      {g.genre}
+                    </span>
                     <div className="flex-1 h-6 bg-hex-surface rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full bg-accent-purple/60"
@@ -76,7 +84,10 @@ export function AnalyticsPage() {
             ) : (
               <div className="space-y-2">
                 {analytics.monthlySubmissions.map((m) => (
-                  <div key={m.month} className="flex items-center justify-between py-2 border-b border-hex-border last:border-0">
+                  <div
+                    key={m.month}
+                    className="flex items-center justify-between py-2 border-b border-hex-border last:border-0"
+                  >
                     <span className="text-sm text-hex-muted">{m.month}</span>
                     <span className="text-sm font-semibold">{m.count} submissions</span>
                   </div>
@@ -117,9 +128,14 @@ export function AnalyticsPage() {
             ) : (
               <div className="space-y-2">
                 {analytics.monthlyRevenue.map((r) => (
-                  <div key={r.month} className="flex items-center justify-between py-2 border-b border-hex-border last:border-0">
+                  <div
+                    key={r.month}
+                    className="flex items-center justify-between py-2 border-b border-hex-border last:border-0"
+                  >
                     <span className="text-sm text-hex-muted">{r.month}</span>
-                    <span className="text-sm font-semibold">${(r.revenue_cents / 100).toFixed(2)}</span>
+                    <span className="text-sm font-semibold">
+                      ${(r.revenue_cents / 100).toFixed(2)}
+                    </span>
                   </div>
                 ))}
               </div>

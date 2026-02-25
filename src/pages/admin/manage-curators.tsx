@@ -23,7 +23,11 @@ export function ManageCuratorsPage() {
       </p>
 
       {isError ? (
-        <QueryError error={error} fallbackMessage="Failed to load curators" onRetry={() => refetch()} />
+        <QueryError
+          error={error}
+          fallbackMessage="Failed to load curators"
+          onRetry={() => refetch()}
+        />
       ) : isLoading ? (
         <SkeletonTable rows={5} />
       ) : (
@@ -37,7 +41,12 @@ export function ManageCuratorsPage() {
                 header: 'Curator',
                 accessor: (row) => (
                   <div className="flex items-center gap-3">
-                    <Avatar src={row.avatar_url} alt={row.display_name} fallback={row.display_name.slice(0, 2)} size="sm" />
+                    <Avatar
+                      src={row.avatar_url}
+                      alt={row.display_name}
+                      fallback={row.display_name.slice(0, 2)}
+                      size="sm"
+                    />
                     <div>
                       <p className="font-medium">{row.display_name}</p>
                       <p className="text-xs text-hex-muted">{row.email}</p>
@@ -51,7 +60,9 @@ export function ManageCuratorsPage() {
                   <span>
                     {row.listener_count.toLocaleString()}
                     {row.listener_count >= CURATOR_MIN_LISTENERS && (
-                      <Badge variant="success" className="ml-2">Eligible</Badge>
+                      <Badge variant="success" className="ml-2">
+                        Eligible
+                      </Badge>
                     )}
                   </span>
                 ),

@@ -69,9 +69,9 @@ export function PrivacyPage() {
           <section>
             <h2 className="text-xl font-bold text-hex-text mb-3">3. Payment Processing</h2>
             <p>
-              All payment processing is handled by Stripe. We never store your credit card
-              number, CVV, or full payment details on our servers. Stripe&apos;s privacy policy
-              governs their handling of your payment information.
+              All payment processing is handled by Stripe. We never store your credit card number,
+              CVV, or full payment details on our servers. Stripe&apos;s privacy policy governs
+              their handling of your payment information.
             </p>
           </section>
 
@@ -110,28 +110,25 @@ export function PrivacyPage() {
           <section>
             <h2 className="text-xl font-bold text-hex-text mb-3">7. Cookies</h2>
             <p>
-              We use essential cookies for authentication and session management. We use
-              analytics cookies to understand platform usage. You can disable non-essential
-              cookies in your browser settings.
+              We use essential cookies for authentication and session management. We use analytics
+              cookies to understand platform usage. You can disable non-essential cookies in your
+              browser settings.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-hex-text mb-3">8. Changes</h2>
             <p>
-              We may update this policy from time to time. We will notify you of material
-              changes via email or platform notification. Continued use after changes
-              constitutes acceptance.
+              We may update this policy from time to time. We will notify you of material changes
+              via email or platform notification. Continued use after changes constitutes
+              acceptance.
             </p>
           </section>
 
           <section className="glass-card rounded-xl p-6">
             <p className="text-sm">
               Questions about privacy? Contact us at{' '}
-              <a
-                href="mailto:privacy@hexwave.io"
-                className="text-accent-purple hover:underline"
-              >
+              <a href="mailto:privacy@hexwave.io" className="text-accent-purple hover:underline">
                 privacy@hexwave.io
               </a>
             </p>

@@ -16,18 +16,18 @@ export function TermsPage() {
           <section>
             <h2 className="text-xl font-bold text-hex-text mb-3">1. Acceptance of Terms</h2>
             <p>
-              By accessing or using hexwave.io (&quot;the Platform&quot;), you agree to be bound
-              by these Terms of Service. If you do not agree to these terms, please do not use
-              the Platform.
+              By accessing or using hexwave.io (&quot;the Platform&quot;), you agree to be bound by
+              these Terms of Service. If you do not agree to these terms, please do not use the
+              Platform.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-hex-text mb-3">2. User Accounts</h2>
             <p>
-              You must create an account to submit tracks, vote, or curate. You are responsible
-              for maintaining the security of your account credentials. You must be at least 13
-              years old to use the Platform.
+              You must create an account to submit tracks, vote, or curate. You are responsible for
+              maintaining the security of your account credentials. You must be at least 13 years
+              old to use the Platform.
             </p>
           </section>
 
@@ -44,8 +44,8 @@ export function TermsPage() {
             <h2 className="text-xl font-bold text-hex-text mb-3">4. Curation & Reviews</h2>
             <p>
               Curators are verified users who review submitted tracks. Reviews must be honest,
-              constructive, and meet minimum quality standards. Curators are compensated based
-              on their tier level. hexwave reserves the right to remove curators who provide
+              constructive, and meet minimum quality standards. Curators are compensated based on
+              their tier level. hexwave reserves the right to remove curators who provide
               low-quality or fraudulent reviews.
             </p>
           </section>
@@ -53,28 +53,28 @@ export function TermsPage() {
           <section>
             <h2 className="text-xl font-bold text-hex-text mb-3">5. Voting</h2>
             <p>
-              Each user may cast one vote per track. Vote manipulation, including the use of
-              bots, multiple accounts, or coordinated voting schemes, is strictly prohibited
-              and will result in account termination.
+              Each user may cast one vote per track. Vote manipulation, including the use of bots,
+              multiple accounts, or coordinated voting schemes, is strictly prohibited and will
+              result in account termination.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-hex-text mb-3">6. Payments</h2>
             <p>
-              All payments are processed through Stripe. Submission fees are non-refundable.
-              Curator payouts are processed monthly. hexwave is not responsible for payment
-              processing delays caused by third-party services.
+              All payments are processed through Stripe. Submission fees are non-refundable. Curator
+              payouts are processed monthly. hexwave is not responsible for payment processing
+              delays caused by third-party services.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-hex-text mb-3">7. Content</h2>
             <p>
-              You retain ownership of all music you submit. By submitting, you grant hexwave
-              a non-exclusive license to display, embed, and promote your track on the Platform.
-              You may remove your submission at any time. Submitted tracks must not contain
-              illegal, hateful, or infringing content.
+              You retain ownership of all music you submit. By submitting, you grant hexwave a
+              non-exclusive license to display, embed, and promote your track on the Platform. You
+              may remove your submission at any time. Submitted tracks must not contain illegal,
+              hateful, or infringing content.
             </p>
           </section>
 
@@ -101,18 +101,15 @@ export function TermsPage() {
             <h2 className="text-xl font-bold text-hex-text mb-3">10. Changes to Terms</h2>
             <p>
               We may update these terms from time to time. Continued use of the Platform after
-              changes constitutes acceptance of the updated terms. We will notify users of
-              material changes via email or platform notification.
+              changes constitutes acceptance of the updated terms. We will notify users of material
+              changes via email or platform notification.
             </p>
           </section>
 
           <section className="glass-card rounded-xl p-6">
             <p className="text-sm">
               Questions about these terms? Contact us at{' '}
-              <a
-                href="mailto:legal@hexwave.io"
-                className="text-accent-purple hover:underline"
-              >
+              <a href="mailto:legal@hexwave.io" className="text-accent-purple hover:underline">
                 legal@hexwave.io
               </a>
             </p>

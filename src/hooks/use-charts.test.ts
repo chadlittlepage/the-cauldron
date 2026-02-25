@@ -46,10 +46,9 @@ describe('useCharts', () => {
     ];
     mockQueryBuilder({ data: mockData, error: null });
 
-    const { result } = renderHook(
-      () => useCharts('monthly' as const, '2025-01'),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useCharts('monthly' as const, '2025-01'), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockData);
@@ -58,10 +57,9 @@ describe('useCharts', () => {
   it('propagates errors', async () => {
     mockQueryBuilder({ data: null, error: new Error('Charts error') });
 
-    const { result } = renderHook(
-      () => useCharts('monthly' as const, '2025-01'),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useCharts('monthly' as const, '2025-01'), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error?.message).toBe('Charts error');

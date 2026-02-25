@@ -55,6 +55,9 @@ export function DialogTitle({ className, ...props }: React.HTMLAttributes<HTMLHe
   return <h2 className={cn('text-lg font-semibold', className)} {...props} />;
 }
 
-export function DialogDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
+export function DialogDescription({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLParagraphElement>) {
   return <p className={cn('mt-2 text-sm text-hex-muted', className)} {...props} />;
 }

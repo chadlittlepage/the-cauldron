@@ -19,7 +19,11 @@ export function ManagePayoutsPage() {
       <p className="mt-2 text-hex-muted">Curator payment history</p>
 
       {isError ? (
-        <QueryError error={error} fallbackMessage="Failed to load payouts" onRetry={() => refetch()} />
+        <QueryError
+          error={error}
+          fallbackMessage="Failed to load payouts"
+          onRetry={() => refetch()}
+        />
       ) : isLoading ? (
         <SkeletonTable rows={5} />
       ) : (
@@ -56,7 +60,7 @@ export function ManagePayoutsPage() {
               },
               {
                 header: 'Date',
-                accessor: (row) => row.paid_at ? new Date(row.paid_at).toLocaleDateString() : '-',
+                accessor: (row) => (row.paid_at ? new Date(row.paid_at).toLocaleDateString() : '-'),
               },
             ]}
           />

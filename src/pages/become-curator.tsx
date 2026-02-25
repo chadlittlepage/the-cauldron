@@ -92,8 +92,8 @@ export function BecomeCuratorPage() {
             Become a <span className="gradient-text">Curator</span>
           </h1>
           <p className="mt-6 text-lg text-hex-muted max-w-2xl mx-auto leading-relaxed">
-            Get paid to discover and review independent music. Earn up to $7 per review,
-            build your reputation, and shape what the community hears.
+            Get paid to discover and review independent music. Earn up to $7 per review, build your
+            reputation, and shape what the community hears.
           </p>
           <div className="mt-10">
             <Link to="/signup">
@@ -124,7 +124,13 @@ export function BecomeCuratorPage() {
                 tier.color,
               )}
             >
-              <div className={cn('inline-flex rounded-lg px-3 py-1 text-xs font-semibold mb-4', tier.badge, tier.accent)}>
+              <div
+                className={cn(
+                  'inline-flex rounded-lg px-3 py-1 text-xs font-semibold mb-4',
+                  tier.badge,
+                  tier.accent,
+                )}
+              >
                 {tier.name}
               </div>
               <div className="text-4xl font-bold gradient-text mb-2">{tier.payout}</div>
@@ -138,8 +144,8 @@ export function BecomeCuratorPage() {
           <h3 className="font-bold mb-2">Example Monthly Earnings</h3>
           <p className="text-sm text-hex-muted">
             A Tier 2 curator reviewing 30 tracks/month earns{' '}
-            <span className="font-bold text-accent-purple">$99.90/month</span>. Tier 3 curators
-            can earn <span className="font-bold text-accent-pink">$210+/month</span>.
+            <span className="font-bold text-accent-purple">$99.90/month</span>. Tier 3 curators can
+            earn <span className="font-bold text-accent-pink">$210+/month</span>.
           </p>
         </div>
       </section>
@@ -178,14 +184,44 @@ export function BecomeCuratorPage() {
 
           <div className="space-y-4">
             {[
-              { icon: Zap, label: 'Submitted', desc: 'Artist pays $2, track enters queue', color: 'text-accent-orange' },
-              { icon: Clock, label: 'In Review', desc: 'Assigned to curators in your tier', color: 'text-accent-purple' },
-              { icon: Star, label: 'Reviewed', desc: 'Curators rate 1-5 stars and write feedback', color: 'text-accent-pink' },
-              { icon: Check, label: 'Accepted', desc: 'Track is published and open for community votes', color: 'text-success' },
-              { icon: TrendingUp, label: 'Charting', desc: 'Top-voted tracks appear on monthly/yearly charts', color: 'text-accent-cyan' },
+              {
+                icon: Zap,
+                label: 'Submitted',
+                desc: 'Artist pays $2, track enters queue',
+                color: 'text-accent-orange',
+              },
+              {
+                icon: Clock,
+                label: 'In Review',
+                desc: 'Assigned to curators in your tier',
+                color: 'text-accent-purple',
+              },
+              {
+                icon: Star,
+                label: 'Reviewed',
+                desc: 'Curators rate 1-5 stars and write feedback',
+                color: 'text-accent-pink',
+              },
+              {
+                icon: Check,
+                label: 'Accepted',
+                desc: 'Track is published and open for community votes',
+                color: 'text-success',
+              },
+              {
+                icon: TrendingUp,
+                label: 'Charting',
+                desc: 'Top-voted tracks appear on monthly/yearly charts',
+                color: 'text-accent-cyan',
+              },
             ].map((phase) => (
               <div key={phase.label} className="flex items-center gap-4 glass-card rounded-xl p-4">
-                <div className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-hex-surface', phase.color)}>
+                <div
+                  className={cn(
+                    'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-hex-surface',
+                    phase.color,
+                  )}
+                >
                   <phase.icon className="h-5 w-5" />
                 </div>
                 <div>

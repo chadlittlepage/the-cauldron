@@ -22,7 +22,9 @@ export function CuratorStatsPage() {
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Alert variant="error" className="max-w-md">
           <AlertTitle>Something went wrong</AlertTitle>
-          <AlertDescription>{error instanceof Error ? error.message : 'Failed to load curator stats'}</AlertDescription>
+          <AlertDescription>
+            {error instanceof Error ? error.message : 'Failed to load curator stats'}
+          </AlertDescription>
         </Alert>
       </div>
     );
@@ -44,13 +46,23 @@ export function CuratorStatsPage() {
       <p className="mt-2 text-hex-muted">Your review performance</p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        <StatCard label="Total Reviews" value={totalReviews} icon={<MessageSquare className="h-5 w-5" />} />
+        <StatCard
+          label="Total Reviews"
+          value={totalReviews}
+          icon={<MessageSquare className="h-5 w-5" />}
+        />
         <StatCard label="Average Rating" value={avgRating} icon={<Star className="h-5 w-5" />} />
-        <StatCard label="This Month" value={reviews?.filter((r) => {
-          const d = new Date(r.created_at);
-          const now = new Date();
-          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-        }).length ?? 0} icon={<TrendingUp className="h-5 w-5" />} />
+        <StatCard
+          label="This Month"
+          value={
+            reviews?.filter((r) => {
+              const d = new Date(r.created_at);
+              const now = new Date();
+              return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+            }).length ?? 0
+          }
+          icon={<TrendingUp className="h-5 w-5" />}
+        />
       </div>
 
       <section className="mt-10">

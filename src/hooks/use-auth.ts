@@ -1,27 +1,20 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-  createElement,
-} from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, createElement } from 'react';
 import type { ReactNode } from 'react';
 import type { AuthResponse, Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import type { Tables } from '@/types/database';
 
 function getAuthTokenKey(): string | undefined {
-  return Object.keys(localStorage).find(
-    (k) => k.startsWith('sb-') && k.endsWith('-auth-token'),
-  );
+  return Object.keys(localStorage).find((k) => k.startsWith('sb-') && k.endsWith('-auth-token'));
 }
 
 function removeAuthToken() {
   try {
     const key = getAuthTokenKey();
     if (key) localStorage.removeItem(key);
-  } catch { /* ignore localStorage errors */ }
+  } catch {
+    /* ignore localStorage errors */
+  }
 }
 
 /**
@@ -97,26 +90,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [state.user, fetchProfile]);
 
   useEffect(() => {
-    const clearState = () =>
-      setState({ user: null, profile: null, session: null, loading: false });
+    const clearState = () => setState({ user: null, profile: null, session: null, loading: false });
 
-    supabase.auth.getSession().then(async ({ data: { session }, error }) => {
-      if (error || !session?.user) {
+    supabase.auth
+      .getSession()
+      .then(async ({ data: { session }, error }) => {
+        if (error || !session?.user) {
+          clearState();
+          return;
+        }
+        const profile = await fetchProfile(session.user.id);
+        if (!profile) {
+          await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+          clearState();
+          return;
+        }
+        setState({ user: session.user, profile, session, loading: false });
+      })
+      .catch(() => {
+        // LockManager timeout or other unhandled auth error — clear stale state
+        removeAuthToken();
         clearState();
-        return;
-      }
-      const profile = await fetchProfile(session.user.id);
-      if (!profile) {
-        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
-        clearState();
-        return;
-      }
-      setState({ user: session.user, profile, session, loading: false });
-    }).catch(() => {
-      // LockManager timeout or other unhandled auth error — clear stale state
-      removeAuthToken();
-      clearState();
-    });
+      });
 
     const {
       data: { subscription },

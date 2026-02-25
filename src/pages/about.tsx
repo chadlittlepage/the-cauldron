@@ -48,10 +48,9 @@ export function AboutPage() {
                 heard. Playlists are pay-to-play. And genuine feedback is nearly impossible to find.
               </p>
               <p>
-                hexwave was built to change that. We created a platform where music is judged on
-                its merit, not its marketing budget. Where curators with real audiences provide
-                honest reviews. Where community votes, not algorithms, determine what rises to
-                the top.
+                hexwave was built to change that. We created a platform where music is judged on its
+                merit, not its marketing budget. Where curators with real audiences provide honest
+                reviews. Where community votes, not algorithms, determine what rises to the top.
               </p>
               <p>
                 Every track submitted gets listened to. Every artist gets feedback. And the best
@@ -64,16 +63,16 @@ export function AboutPage() {
               <Heart className="h-6 w-6 text-accent-pink mb-3" />
               <h3 className="font-bold mb-2">Fair & Transparent</h3>
               <p className="text-sm text-hex-muted">
-                No hidden algorithms. No pay-to-win. Every submission costs the same $2, and
-                every track gets equal opportunity for exposure.
+                No hidden algorithms. No pay-to-win. Every submission costs the same $2, and every
+                track gets equal opportunity for exposure.
               </p>
             </div>
             <div className="glass-card rounded-xl p-6">
               <Shield className="h-6 w-6 text-accent-cyan mb-3" />
               <h3 className="font-bold mb-2">Community Driven</h3>
               <p className="text-sm text-hex-muted">
-                Curators are verified listeners with real audiences. Votes come from real people
-                who care about great music.
+                Curators are verified listeners with real audiences. Votes come from real people who
+                care about great music.
               </p>
             </div>
           </div>

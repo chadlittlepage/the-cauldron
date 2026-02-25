@@ -27,14 +27,19 @@ export function CuratorsPage() {
             <h1 className="text-3xl font-bold">Curators</h1>
           </div>
           <p className="text-hex-muted max-w-xl">
-            Meet the expert listeners who review every submission. Each curator has 1,000+ followers.
+            Meet the expert listeners who review every submission. Each curator has 1,000+
+            followers.
           </p>
         </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-6 py-8">
         {isError ? (
-          <QueryError error={error} fallbackMessage="Failed to load curators" onRetry={() => refetch()} />
+          <QueryError
+            error={error}
+            fallbackMessage="Failed to load curators"
+            onRetry={() => refetch()}
+          />
         ) : isLoading ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (

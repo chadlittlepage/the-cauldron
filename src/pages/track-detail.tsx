@@ -55,7 +55,10 @@ export function TrackDetailPage() {
 
   const currentIndex = trackIds && id ? trackIds.indexOf(id) : -1;
   const prevId = trackIds && currentIndex > 0 ? trackIds[currentIndex - 1] : null;
-  const nextId = trackIds && currentIndex >= 0 && currentIndex < trackIds.length - 1 ? trackIds[currentIndex + 1] : null;
+  const nextId =
+    trackIds && currentIndex >= 0 && currentIndex < trackIds.length - 1
+      ? trackIds[currentIndex + 1]
+      : null;
 
   // Stabilize navState — only recompute when the serialized IDs actually change
   const trackIdsKey = trackIds?.join(',');
@@ -143,11 +146,17 @@ export function TrackDetailPage() {
         {isLoading ? (
           <TrackDetailSkeleton />
         ) : isError ? (
-          <QueryError error={error} fallbackMessage="Failed to load track" onRetry={() => refetch()} />
+          <QueryError
+            error={error}
+            fallbackMessage="Failed to load track"
+            onRetry={() => refetch()}
+          />
         ) : !track ? (
           <div className="py-20 text-center">
             <h1 className="text-2xl font-bold">Track not found</h1>
-            <p className="mt-2 text-hex-muted">This track may have been removed or doesn&apos;t exist.</p>
+            <p className="mt-2 text-hex-muted">
+              This track may have been removed or doesn&apos;t exist.
+            </p>
             {!hasNav && (
               <Link to="/browse" className="mt-6 inline-block">
                 <Button variant="outline">Back to Browse</Button>
@@ -194,9 +203,7 @@ export function TrackDetailPage() {
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-pink/10">
                   <MessageSquare className="h-5 w-5 text-accent-pink" aria-hidden="true" />
                 </div>
-                <h2 className="text-xl font-bold">
-                  Reviews ({track.review_count})
-                </h2>
+                <h2 className="text-xl font-bold">Reviews ({track.review_count})</h2>
               </div>
 
               {reviews?.length ? (
@@ -216,7 +223,9 @@ export function TrackDetailPage() {
                             size="sm"
                           />
                           <div>
-                            <p className="text-sm font-semibold">{curator?.display_name ?? 'Curator'}</p>
+                            <p className="text-sm font-semibold">
+                              {curator?.display_name ?? 'Curator'}
+                            </p>
                             <StarRating value={review.rating} readonly size="sm" />
                           </div>
                         </div>
@@ -229,7 +238,9 @@ export function TrackDetailPage() {
                 </div>
               ) : (
                 <div className="glass-card rounded-xl p-8 text-center">
-                  <p className="text-hex-muted">No reviews yet. Curators will review this track soon.</p>
+                  <p className="text-hex-muted">
+                    No reviews yet. Curators will review this track soon.
+                  </p>
                 </div>
               )}
             </section>

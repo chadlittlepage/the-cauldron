@@ -18,7 +18,11 @@ export function MyReviewsPage() {
       <p className="mt-2 text-hex-muted">All reviews you&apos;ve written</p>
 
       {isError ? (
-        <QueryError error={error} fallbackMessage="Failed to load reviews" onRetry={() => refetch()} />
+        <QueryError
+          error={error}
+          fallbackMessage="Failed to load reviews"
+          onRetry={() => refetch()}
+        />
       ) : isLoading ? (
         <SkeletonTable rows={5} />
       ) : !reviews?.length ? (

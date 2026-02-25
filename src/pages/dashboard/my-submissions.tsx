@@ -20,7 +20,11 @@ export function MySubmissionsPage() {
       <p className="mt-2 text-hex-muted">All tracks you&apos;ve submitted to hexwave</p>
 
       {isError ? (
-        <QueryError error={error} fallbackMessage="Failed to load submissions" onRetry={() => refetch()} />
+        <QueryError
+          error={error}
+          fallbackMessage="Failed to load submissions"
+          onRetry={() => refetch()}
+        />
       ) : isLoading ? (
         <SkeletonTable rows={5} />
       ) : !submissions?.length ? (

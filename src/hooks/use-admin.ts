@@ -15,7 +15,10 @@ export function useAdminStats() {
           .from('profiles')
           .select('id', { count: 'exact', head: true })
           .eq('role', 'curator'),
-        supabase.from('payments').select('amount_cents', { count: 'exact' }).eq('status', 'succeeded'),
+        supabase
+          .from('payments')
+          .select('amount_cents', { count: 'exact' })
+          .eq('status', 'succeeded'),
       ]);
 
       const totalRevenue = (payments.data ?? []).reduce((sum, p) => sum + p.amount_cents, 0);
@@ -55,7 +58,15 @@ export function useUpdateSubmissionStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, status, oldStatus }: { id: string; status: SubmissionStatus; oldStatus?: string }) => {
+    mutationFn: async ({
+      id,
+      status,
+      oldStatus,
+    }: {
+      id: string;
+      status: SubmissionStatus;
+      oldStatus?: string;
+    }) => {
       const { data, error } = await supabase
         .from('submissions')
         .update({ status })
@@ -72,7 +83,9 @@ export function useUpdateSubmissionStatus() {
       toast.success(`Submission ${variables.status}`);
 
       // Log to audit trail
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         await supabase.from('admin_audit_logs').insert({
           admin_id: user.id,
@@ -116,7 +129,9 @@ export function useAdminPayouts(filters: { page?: number } = {}) {
     queryFn: async () => {
       const { data, error, count } = await supabase
         .from('curator_payouts')
-        .select('*, profiles!curator_payouts_curator_id_fkey(display_name, email)', { count: 'exact' })
+        .select('*, profiles!curator_payouts_curator_id_fkey(display_name, email)', {
+          count: 'exact',
+        })
         .order('created_at', { ascending: false })
         .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
       if (error) throw error;

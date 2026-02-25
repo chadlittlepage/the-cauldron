@@ -41,7 +41,10 @@ export function DropdownMenu({ trigger, children, align = 'right', className }: 
   );
 }
 
-export function DropdownItem({ className, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+export function DropdownItem({
+  className,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
       className={cn(

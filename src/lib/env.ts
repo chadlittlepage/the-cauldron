@@ -1,9 +1,7 @@
 function requireEnv(key: string): string {
   const value = import.meta.env[key];
   if (!value || value === 'placeholder') {
-    throw new Error(
-      `Missing required environment variable: ${key}. Check your .env file.`,
-    );
+    throw new Error(`Missing required environment variable: ${key}. Check your .env file.`);
   }
   return value;
 }

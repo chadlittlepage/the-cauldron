@@ -166,7 +166,10 @@ describe('reviewSchema', () => {
   });
 
   it('rejects rating below 1', () => {
-    const result = reviewSchema.safeParse({ rating: 0, feedback: 'This is detailed feedback text.' });
+    const result = reviewSchema.safeParse({
+      rating: 0,
+      feedback: 'This is detailed feedback text.',
+    });
     expect(result.success).toBe(false);
   });
 

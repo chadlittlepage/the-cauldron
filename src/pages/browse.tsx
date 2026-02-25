@@ -22,7 +22,10 @@ export function BrowsePage() {
 
   const submissions = data?.data;
   const linkState = useMemo(
-    () => (submissions ? { trackIds: submissions.map((d) => d.id), source: 'browse' as const } : undefined),
+    () =>
+      submissions
+        ? { trackIds: submissions.map((d) => d.id), source: 'browse' as const }
+        : undefined,
     [submissions],
   );
 
@@ -57,7 +60,11 @@ export function BrowsePage() {
         />
 
         {isError ? (
-          <QueryError error={error} fallbackMessage="Failed to load tracks" onRetry={() => refetch()} />
+          <QueryError
+            error={error}
+            fallbackMessage="Failed to load tracks"
+            onRetry={() => refetch()}
+          />
         ) : isLoading ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (

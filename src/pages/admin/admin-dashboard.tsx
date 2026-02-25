@@ -4,22 +4,39 @@ import { useDocumentTitle } from '@/hooks/use-document-title';
 import { StatsGrid } from '@/components/admin/stats-grid';
 import { QueryError } from '@/components/ui/query-error';
 import { SkeletonStats } from '@/components/ui/skeleton';
-import {
-  Shield,
-  FileText,
-  Users,
-  DollarSign,
-  BarChart3,
-  Bug,
-  ArrowRight,
-} from 'lucide-react';
+import { Shield, FileText, Users, DollarSign, BarChart3, Bug, ArrowRight } from 'lucide-react';
 
 const adminLinks = [
-  { to: '/admin/submissions', label: 'Manage Submissions', icon: FileText, color: 'bg-accent-purple/10 text-accent-purple' },
-  { to: '/admin/curators', label: 'Manage Curators', icon: Users, color: 'bg-accent-pink/10 text-accent-pink' },
-  { to: '/admin/payouts', label: 'Manage Payouts', icon: DollarSign, color: 'bg-accent-orange/10 text-accent-orange' },
-  { to: '/admin/analytics', label: 'Analytics', icon: BarChart3, color: 'bg-accent-cyan/10 text-accent-cyan' },
-  { to: '/admin/debug', label: 'Debug Console', icon: Bug, color: 'bg-accent-orange/10 text-accent-orange' },
+  {
+    to: '/admin/submissions',
+    label: 'Manage Submissions',
+    icon: FileText,
+    color: 'bg-accent-purple/10 text-accent-purple',
+  },
+  {
+    to: '/admin/curators',
+    label: 'Manage Curators',
+    icon: Users,
+    color: 'bg-accent-pink/10 text-accent-pink',
+  },
+  {
+    to: '/admin/payouts',
+    label: 'Manage Payouts',
+    icon: DollarSign,
+    color: 'bg-accent-orange/10 text-accent-orange',
+  },
+  {
+    to: '/admin/analytics',
+    label: 'Analytics',
+    icon: BarChart3,
+    color: 'bg-accent-cyan/10 text-accent-cyan',
+  },
+  {
+    to: '/admin/debug',
+    label: 'Debug Console',
+    icon: Bug,
+    color: 'bg-accent-orange/10 text-accent-orange',
+  },
 ];
 
 export function AdminDashboardPage() {
@@ -35,7 +52,13 @@ export function AdminDashboardPage() {
   }
 
   if (isError) {
-    return <QueryError error={error} fallbackMessage="Failed to load admin stats" onRetry={() => refetch()} />;
+    return (
+      <QueryError
+        error={error}
+        fallbackMessage="Failed to load admin stats"
+        onRetry={() => refetch()}
+      />
+    );
   }
 
   return (
@@ -64,7 +87,9 @@ export function AdminDashboardPage() {
           {adminLinks.map((link) => (
             <Link key={link.to} to={link.to}>
               <div className="group glass-card rounded-xl p-5 transition-all duration-300 hover:shadow-lg hover:shadow-accent-purple/5 h-full">
-                <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${link.color} mb-4`}>
+                <div
+                  className={`flex h-10 w-10 items-center justify-center rounded-lg ${link.color} mb-4`}
+                >
                   <link.icon className="h-5 w-5" />
                 </div>
                 <h3 className="font-semibold mb-1 group-hover:text-accent-purple transition-colors">
