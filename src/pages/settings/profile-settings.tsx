@@ -12,6 +12,21 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { FormField } from '@/components/ui/form-field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
+const AVATAR_SEEDS = [
+  'Melody',
+  'Rhythm',
+  'Harmony',
+  'Bass',
+  'Treble',
+  'Synth',
+  'Vinyl',
+  'Echo',
+  'Tempo',
+  'Groove',
+  'Reverb',
+  'Chorus',
+];
+
 export function ProfileSettingsPage() {
   useDocumentTitle('Profile Settings');
   const { user, profile, refreshProfile } = useAuth();
@@ -151,6 +166,26 @@ export function ProfileSettingsPage() {
                     {uploading ? 'Uploading...' : 'Upload Image'}
                   </Button>
                   <p className="text-xs text-hex-muted">Max 5 MB. Resized to 512px.</p>
+                </div>
+              </div>
+              <div className="mt-4">
+                <p className="mb-2 text-sm font-medium text-hex-muted">Or choose an avatar</p>
+                <div className="grid grid-cols-6 gap-3">
+                  {AVATAR_SEEDS.map((seed) => {
+                    const url = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+                    const isSelected = form.avatarUrl === url;
+                    return (
+                      <button
+                        key={seed}
+                        type="button"
+                        title={seed}
+                        className={`rounded-full overflow-hidden transition-all ${isSelected ? 'ring-2 ring-[#4a556c] ring-offset-2 ring-offset-hex-bg' : 'hover:ring-2 hover:ring-hex-muted/50 hover:ring-offset-2 hover:ring-offset-hex-bg'}`}
+                        onClick={() => updateField('avatarUrl', url)}
+                      >
+                        <img src={url} alt={seed} className="h-12 w-12 rounded-full bg-hex-card" />
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </FormField>
