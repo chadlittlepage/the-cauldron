@@ -13,9 +13,7 @@ describe('addToast', () => {
   });
 
   it('triggers listeners on add', () => {
-    const listener = vi.fn();
-    // Access subscribe via the module — we need to import it
-    // Since subscribe isn't exported, we test indirectly via dismiss behavior
+    // subscribe isn't exported, so we test indirectly via dismiss behavior
     addToast('Hello', 'success', 0);
     // No throw = success
     expect(true).toBe(true);
