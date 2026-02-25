@@ -80,10 +80,13 @@ describe('useAuth', () => {
     spy.mockRestore();
   });
 
-  it('starts in loading state', () => {
+  it('starts in loading state', async () => {
     const { result } = renderHook(() => useAuth(), { wrapper: createWrapper() });
 
     expect(result.current.loading).toBe(true);
+
+    // Wait for the AuthProvider's useEffect to settle so no state updates leak
+    await waitFor(() => expect(result.current.loading).toBe(false));
   });
 
   it('resolves to no user when no session exists', async () => {

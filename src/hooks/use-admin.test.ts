@@ -130,8 +130,6 @@ describe('useUpdateSubmissionStatus', () => {
 
     mockAuth.getUser.mockResolvedValue({ data: { user: { id: 'admin-1' } } });
 
-    // After the mutation succeeds, the audit log insert will also use mockFrom
-    // We need the first call (update) to succeed, then subsequent calls too
     const { result } = renderHook(() => useUpdateSubmissionStatus(), { wrapper: createWrapper() });
 
     result.current.mutate({ id: 'sub-1', status: 'accepted' as const, oldStatus: 'pending' });
@@ -141,14 +139,7 @@ describe('useUpdateSubmissionStatus', () => {
   });
 
   it('shows error toast on failure', async () => {
-    const builder: Record<string, unknown> = {
-      then: (resolve: (v: unknown) => void, reject?: (e: unknown) => void) =>
-        Promise.resolve({ data: null, error: new Error('Update failed') }).then(resolve, reject),
-    };
-    for (const m of ['select', 'update', 'eq', 'single', 'order', 'range', 'insert']) {
-      builder[m] = vi.fn(() => builder);
-    }
-    mockFrom.mockReturnValue(builder);
+    mockQueryBuilder({ data: null, error: new Error('Update failed') });
 
     const { result } = renderHook(() => useUpdateSubmissionStatus(), { wrapper: createWrapper() });
 
