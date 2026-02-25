@@ -7,17 +7,20 @@ import { Pagination } from '@/components/ui/pagination';
 import { QueryError } from '@/components/ui/query-error';
 import { SkeletonCard } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Music, Search, Headphones } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Music, Search, Headphones, X } from 'lucide-react';
 
 export function BrowsePage() {
   useDocumentTitle('Browse Tracks');
   const [genre, setGenre] = useState('');
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
 
   const { data, isLoading, isError, error, refetch } = useSubmissions({
     genre: genre || undefined,
     status: 'accepted',
     page,
+    search: search || undefined,
   });
 
   const submissions = data?.data;
@@ -50,6 +53,34 @@ export function BrowsePage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-6 py-8">
+        {/* Search */}
+        <div className="mb-4 max-w-sm">
+          <Input
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+            placeholder="Search tracks..."
+            icon={<Search className="h-4 w-4" />}
+            suffix={
+              search ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearch('');
+                    setPage(1);
+                  }}
+                  className="flex items-center text-hex-muted hover:text-hex-text transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              ) : undefined
+            }
+          />
+        </div>
+
         <GenreFilter
           selected={genre}
           onChange={(g) => {

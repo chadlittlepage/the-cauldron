@@ -2,19 +2,29 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useReviewQueue } from '@/hooks/use-submissions';
 import { useDocumentTitle } from '@/hooks/use-document-title';
+import { GENRES } from '@/lib/constants';
+import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { QueryError } from '@/components/ui/query-error';
 import { SkeletonTable } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Pagination } from '@/components/ui/pagination';
-import { CheckCircle, ThumbsUp, Music, ArrowRight, ListTodo } from 'lucide-react';
+import { CheckCircle, ThumbsUp, Music, ArrowRight, ListTodo, Search, X } from 'lucide-react';
 
 export function ReviewQueuePage() {
   useDocumentTitle('Review Queue');
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError, error, refetch } = useReviewQueue({ page });
+  const [genre, setGenre] = useState('');
+  const [search, setSearch] = useState('');
+  const { data, isLoading, isError, error, refetch } = useReviewQueue({ page, genre, search });
   const queue = data?.data;
+
+  function selectGenre(g: string) {
+    setGenre(g === genre ? '' : g);
+    setPage(1);
+  }
 
   return (
     <div className="relative">
@@ -29,7 +39,66 @@ export function ReviewQueuePage() {
           </div>
           <h1 className="text-2xl font-bold">Review Queue</h1>
         </div>
-        <p className="text-hex-muted mb-8">Tracks waiting for your expert review</p>
+        <p className="text-hex-muted mb-6">Tracks waiting for your expert review</p>
+
+        {/* Search */}
+        <div className="mb-4 max-w-sm">
+          <Input
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+            placeholder="Search tracks..."
+            icon={<Search className="h-4 w-4" />}
+            suffix={
+              search ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearch('');
+                    setPage(1);
+                  }}
+                  className="flex items-center text-hex-muted hover:text-hex-text transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              ) : undefined
+            }
+          />
+        </div>
+
+        {/* Genre filter pills */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          <button
+            type="button"
+            onClick={() => selectGenre('')}
+            className={cn(
+              'rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200',
+              !genre
+                ? 'bg-accent-purple text-white'
+                : 'bg-hex-surface border border-hex-border text-hex-muted hover:text-hex-text hover:border-hex-border-light',
+            )}
+          >
+            All
+          </button>
+          {GENRES.map((g) => (
+            <button
+              key={g}
+              type="button"
+              onClick={() => selectGenre(g)}
+              className={cn(
+                'rounded-full px-4 py-1.5 text-sm font-medium capitalize transition-all duration-200',
+                genre === g
+                  ? 'bg-accent-purple text-white'
+                  : 'bg-hex-surface border border-hex-border text-hex-muted hover:text-hex-text hover:border-hex-border-light',
+              )}
+            >
+              {g}
+            </button>
+          ))}
+        </div>
 
         {isError ? (
           <QueryError

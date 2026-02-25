@@ -9,10 +9,11 @@ interface SubmissionFilters {
   genre?: string;
   status?: string;
   page?: number;
+  search?: string;
 }
 
 export function useSubmissions(filters: SubmissionFilters = {}) {
-  const { genre, status, page = 1 } = filters;
+  const { genre, status, page = 1, search } = filters;
 
   return useQuery({
     queryKey: queryKeys.submissions.list(filters),
@@ -27,6 +28,7 @@ export function useSubmissions(filters: SubmissionFilters = {}) {
 
       if (genre) query = query.eq('genre', genre);
       if (status) query = query.eq('status', status as SubmissionStatus);
+      if (search) query = query.or(`track_title.ilike.*${search}*,genre.ilike.*${search}*`);
 
       const { data, error, count } = await query;
       if (error) throw error;
@@ -67,16 +69,19 @@ export function useArtistSubmissions(artistId: string | undefined) {
   });
 }
 
-export function useReviewQueue(filters: { page?: number } = {}) {
-  const { page = 1 } = filters;
+export function useReviewQueue(filters: { page?: number; genre?: string; search?: string } = {}) {
+  const { page = 1, genre, search } = filters;
 
   return useQuery({
     queryKey: queryKeys.submissions.reviewQueue(filters),
     queryFn: async () => {
-      const { data, error, count } = await supabase
+      let query = supabase
         .from('submissions')
         .select('*, profiles!submissions_artist_id_fkey(display_name)', { count: 'exact' })
-        .in('status', ['pending', 'in_review'])
+        .in('status', ['pending', 'in_review']);
+      if (genre) query = query.eq('genre', genre);
+      if (search) query = query.or(`track_title.ilike.*${search}*,genre.ilike.*${search}*`);
+      const { data, error, count } = await query
         .order('created_at', { ascending: true })
         .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
       if (error) throw error;

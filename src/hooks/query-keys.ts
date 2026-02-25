@@ -6,11 +6,12 @@ export const queryKeys = {
   },
   submissions: {
     all: ['submissions'] as const,
-    list: (filters?: { genre?: string; status?: string; page?: number }) =>
+    list: (filters?: { genre?: string; status?: string; page?: number; search?: string }) =>
       ['submissions', 'list', filters] as const,
     detail: (id: string) => ['submissions', id] as const,
     byArtist: (artistId: string) => ['submissions', 'artist', artistId] as const,
-    reviewQueue: (filters?: { page?: number }) => ['submissions', 'review-queue', filters] as const,
+    reviewQueue: (filters?: { page?: number; genre?: string; search?: string }) =>
+      ['submissions', 'review-queue', filters] as const,
   },
   votes: {
     all: ['votes'] as const,

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import { useArtistSubmissions } from '@/hooks/use-submissions';
 import { useDocumentTitle } from '@/hooks/use-document-title';
@@ -60,16 +60,7 @@ export function ArtistDashboardPage() {
     submissions?.filter((s) => s.status === 'pending' || s.status === 'in_review').length ?? 0;
 
   if (profile?.role === 'curator') {
-    return (
-      <div className="mx-auto max-w-7xl px-6 py-10">
-        <p className="text-hex-muted">
-          Looking for your curator dashboard?{' '}
-          <Link to="/dashboard/curator" className="text-accent-purple hover:underline">
-            Go to Curator Dashboard
-          </Link>
-        </p>
-      </div>
-    );
+    return <Navigate to="/dashboard/curator" replace />;
   }
 
   return (
