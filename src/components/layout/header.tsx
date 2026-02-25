@@ -13,6 +13,7 @@ import {
   BarChart3,
   Users,
   Music,
+  ClipboardList,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -79,12 +80,20 @@ export function Header() {
                 </Button>
               </Link>
               {profile?.role === 'admin' && (
-                <Link to="/admin">
-                  <Button variant="ghost" size="sm" className="gap-2">
-                    <Shield className="h-4 w-4" />
-                    Admin
-                  </Button>
-                </Link>
+                <>
+                  <Link to="/dashboard/curator">
+                    <Button variant="ghost" size="sm" className="gap-2">
+                      <ClipboardList className="h-4 w-4" />
+                      Review Queue
+                    </Button>
+                  </Link>
+                  <Link to="/admin">
+                    <Button variant="ghost" size="sm" className="gap-2">
+                      <Shield className="h-4 w-4" />
+                      Admin
+                    </Button>
+                  </Link>
+                </>
               )}
               <Link to="/settings/profile">
                 <Button variant="ghost" size="sm" className="gap-2">
@@ -161,6 +170,16 @@ export function Header() {
                     <LayoutDashboard className="h-4 w-4" />
                     Dashboard
                   </Link>
+                  {profile?.role === 'admin' && (
+                    <Link
+                      to="/dashboard/curator"
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-hex-muted hover:text-hex-text hover:bg-white/5"
+                    >
+                      <ClipboardList className="h-4 w-4" />
+                      Review Queue
+                    </Link>
+                  )}
                   <Link
                     to="/settings/profile"
                     onClick={() => setMobileOpen(false)}

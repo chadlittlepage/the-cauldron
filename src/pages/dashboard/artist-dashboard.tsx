@@ -9,7 +9,16 @@ import { QueryError } from '@/components/ui/query-error';
 import { SkeletonStats } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Music, ThumbsUp, Clock, Plus, ArrowRight, LayoutDashboard } from 'lucide-react';
+import {
+  Music,
+  ThumbsUp,
+  Clock,
+  Plus,
+  ArrowRight,
+  LayoutDashboard,
+  ClipboardList,
+  FileText,
+} from 'lucide-react';
 
 export function ArtistDashboardPage() {
   useDocumentTitle('Dashboard');
@@ -135,6 +144,45 @@ export function ArtistDashboardPage() {
             />
           )}
         </section>
+
+        {/* Curator Tools (admin only) */}
+        {profile?.role === 'admin' && (
+          <section className="mt-10">
+            <h2 className="text-lg font-bold mb-5">Curator Tools</h2>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Link
+                to="/dashboard/curator"
+                className="flex items-center gap-4 rounded-xl border border-hex-border bg-hex-card/50 p-5 hover:bg-hex-card transition-colors group"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-purple/10">
+                  <ClipboardList className="h-5 w-5 text-accent-purple" />
+                </div>
+                <div>
+                  <p className="font-semibold text-hex-text group-hover:text-accent-purple transition-colors">
+                    Review Queue
+                  </p>
+                  <p className="text-sm text-hex-muted">Review pending submissions</p>
+                </div>
+                <ArrowRight className="ml-auto h-4 w-4 text-hex-muted group-hover:text-accent-purple transition-colors" />
+              </Link>
+              <Link
+                to="/dashboard/reviews"
+                className="flex items-center gap-4 rounded-xl border border-hex-border bg-hex-card/50 p-5 hover:bg-hex-card transition-colors group"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-purple/10">
+                  <FileText className="h-5 w-5 text-accent-purple" />
+                </div>
+                <div>
+                  <p className="font-semibold text-hex-text group-hover:text-accent-purple transition-colors">
+                    My Reviews
+                  </p>
+                  <p className="text-sm text-hex-muted">View your review history</p>
+                </div>
+                <ArrowRight className="ml-auto h-4 w-4 text-hex-muted group-hover:text-accent-purple transition-colors" />
+              </Link>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
