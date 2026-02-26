@@ -10,7 +10,7 @@ export function useProfile(userId: string | undefined) {
       if (!userId) return null;
       const { data, error } = await supabase
         .from('profiles')
-        .select()
+        .select('*')
         .eq('id', userId)
         .single()
         .returns<Tables<'profiles'>>();
@@ -27,7 +27,7 @@ export function useCurators() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select()
+        .select('*')
         .eq('role', 'curator' as const)
         .order('listener_count', { ascending: false })
         .returns<Tables<'profiles'>[]>();
@@ -52,7 +52,7 @@ export function useUpdateProfile() {
         .from('profiles')
         .update(updates)
         .eq('id', userId)
-        .select()
+        .select('*')
         .single()
         .returns<Tables<'profiles'>>();
       if (error) throw error;

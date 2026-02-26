@@ -64,6 +64,7 @@ export const queryKeys = {
     earningsByMonth: (curatorId: string) =>
       ['curator-analytics', 'earnings-by-month', curatorId] as const,
     payouts: (curatorId: string) => ['curator-analytics', 'payouts', curatorId] as const,
+    stats: (curatorId: string) => ['curator-analytics', 'stats', curatorId] as const,
   },
   debug: {
     supabaseHealth: () => ['debug', 'supabaseHealth'] as const,

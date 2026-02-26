@@ -54,6 +54,21 @@ export function useCuratorEarningsByMonth(curatorId: string | undefined) {
   });
 }
 
+export function useCuratorStats(curatorId: string | undefined) {
+  return useQuery({
+    queryKey: queryKeys.curatorAnalytics.stats(curatorId ?? ''),
+    queryFn: async () => {
+      if (!curatorId) return null;
+      const { data, error } = await supabase
+        .rpc('get_curator_stats', { p_curator_id: curatorId })
+        .returns<{ avg_rating: number; total_earnings_cents: number; total_reviews: number }[]>();
+      if (error) throw error;
+      return data?.[0] ?? null;
+    },
+    enabled: !!curatorId,
+  });
+}
+
 export function useCuratorPayouts(curatorId: string | undefined) {
   return useQuery({
     queryKey: queryKeys.curatorAnalytics.payouts(curatorId ?? ''),

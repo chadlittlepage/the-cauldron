@@ -5,12 +5,36 @@ import { useDocumentTitle } from '@/hooks/use-document-title';
 import { uploadAvatar } from '@/lib/image-upload';
 import { profileSchema } from '@/lib/validators';
 import { Avatar } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { FormField } from '@/components/ui/form-field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { X } from 'lucide-react';
+
+const GENRE_OPTIONS = [
+  'Alternative',
+  'Blues',
+  'Classical',
+  'Country',
+  'Electronic',
+  'Folk',
+  'Funk',
+  'Hip Hop',
+  'Indie',
+  'Jazz',
+  'Latin',
+  'Metal',
+  'Pop',
+  'Punk',
+  'R&B',
+  'Reggae',
+  'Rock',
+  'Soul',
+  'World',
+];
 
 const AVATAR_SEEDS = [
   'Melody',
@@ -342,6 +366,199 @@ export function ProfileSettingsPage() {
           </CardFooter>
         </form>
       </Card>
+
+      {profile?.role === 'curator' && (
+        <CuratorProfileCard userId={user?.id} profile={profile} onSaved={refreshProfile} />
+      )}
     </div>
+  );
+}
+
+function CuratorProfileCard({
+  userId,
+  profile,
+  onSaved,
+}: {
+  userId: string | undefined;
+  profile: {
+    genres: string[];
+    accepting_submissions: boolean;
+    looking_for: string | null;
+    website_url: string | null;
+    instagram_handle: string | null;
+    tiktok_handle: string | null;
+    contact_email: string | null;
+  };
+  onSaved: () => Promise<void>;
+}) {
+  const updateProfile = useUpdateProfile();
+  const [form, setForm] = useState({
+    genres: profile.genres ?? [],
+    acceptingSubmissions: profile.accepting_submissions ?? true,
+    lookingFor: profile.looking_for ?? '',
+    websiteUrl: profile.website_url ?? '',
+    instagramHandle: profile.instagram_handle ?? '',
+    tiktokHandle: profile.tiktok_handle ?? '',
+    contactEmail: profile.contact_email ?? '',
+  });
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+
+  function toggleGenre(genre: string) {
+    setForm((prev) => ({
+      ...prev,
+      genres: prev.genres.includes(genre)
+        ? prev.genres.filter((g) => g !== genre)
+        : [...prev.genres, genre],
+    }));
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setSuccess(false);
+    if (!userId) return;
+
+    try {
+      await updateProfile.mutateAsync({
+        userId,
+        updates: {
+          genres: form.genres,
+          accepting_submissions: form.acceptingSubmissions,
+          looking_for: form.lookingFor || null,
+          website_url: form.websiteUrl || null,
+          instagram_handle: form.instagramHandle || null,
+          tiktok_handle: form.tiktokHandle || null,
+          contact_email: form.contactEmail || null,
+        },
+      });
+      await onSaved();
+      setSuccess(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Update failed');
+    }
+  }
+
+  return (
+    <Card className="mt-8">
+      <CardHeader>
+        <CardTitle>Curator Profile</CardTitle>
+      </CardHeader>
+      <form onSubmit={(e) => void handleSubmit(e)}>
+        <CardContent className="space-y-6">
+          {error && (
+            <Alert variant="error">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {success && (
+            <Alert variant="success">
+              <AlertDescription>Curator profile updated.</AlertDescription>
+            </Alert>
+          )}
+
+          {/* Accepting Submissions Toggle */}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">Accepting Submissions</p>
+              <p className="text-xs text-hex-muted">
+                Show artists you&apos;re open to new submissions
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={form.acceptingSubmissions}
+              onClick={() =>
+                setForm((prev) => ({ ...prev, acceptingSubmissions: !prev.acceptingSubmissions }))
+              }
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${form.acceptingSubmissions ? 'bg-accent-purple' : 'bg-hex-border'}`}
+            >
+              <span
+                className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-lg transition-transform ${form.acceptingSubmissions ? 'translate-x-5' : 'translate-x-0'}`}
+              />
+            </button>
+          </div>
+
+          {/* Genres */}
+          <div>
+            <p className="text-sm font-medium mb-2">Genres</p>
+            <p className="text-xs text-hex-muted mb-3">Select genres you specialize in</p>
+            <div className="flex flex-wrap gap-2">
+              {GENRE_OPTIONS.map((genre) => {
+                const selected = form.genres.includes(genre);
+                return (
+                  <button
+                    key={genre}
+                    type="button"
+                    onClick={() => toggleGenre(genre)}
+                    className="transition-all"
+                  >
+                    <Badge variant={selected ? 'accent' : 'outline'} className="cursor-pointer">
+                      {genre}
+                      {selected && <X className="ml-1 h-3 w-3" />}
+                    </Badge>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* What I'm Looking For */}
+          <FormField label="What I'm Looking For" htmlFor="lookingFor">
+            <Textarea
+              id="lookingFor"
+              value={form.lookingFor}
+              onChange={(e) => setForm((prev) => ({ ...prev, lookingFor: e.target.value }))}
+              rows={3}
+              placeholder="Describe the type of music you want to review..."
+            />
+          </FormField>
+
+          {/* Social Links */}
+          <div className="space-y-4">
+            <p className="text-sm font-medium">Connect</p>
+            <FormField label="Website" htmlFor="websiteUrl">
+              <Input
+                id="websiteUrl"
+                value={form.websiteUrl}
+                onChange={(e) => setForm((prev) => ({ ...prev, websiteUrl: e.target.value }))}
+                placeholder="https://yoursite.com"
+              />
+            </FormField>
+            <FormField label="Instagram" htmlFor="instagramHandle">
+              <Input
+                id="instagramHandle"
+                value={form.instagramHandle}
+                onChange={(e) => setForm((prev) => ({ ...prev, instagramHandle: e.target.value }))}
+                placeholder="@yourhandle"
+              />
+            </FormField>
+            <FormField label="TikTok" htmlFor="tiktokHandle">
+              <Input
+                id="tiktokHandle"
+                value={form.tiktokHandle}
+                onChange={(e) => setForm((prev) => ({ ...prev, tiktokHandle: e.target.value }))}
+                placeholder="@yourhandle"
+              />
+            </FormField>
+            <FormField label="Contact Email" htmlFor="contactEmail">
+              <Input
+                id="contactEmail"
+                type="email"
+                value={form.contactEmail}
+                onChange={(e) => setForm((prev) => ({ ...prev, contactEmail: e.target.value }))}
+                placeholder="public@email.com"
+              />
+            </FormField>
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button type="submit" disabled={updateProfile.isPending}>
+            {updateProfile.isPending ? 'Saving...' : 'Save Curator Profile'}
+          </Button>
+        </CardFooter>
+      </form>
+    </Card>
   );
 }

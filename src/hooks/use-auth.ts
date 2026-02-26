@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchProfile = useCallback(async (userId: string): Promise<Tables<'profiles'>> => {
     const { data, error } = await supabase
       .from('profiles')
-      .select()
+      .select('*')
       .eq('id', userId)
       .single()
       .returns<Tables<'profiles'>>();

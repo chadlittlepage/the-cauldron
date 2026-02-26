@@ -184,37 +184,58 @@ export type Database = {
       };
       profiles: {
         Row: {
+          accepting_submissions: boolean;
           avatar_url: string | null;
           bio: string | null;
+          contact_email: string | null;
           created_at: string;
           display_name: string;
           email: string;
+          genres: string[];
           id: string;
+          instagram_handle: string | null;
           listener_count: number;
+          looking_for: string | null;
           role: Database['public']['Enums']['user_role'];
+          tiktok_handle: string | null;
           updated_at: string;
+          website_url: string | null;
         };
         Insert: {
+          accepting_submissions?: boolean;
           avatar_url?: string | null;
           bio?: string | null;
+          contact_email?: string | null;
           created_at?: string;
           display_name: string;
           email: string;
+          genres?: string[];
           id: string;
+          instagram_handle?: string | null;
           listener_count?: number;
+          looking_for?: string | null;
           role?: Database['public']['Enums']['user_role'];
+          tiktok_handle?: string | null;
           updated_at?: string;
+          website_url?: string | null;
         };
         Update: {
+          accepting_submissions?: boolean;
           avatar_url?: string | null;
           bio?: string | null;
+          contact_email?: string | null;
           created_at?: string;
           display_name?: string;
           email?: string;
+          genres?: string[];
           id?: string;
+          instagram_handle?: string | null;
           listener_count?: number;
+          looking_for?: string | null;
           role?: Database['public']['Enums']['user_role'];
+          tiktok_handle?: string | null;
           updated_at?: string;
+          website_url?: string | null;
         };
         Relationships: [];
       };
