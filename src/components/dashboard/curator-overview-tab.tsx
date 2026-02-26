@@ -20,9 +20,10 @@ export function CuratorOverviewTab() {
 
   const queueSize = queue?.totalCount ?? 0;
 
-  // Acceptance rate: reviews written vs total queue throughput (reviews + remaining queue)
-  const totalSeen = totalReviews + queueSize;
-  const acceptanceRate = totalSeen > 0 ? `${Math.round((totalReviews / totalSeen) * 100)}%` : 'N/A';
+  // Acceptance rate: reviews with rating >= 4 out of total reviews
+  const accepted = reviews?.filter((r) => r.rating >= 4).length ?? 0;
+  const acceptanceRate =
+    totalReviews > 0 ? `${Math.round((accepted / totalReviews) * 100)}%` : 'N/A';
 
   const totalEarnedCents = (payouts ?? [])
     .filter((p) => p.paid_at)
