@@ -95,7 +95,7 @@ export function TrackDetailPage() {
   const hasNav = trackIds && currentIndex >= 0;
 
   return (
-    <div className="relative" ref={swipeRef} style={{ touchAction: 'pan-y' }}>
+    <div className="relative" ref={swipeRef}>
       {/* Background glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-accent-purple/5 blur-[120px]" />
