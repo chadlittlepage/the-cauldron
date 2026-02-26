@@ -1,11 +1,13 @@
 import { useAuth } from '@/hooks/use-auth';
 import { useCuratorReviews } from '@/hooks/use-reviews';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { Spinner } from '@/components/ui/spinner';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { MessageSquare, Star, TrendingUp } from 'lucide-react';
 
 export function CuratorStatsPage() {
+  useDocumentTitle('Curator Stats');
   const { user } = useAuth();
   const { data: reviews, isLoading, isError, error } = useCuratorReviews(user?.id);
 
@@ -32,7 +34,7 @@ export function CuratorStatsPage() {
 
   const totalReviews = reviews?.length ?? 0;
   const avgRating = totalReviews
-    ? (reviews!.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1)
+    ? ((reviews ?? []).reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1)
     : 'N/A';
 
   const ratingDistribution = [1, 2, 3, 4, 5].map((star) => ({

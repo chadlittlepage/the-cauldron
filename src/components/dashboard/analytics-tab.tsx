@@ -92,7 +92,7 @@ export function AnalyticsTab() {
     { label: 'Submitted', value: totalSubmissions, color: '#4a556c' },
     { label: 'Reviewed', value: reviewed, color: '#6366f1' },
     { label: 'Accepted', value: accepted, color: '#22c55e' },
-    { label: 'Placed', value: placementCount as number, color: '#f59e0b' },
+    { label: 'Placed', value: placementCount, color: '#f59e0b' },
   ];
 
   return (
@@ -128,11 +128,7 @@ export function AnalyticsTab() {
           value={`${acceptanceRate}%`}
           icon={<TrendingUp className="h-5 w-5" />}
         />
-        <StatCard
-          label="Placements"
-          value={placementCount as number}
-          icon={<Award className="h-5 w-5" />}
-        />
+        <StatCard label="Placements" value={placementCount} icon={<Award className="h-5 w-5" />} />
       </div>
 
       {/* Submissions Over Time + Curator Decisions */}

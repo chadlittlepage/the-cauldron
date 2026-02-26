@@ -3,7 +3,6 @@ export { Avatar } from './avatar';
 export { Badge } from './badge';
 export { Button, buttonVariants } from './button';
 export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './card';
-export { Dialog, DialogTitle, DialogDescription } from './dialog';
 export { DropdownMenu, DropdownItem } from './dropdown-menu';
 export { EmptyState } from './empty-state';
 export { FormField } from './form-field';

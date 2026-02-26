@@ -15,7 +15,7 @@ export function CuratorOverviewTab() {
 
   const totalReviews = reviews?.length ?? 0;
   const avgRating = totalReviews
-    ? (reviews!.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1)
+    ? ((reviews ?? []).reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1)
     : 'N/A';
 
   const queueSize = queue?.totalCount ?? 0;

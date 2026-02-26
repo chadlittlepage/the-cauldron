@@ -103,16 +103,7 @@ export function ChartsPage() {
             description="Charts are generated at the end of each month based on community votes."
           />
         ) : (
-          <ChartTable
-            entries={entries.map((e) => ({
-              id: e.id,
-              submission_id: e.submission_id,
-              rank: e.rank,
-              vote_count: e.vote_count,
-              submissions: e.submissions,
-            }))}
-            className="mt-2"
-          />
+          <ChartTable entries={entries} className="mt-2" />
         )}
       </div>
     </div>

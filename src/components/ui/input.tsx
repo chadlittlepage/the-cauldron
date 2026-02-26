@@ -7,6 +7,9 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   suffix?: ReactNode;
 }
 
+const inputBase =
+  'flex h-11 w-full rounded-lg border border-hex-border bg-hex-surface/80 px-4 py-2 text-base sm:text-sm text-hex-text placeholder:text-hex-muted/60 transition-all duration-200 hover:border-hex-border-light focus-visible:outline-none focus-visible:border-accent-purple focus-visible:ring-1 focus-visible:ring-accent-purple/50 disabled:cursor-not-allowed disabled:opacity-50';
+
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, icon, suffix, ...props }, ref) => {
     if (icon || suffix) {
@@ -19,12 +22,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
           <input
             type={type}
-            className={cn(
-              'flex h-11 w-full rounded-lg border border-hex-border bg-hex-surface/80 px-4 py-2 text-base sm:text-sm text-hex-text placeholder:text-hex-muted/60 transition-all duration-200 hover:border-hex-border-light focus-visible:outline-none focus-visible:border-accent-purple focus-visible:ring-1 focus-visible:ring-accent-purple/50 disabled:cursor-not-allowed disabled:opacity-50',
-              icon && 'pl-10',
-              suffix && 'pr-10',
-              className,
-            )}
+            className={cn(inputBase, icon && 'pl-10', suffix && 'pr-10', className)}
             ref={ref}
             {...props}
           />
@@ -35,17 +33,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       );
     }
 
-    return (
-      <input
-        type={type}
-        className={cn(
-          'flex h-11 w-full rounded-lg border border-hex-border bg-hex-surface/80 px-4 py-2 text-base sm:text-sm text-hex-text placeholder:text-hex-muted/60 transition-all duration-200 hover:border-hex-border-light focus-visible:outline-none focus-visible:border-accent-purple focus-visible:ring-1 focus-visible:ring-accent-purple/50 disabled:cursor-not-allowed disabled:opacity-50',
-          className,
-        )}
-        ref={ref}
-        {...props}
-      />
-    );
+    return <input type={type} className={cn(inputBase, className)} ref={ref} {...props} />;
   },
 );
 Input.displayName = 'Input';
