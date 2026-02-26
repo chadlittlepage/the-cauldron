@@ -38,10 +38,12 @@
 /* ──────────────────── Base ──────────────────── */
 
 html {
-  touch-action: manipulation;
+  touch-action: pan-y;
+  overflow-x: hidden;
 }
 
 body {
+  overflow-x: hidden;
   margin: 0;
   background-color: var(--color-hex-dark);
   background-image: url('/hex-wave-bg.svg?v=4');
