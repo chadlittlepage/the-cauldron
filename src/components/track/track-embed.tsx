@@ -70,6 +70,7 @@ export function TrackEmbed({ url, platform, className }: TrackEmbedProps) {
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
         loading="eager"
         title={`${platform} embed`}
+        style={{ touchAction: 'auto' }}
         className={cn(
           'rounded-xl transition-opacity duration-300',
           loaded ? 'opacity-100' : 'opacity-0',
