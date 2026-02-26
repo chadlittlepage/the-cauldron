@@ -46,6 +46,9 @@ const FeaturesPage = lazy(() =>
   import('@/pages/features').then((m) => ({ default: m.FeaturesPage })),
 );
 const SpecsPage = lazy(() => import('@/pages/specs').then((m) => ({ default: m.SpecsPage })));
+const PlatformOverviewPage = lazy(() =>
+  import('@/pages/platform-overview').then((m) => ({ default: m.PlatformOverviewPage })),
+);
 const BecomeCuratorPage = lazy(() =>
   import('@/pages/become-curator').then((m) => ({ default: m.BecomeCuratorPage })),
 );
@@ -138,6 +141,7 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/features" element={<FeaturesPage />} />
           <Route path="/specs" element={<SpecsPage />} />
+          <Route path="/platform-overview" element={<PlatformOverviewPage />} />
           <Route path="/become-curator" element={<BecomeCuratorPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />

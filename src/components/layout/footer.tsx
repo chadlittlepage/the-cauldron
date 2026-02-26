@@ -17,6 +17,7 @@ const forCurators = [
 const hexwaveLinks = [
   { to: '/features', label: 'Features' },
   { to: '/specs', label: 'Specs' },
+  { to: '/platform-overview', label: 'Platform Overview' },
 ];
 
 const company = [

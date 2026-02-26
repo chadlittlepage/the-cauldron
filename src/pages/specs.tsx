@@ -163,7 +163,7 @@ const monitoring: DetailCard[] = [
 
 const validation: CompactCard[] = [
   { icon: CheckCircle2, title: 'Zod schemas at every boundary', color: 'text-accent-purple' },
-  { icon: FileStack, title: '19 database migrations', color: 'text-accent-pink' },
+  { icon: FileStack, title: '25 database migrations', color: 'text-accent-pink' },
   { icon: FileCode2, title: 'TypeScript strict mode', color: 'text-accent-cyan' },
 ];
 
