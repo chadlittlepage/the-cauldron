@@ -14,6 +14,8 @@ const forCurators = [
   { to: '/dashboard/review-queue', label: 'Review Queue' },
 ];
 
+const hexwaveLinks = [{ to: '/features', label: 'Features' }];
+
 const company = [
   { to: '/about', label: 'About Us' },
   { to: '/terms', label: 'Terms of Service' },
@@ -24,7 +26,7 @@ export function Footer() {
   return (
     <footer className="mt-auto bg-hex-deeper/80 backdrop-blur-sm">
       <div className="mx-auto max-w-7xl px-6 py-14">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-2.5">
@@ -77,6 +79,26 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5">
               {forCurators.map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="text-sm text-hex-muted hover:text-hex-text transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* hexwave */}
+          <div>
+            <h4 className="flex items-center gap-2 text-sm font-semibold text-hex-text mb-4">
+              <Headphones className="h-4 w-4 text-accent-purple" />
+              hexwave
+            </h4>
+            <ul className="space-y-2.5">
+              {hexwaveLinks.map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}
