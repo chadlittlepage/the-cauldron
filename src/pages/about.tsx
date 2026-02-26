@@ -91,7 +91,7 @@ export function AboutPage() {
               <ul className="space-y-3 text-sm text-hex-muted">
                 <li className="flex items-start gap-2">
                   <Zap className="h-4 w-4 text-accent-purple shrink-0 mt-0.5" />
-                  Submit any track for free
+                  Submit any song for free
                 </li>
                 <li className="flex items-start gap-2">
                   <Zap className="h-4 w-4 text-accent-purple shrink-0 mt-0.5" />
@@ -108,7 +108,7 @@ export function AboutPage() {
               </ul>
               <Link to="/dashboard/submit" className="inline-block mt-6">
                 <Button variant="accent" className="gap-2 group">
-                  Submit a Track
+                  Submit Song Free
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>

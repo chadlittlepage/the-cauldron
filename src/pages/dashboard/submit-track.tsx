@@ -135,7 +135,7 @@ export function SubmitTrackPage() {
           <div className="inline-flex items-center justify-center rounded-xl bg-accent-purple/10 p-3 mb-4">
             <Headphones className="h-6 w-6 text-accent-purple" />
           </div>
-          <h1 className="text-2xl font-bold">Submit a Track</h1>
+          <h1 className="text-2xl font-bold">Submit Song Free</h1>
           <p className="mt-2 text-sm text-hex-muted">Share your music with the hexwave community</p>
         </div>
 

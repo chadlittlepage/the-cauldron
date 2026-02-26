@@ -950,14 +950,14 @@ export function HomePage() {
             </h1>
 
             <p className="mx-auto mt-6 max-w-xl text-lg text-hex-muted leading-relaxed">
-              Submit your tracks, get reviewed by expert curators, and let the community decide what
-              rises to the top.
+              Submit your songs for free, get reviewed by expert curators, and let the community
+              decide what rises to the top.
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
               <Link to="/dashboard/submit">
                 <Button variant="accent" size="xl" className="w-full sm:w-auto group">
-                  Submit Your Track
+                  Submit Song Free
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>

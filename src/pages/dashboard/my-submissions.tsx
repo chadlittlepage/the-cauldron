@@ -31,10 +31,10 @@ export function MySubmissionsPage() {
         <EmptyState
           icon={<Music className="h-12 w-12" />}
           title="No submissions yet"
-          description="Submit your first track to get started."
+          description="Submit your first song for free to get started."
           action={
             <Link to="/dashboard/submit">
-              <Button variant="accent">Submit Track</Button>
+              <Button variant="accent">Submit Song Free</Button>
             </Link>
           }
         />

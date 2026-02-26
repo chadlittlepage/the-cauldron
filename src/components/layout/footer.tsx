@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Headphones, Mail, Music, BarChart3, Users, Shield, FileText, Lock } from 'lucide-react';
 
 const forArtists = [
-  { to: '/dashboard/submit', label: 'Submit a Track' },
+  { to: '/dashboard/submit', label: 'Submit Song Free' },
   { to: '/browse', label: 'Browse Music' },
   { to: '/charts', label: 'View Charts' },
   { to: '/about', label: 'How It Works' },

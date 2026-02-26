@@ -132,12 +132,12 @@ export function ArtistDashboardPage() {
             <EmptyState
               icon={<Music className="h-10 w-10" />}
               title="No submissions yet"
-              description="Submit your first track to get started on hexwave."
+              description="Submit your first song for free to get started on hexwave."
               action={
                 <Link to="/dashboard/submit">
                   <Button variant="accent" className="gap-2">
                     <Plus className="h-4 w-4" />
-                    Submit Track
+                    Submit Song Free
                   </Button>
                 </Link>
               }

@@ -71,7 +71,7 @@ describe('App', () => {
   it('renders the hero section', () => {
     renderApp();
     expect(screen.getByText('Worth Hearing')).toBeInTheDocument();
-    expect(screen.getByText('Submit Your Track')).toBeInTheDocument();
+    expect(screen.getAllByText('Submit Song Free').length).toBeGreaterThan(0);
   });
 
   it('renders login page', () => {
