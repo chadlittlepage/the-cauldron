@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
+import { useSwipe } from '@/hooks/use-swipe';
 import trackPool from './track-pool.json';
 
 /** Fisher-Yates shuffle, returns a new array. */
@@ -107,13 +108,15 @@ export function HomePage() {
     setCurrentTrack(getNext);
   }
 
-  function nextTrack() {
+  const nextTrack = useCallback(() => {
     handleTrackChange((i) => (i + 1) % featuredTracks.length);
-  }
+  }, [featuredTracks.length]);
 
-  function prevTrack() {
+  const prevTrack = useCallback(() => {
     handleTrackChange((i) => (i - 1 + featuredTracks.length) % featuredTracks.length);
-  }
+  }, [featuredTracks.length]);
+
+  const swipeRef = useSwipe(nextTrack, prevTrack);
 
   return (
     <div className="relative">
@@ -219,7 +222,11 @@ export function HomePage() {
           {(() => {
             const t = featuredTracks[currentTrack];
             return (
-              <div key={t.spotifyId} className="glass-card rounded-2xl p-6 glow-purple">
+              <div
+                key={t.spotifyId}
+                ref={swipeRef}
+                className="glass-card rounded-2xl p-6 glow-purple"
+              >
                 {/* Track header */}
                 <div className="flex items-start justify-between mb-5">
                   <div>
