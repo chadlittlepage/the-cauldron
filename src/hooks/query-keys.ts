@@ -41,6 +41,21 @@ export const queryKeys = {
     allPayouts: (filters?: { page?: number }) => ['admin', 'payouts', filters] as const,
     analytics: () => ['admin', 'analytics'] as const,
   },
+  artistAnalytics: {
+    submissionsByMonth: (artistId: string) =>
+      ['artist-analytics', 'submissions-by-month', artistId] as const,
+    curatorDecisions: (artistId: string) =>
+      ['artist-analytics', 'curator-decisions', artistId] as const,
+    genreDistribution: (artistId: string) =>
+      ['artist-analytics', 'genre-distribution', artistId] as const,
+    voteHistory: (artistId: string) => ['artist-analytics', 'vote-history', artistId] as const,
+    ratingsDistribution: (artistId: string) =>
+      ['artist-analytics', 'ratings-distribution', artistId] as const,
+    voteTrend: (artistId: string) => ['artist-analytics', 'vote-trend', artistId] as const,
+    totalSpent: (artistId: string) => ['artist-analytics', 'total-spent', artistId] as const,
+    placements: (artistId: string) => ['artist-analytics', 'placements', artistId] as const,
+    tierBreakdown: (artistId: string) => ['artist-analytics', 'tier-breakdown', artistId] as const,
+  },
   debug: {
     supabaseHealth: () => ['debug', 'supabaseHealth'] as const,
     edgeFunctionHealth: () => ['debug', 'edgeFunctionHealth'] as const,

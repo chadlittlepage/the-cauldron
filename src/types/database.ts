@@ -289,6 +289,48 @@ export interface Database {
         Args: Record<string, never>;
         Returns: Array<{ month: string; revenue_cents: number }>;
       };
+      get_artist_submissions_by_month: {
+        Args: { p_artist_id: string };
+        Returns: Array<{ month: string; count: number }>;
+      };
+      get_artist_curator_decisions: {
+        Args: { p_artist_id: string };
+        Returns: Array<{ month: string; accepted: number; rejected: number; pending: number }>;
+      };
+      get_artist_genre_distribution: {
+        Args: { p_artist_id: string };
+        Returns: Array<{ genre: string; count: number }>;
+      };
+      get_artist_ratings_distribution: {
+        Args: { p_artist_id: string };
+        Returns: Array<{ rating: number; count: number }>;
+      };
+      get_artist_vote_trend: {
+        Args: { p_artist_id: string };
+        Returns: Array<{ day: string; upvotes: number }>;
+      };
+      get_artist_total_spent: {
+        Args: { p_artist_id: string };
+        Returns: Array<{ total_cents: number }>;
+      };
+      get_artist_placements: {
+        Args: { p_artist_id: string };
+        Returns: Array<{ count: number }>;
+      };
+      get_artist_tier_breakdown: {
+        Args: { p_artist_id: string };
+        Returns: Array<{ tier: string; count: number; total_cents: number }>;
+      };
+      get_artist_vote_history: {
+        Args: { p_artist_id: string };
+        Returns: Array<{
+          submission_id: string;
+          track_title: string;
+          artist_name: string;
+          genre: string;
+          created_at: string;
+        }>;
+      };
     };
     Enums: {
       user_role: UserRole;

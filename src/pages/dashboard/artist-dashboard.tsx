@@ -1,29 +1,22 @@
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import { useArtistSubmissions } from '@/hooks/use-submissions';
 import { useDocumentTitle } from '@/hooks/use-document-title';
-import { StatCard } from '@/components/dashboard/stat-card';
-import { SubmissionList } from '@/components/dashboard/submission-list';
+import { Tabs } from '@/components/ui/tabs';
+import { SubmissionsTab } from '@/components/dashboard/submissions-tab';
+import { AnalyticsTab } from '@/components/dashboard/analytics-tab';
+import { VotingHistoryTab } from '@/components/dashboard/voting-history-tab';
+import { SettingsTab } from '@/components/dashboard/settings-tab';
 import { Button } from '@/components/ui/button';
 import { QueryError } from '@/components/ui/query-error';
 import { SkeletonStats } from '@/components/ui/skeleton';
-import { EmptyState } from '@/components/ui/empty-state';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import {
-  Music,
-  ThumbsUp,
-  Clock,
-  Plus,
-  ArrowRight,
-  LayoutDashboard,
-  ClipboardList,
-  FileText,
-} from 'lucide-react';
+import { Plus, LayoutDashboard, ClipboardList, FileText, ArrowRight } from 'lucide-react';
 
 export function ArtistDashboardPage() {
   useDocumentTitle('Dashboard');
   const { user, profile } = useAuth();
-  const { data: submissions, isLoading, isError, error, refetch } = useArtistSubmissions(user?.id);
+  const { isLoading, isError, error, refetch } = useArtistSubmissions(user?.id);
 
   if (isLoading) {
     return (
@@ -64,13 +57,12 @@ export function ArtistDashboardPage() {
     );
   }
 
-  const totalVotes = submissions?.reduce((sum, s) => sum + s.vote_count, 0) ?? 0;
-  const pending =
-    submissions?.filter((s) => s.status === 'pending' || s.status === 'in_review').length ?? 0;
-
-  if (profile?.role === 'curator') {
-    return <Navigate to="/dashboard/curator" replace />;
-  }
+  const tabs = [
+    { value: 'submissions', label: 'Submissions', content: <SubmissionsTab /> },
+    { value: 'analytics', label: 'Analytics', content: <AnalyticsTab /> },
+    { value: 'voting-history', label: 'Voting History', content: <VotingHistoryTab /> },
+    { value: 'settings', label: 'Settings', content: <SettingsTab /> },
+  ];
 
   return (
     <div className="relative">
@@ -98,52 +90,8 @@ export function ArtistDashboardPage() {
           </Link>
         </div>
 
-        {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-3 mb-10">
-          <StatCard
-            label="Total Submissions"
-            value={submissions?.length ?? 0}
-            icon={<Music className="h-5 w-5" />}
-          />
-          <StatCard
-            label="Total Votes"
-            value={totalVotes}
-            icon={<ThumbsUp className="h-5 w-5" />}
-          />
-          <StatCard label="Pending Review" value={pending} icon={<Clock className="h-5 w-5" />} />
-        </div>
-
-        {/* Submissions */}
-        <section>
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold">Recent Submissions</h2>
-            <Link
-              to="/dashboard/submissions"
-              className="flex items-center gap-1 text-sm text-accent-purple hover:text-accent-purple/80 transition-colors"
-            >
-              View all
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-
-          {submissions?.length ? (
-            <SubmissionList submissions={submissions.slice(0, 5)} />
-          ) : (
-            <EmptyState
-              icon={<Music className="h-10 w-10" />}
-              title="No submissions yet"
-              description="Submit your first song for free to get started on hexwave."
-              action={
-                <Link to="/dashboard/submit">
-                  <Button variant="accent" className="gap-2">
-                    <Plus className="h-4 w-4" />
-                    Submit Song Free
-                  </Button>
-                </Link>
-              }
-            />
-          )}
-        </section>
+        {/* Tabs */}
+        <Tabs tabs={tabs} defaultValue="submissions" />
 
         {/* Curator Tools (admin only) */}
         {profile?.role === 'admin' && (
