@@ -27,16 +27,6 @@ export async function fetchTrackMetadata(
 
     const data = (await res.json()) as Record<string, unknown>;
 
-    if (platform === 'spotify') {
-      const raw = (data.title as string) || '';
-      const parts = raw.split(' - ');
-      return {
-        title: parts.length > 1 ? parts.slice(1).join(' - ') : raw,
-        thumbnailUrl: (data.thumbnail_url as string) || null,
-        artistName: parts.length > 1 ? parts[0] : null,
-      };
-    }
-
     return {
       title: (data.title as string) || '',
       thumbnailUrl: (data.thumbnail_url as string) || null,

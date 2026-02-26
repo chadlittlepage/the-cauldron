@@ -12,11 +12,11 @@ describe('fetchTrackMetadata', () => {
     expect(await fetchTrackMetadata('https://example.com', null)).toBeNull();
   });
 
-  it('parses Spotify oEmbed response (Artist - Track format)', async () => {
+  it('parses Spotify oEmbed response', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
       new Response(
         JSON.stringify({
-          title: 'Daft Punk - Around the World',
+          title: 'Never Gonna Give You Up',
           thumbnail_url: 'https://i.scdn.co/image/abc123',
         }),
         { status: 200 },
@@ -26,22 +26,8 @@ describe('fetchTrackMetadata', () => {
     const result = await fetchTrackMetadata('https://open.spotify.com/track/abc123', 'spotify');
 
     expect(result).toEqual({
-      title: 'Around the World',
+      title: 'Never Gonna Give You Up',
       thumbnailUrl: 'https://i.scdn.co/image/abc123',
-      artistName: 'Daft Punk',
-    });
-  });
-
-  it('handles Spotify title without dash separator', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-      new Response(JSON.stringify({ title: 'Just a Title', thumbnail_url: null }), { status: 200 }),
-    );
-
-    const result = await fetchTrackMetadata('https://open.spotify.com/track/abc123', 'spotify');
-
-    expect(result).toEqual({
-      title: 'Just a Title',
-      thumbnailUrl: null,
       artistName: null,
     });
   });
