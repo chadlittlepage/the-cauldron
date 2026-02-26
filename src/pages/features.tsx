@@ -253,20 +253,20 @@ export function FeaturesPage() {
         </div>
       </section>
 
-      {/* ── For Artists ── */}
+      {/* ── For Curators ── */}
       <section className="relative">
         <div className="mx-auto max-w-7xl px-6 py-24">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold">
-              For <span className="gradient-text">Artists</span>
+              For <span className="gradient-text">Curators</span>
             </h2>
             <p className="mt-4 text-hex-muted max-w-lg mx-auto">
-              Everything you need to get your music heard by the right people.
+              Turn your ear for great music into earnings and reputation.
             </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            {artistFeatures.map((feature) => (
+            {curatorFeatures.map((feature) => (
               <div
                 key={feature.title}
                 className="group glass-card rounded-2xl p-8 transition-all duration-300"
@@ -284,20 +284,20 @@ export function FeaturesPage() {
         </div>
       </section>
 
-      {/* ── For Curators ── */}
+      {/* ── For Artists ── */}
       <section className="relative">
         <div className="mx-auto max-w-7xl px-6 py-24">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold">
-              For <span className="gradient-text">Curators</span>
+              For <span className="gradient-text">Artists</span>
             </h2>
             <p className="mt-4 text-hex-muted max-w-lg mx-auto">
-              Turn your ear for great music into earnings and reputation.
+              Everything you need to get your music heard by the right people.
             </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            {curatorFeatures.map((feature) => (
+            {artistFeatures.map((feature) => (
               <div
                 key={feature.title}
                 className="group glass-card rounded-2xl p-8 transition-all duration-300"
