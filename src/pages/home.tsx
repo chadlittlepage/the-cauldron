@@ -32,7 +32,7 @@ function shuffle<T>(arr: readonly T[]): T[] {
   return a;
 }
 
-const FEATURED_COUNT = 3;
+const FEATURED_COUNT = 50;
 
 const pillStats = [
   { label: 'Submit Music', icon: Music, desc: 'Share your tracks' },
@@ -102,20 +102,16 @@ export function HomePage() {
   const [currentTrack, setCurrentTrack] = useState(0);
   const [loadedIframes, setLoadedIframes] = useState<Set<number>>(new Set());
 
-  function handleTrackChange(getNext: (i: number) => number) {
-    setCurrentTrack(getNext);
-  }
-
   function markLoaded(idx: number) {
     setLoadedIframes((prev) => new Set(prev).add(idx));
   }
 
   const nextTrack = useCallback(() => {
-    handleTrackChange((i) => (i + 1) % featuredTracks.length);
+    setCurrentTrack((i) => (i + 1) % featuredTracks.length);
   }, [featuredTracks.length]);
 
   const prevTrack = useCallback(() => {
-    handleTrackChange((i) => (i - 1 + featuredTracks.length) % featuredTracks.length);
+    setCurrentTrack((i) => (i - 1 + featuredTracks.length) % featuredTracks.length);
   }, [featuredTracks.length]);
 
   const swipeRef = useSwipe(nextTrack, prevTrack);
@@ -220,89 +216,99 @@ export function HomePage() {
             </button>
           </div>
 
-          {/* Track cards — all iframes preloaded, only active card visible */}
-          {featuredTracks.map((t, idx) => (
-            <div
-              key={t.spotifyId}
-              ref={idx === currentTrack ? swipeRef : undefined}
-              className={idx === currentTrack ? 'glass-card rounded-2xl p-6 glow-purple' : 'hidden'}
-            >
-              {/* Track header */}
-              <div className="flex items-start justify-between mb-5">
-                <div>
-                  <h3 className="text-xl font-bold">{t.title}</h3>
-                  <p className="text-hex-muted">{t.artist}</p>
-                </div>
-                <div className="flex gap-1.5">
-                  {t.genres.map((g) => (
-                    <Badge key={g} variant="outline">
-                      {g}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
+          {/* Track cards — sliding window ±2, stacked with opacity */}
+          <div className="relative">
+            {featuredTracks.map((t, idx) => {
+              const len = featuredTracks.length;
+              const distance = Math.min(
+                Math.abs(idx - currentTrack),
+                len - Math.abs(idx - currentTrack),
+              );
+              if (distance > 2) return null;
+              const isActive = idx === currentTrack;
 
-              {/* Spotify Embed — all iframes mounted, preloaded in background */}
-              <div
-                className="relative rounded-xl overflow-hidden mb-5 bg-[#121212]"
-                style={{ height: 152 }}
-              >
-                {!loadedIframes.has(idx) && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="flex items-center gap-3">
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-hex-muted border-t-accent-purple" />
-                      <span className="text-sm text-hex-muted">Loading track...</span>
+              return (
+                <div
+                  key={t.spotifyId}
+                  ref={isActive ? swipeRef : undefined}
+                  className={`glass-card rounded-2xl p-6 ${isActive ? 'relative glow-purple' : 'absolute inset-0 pointer-events-none'}`}
+                  style={!isActive ? { opacity: 0 } : undefined}
+                >
+                  {/* Track header */}
+                  <div className="flex items-start justify-between mb-5">
+                    <div>
+                      <h3 className="text-xl font-bold">{t.title}</h3>
+                      <p className="text-hex-muted">{t.artist}</p>
+                    </div>
+                    <div className="flex gap-1.5">
+                      {t.genres.map((g) => (
+                        <Badge key={g} variant="outline">
+                          {g}
+                        </Badge>
+                      ))}
                     </div>
                   </div>
-                )}
-                <iframe
-                  src={`https://open.spotify.com/embed/track/${t.spotifyId}?theme=0`}
-                  width="100%"
-                  height="152"
-                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                  loading="eager"
-                  style={{ touchAction: 'auto' }}
-                  title={`${t.title} by ${t.artist}`}
-                  className={`rounded-xl transition-opacity duration-300 ${loadedIframes.has(idx) ? 'opacity-100' : 'opacity-0'}`}
-                  onLoad={() => markLoaded(idx)}
-                />
-              </div>
 
-              {/* Open in Spotify link */}
-              <div className="flex justify-end mb-5">
-                <a
-                  href={`https://open.spotify.com/track/${t.spotifyId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-accent-purple hover:text-accent-purple/80 transition-colors"
-                >
-                  <ExternalLink className="h-3.5 w-3.5" />
-                  Open in Spotify
-                </a>
-              </div>
+                  {/* Spotify Embed */}
+                  <div
+                    className="rounded-xl overflow-hidden mb-5"
+                    style={{ height: 152, background: '#000' }}
+                  >
+                    <iframe
+                      src={`https://open.spotify.com/embed/track/${t.spotifyId}?theme=0`}
+                      width="100%"
+                      height="152"
+                      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                      loading="eager"
+                      style={{
+                        touchAction: 'auto',
+                        display: 'block',
+                        border: 'none',
+                        visibility: loadedIframes.has(idx) ? 'visible' : 'hidden',
+                      }}
+                      title={`${t.title} by ${t.artist}`}
+                      className="rounded-xl"
+                      onLoad={() => markLoaded(idx)}
+                    />
+                  </div>
 
-              {/* Vote / Pass buttons */}
-              <div className="grid grid-cols-2 gap-3">
-                <Link to="/signup">
-                  <Button variant="accent" size="lg" className="w-full gap-2">
-                    <Heart className="h-4 w-4" />
-                    Vote ({t.votes})
-                  </Button>
-                </Link>
-                <Button variant="outline" size="lg" className="w-full gap-2" onClick={nextTrack}>
-                  <ThumbsDown className="h-4 w-4" />
-                  Pass
-                </Button>
-              </div>
+                  {/* Open in Spotify link */}
+                  <div className="flex justify-end mb-5">
+                    <a
+                      href={`https://open.spotify.com/track/${t.spotifyId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm text-accent-purple hover:text-accent-purple/80 transition-colors"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                      Open in Spotify
+                    </a>
+                  </div>
 
-              <p className="text-center text-xs text-hex-muted mt-4">
-                <Link to="/signup" className="text-accent-purple hover:underline">
-                  Sign up
-                </Link>{' '}
-                to hear full songs and vote.
-              </p>
-            </div>
-          ))}
+                  {/* Vote / Pass buttons */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <Link to="/signup">
+                      <Button variant="accent" size="lg" className="w-full gap-2">
+                        <Heart className="h-4 w-4" />
+                        Vote ({t.votes})
+                      </Button>
+                    </Link>
+                    <Button variant="outline" size="lg" className="w-full gap-2" onClick={nextTrack}>
+                      <ThumbsDown className="h-4 w-4" />
+                      Pass
+                    </Button>
+                  </div>
+
+                  <p className="text-center text-xs text-hex-muted mt-4">
+                    <Link to="/signup" className="text-accent-purple hover:underline">
+                      Sign up
+                    </Link>{' '}
+                    to hear full songs and vote.
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
