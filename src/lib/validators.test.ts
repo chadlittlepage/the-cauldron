@@ -6,6 +6,7 @@ import {
   submissionSchema,
   reviewSchema,
   trackUrlSchema,
+  detectPlatform,
 } from './validators';
 
 describe('loginSchema', () => {
@@ -153,6 +154,34 @@ describe('submissionSchema', () => {
       genre: 'electronic',
     });
     expect(result.success).toBe(false);
+  });
+});
+
+describe('detectPlatform', () => {
+  it('detects Spotify URLs', () => {
+    expect(detectPlatform('https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6')).toBe('spotify');
+  });
+
+  it('detects SoundCloud URLs', () => {
+    expect(detectPlatform('https://soundcloud.com/artist-name/track-name')).toBe('soundcloud');
+  });
+
+  it('detects Bandcamp URLs', () => {
+    expect(detectPlatform('https://artist-name.bandcamp.com/track/song-title')).toBe('bandcamp');
+  });
+
+  it('detects other valid URLs as other', () => {
+    expect(detectPlatform('https://example.com/my-track')).toBe('other');
+    expect(detectPlatform('http://example.com/my-track')).toBe('other');
+  });
+
+  it('returns null for empty strings', () => {
+    expect(detectPlatform('')).toBeNull();
+  });
+
+  it('returns null for invalid URLs', () => {
+    expect(detectPlatform('not a url')).toBeNull();
+    expect(detectPlatform('ftp://example.com')).toBeNull();
   });
 });
 

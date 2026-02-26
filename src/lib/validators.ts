@@ -42,12 +42,23 @@ export const profileSchema = z.object({
 
 export type ProfileInput = z.infer<typeof profileSchema>;
 
-const platformPatterns = {
+export const platformPatterns = {
   spotify: /^https:\/\/open\.spotify\.com\/track\/[a-zA-Z0-9]+/,
   soundcloud: /^https:\/\/soundcloud\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+/,
   bandcamp: /^https:\/\/[a-zA-Z0-9_-]+\.bandcamp\.com\/track\/[a-zA-Z0-9_-]+/,
   other: /^https?:\/\/.+/,
 } as const;
+
+export type DetectedPlatform = 'spotify' | 'soundcloud' | 'bandcamp' | 'other' | null;
+
+export function detectPlatform(url: string): DetectedPlatform {
+  if (!url) return null;
+  if (platformPatterns.spotify.test(url)) return 'spotify';
+  if (platformPatterns.soundcloud.test(url)) return 'soundcloud';
+  if (platformPatterns.bandcamp.test(url)) return 'bandcamp';
+  if (platformPatterns.other.test(url)) return 'other';
+  return null;
+}
 
 export const trackUrlSchema = z
   .object({

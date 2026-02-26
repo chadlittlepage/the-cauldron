@@ -1,9 +1,12 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import { useCreateSubmission } from '@/hooks/use-submissions';
-import { submissionSchema } from '@/lib/validators';
-import { GENRES, PLATFORMS } from '@/lib/constants';
+import { submissionSchema, detectPlatform } from '@/lib/validators';
+import type { DetectedPlatform } from '@/lib/validators';
+import { fetchTrackMetadata } from '@/lib/oembed';
+import type { TrackMetadata } from '@/lib/oembed';
+import { GENRES } from '@/lib/constants';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
@@ -20,13 +23,21 @@ import {
   Check,
   Headphones,
   Info,
+  Loader2,
 } from 'lucide-react';
 
 const STEPS = [
-  { label: 'Track Info', icon: Music },
   { label: 'Link', icon: LinkIcon },
+  { label: 'Track Info', icon: Music },
   { label: 'Details', icon: FileText },
 ];
+
+const PLATFORM_LABELS: Record<string, string> = {
+  spotify: 'Spotify',
+  soundcloud: 'SoundCloud',
+  bandcamp: 'Bandcamp',
+  other: 'Other',
+};
 
 export function SubmitTrackPage() {
   const { user } = useAuth();
@@ -37,13 +48,28 @@ export function SubmitTrackPage() {
   const [form, setForm] = useState({
     trackTitle: '',
     trackUrl: '',
-    platform: 'spotify' as const,
+    platform: '' as string,
     genre: '',
     description: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState('');
   const submitting = useRef(false);
+
+  const [detectedPlatform, setDetectedPlatform] = useState<DetectedPlatform>(null);
+  const [metadata, setMetadata] = useState<TrackMetadata | null>(null);
+  const [fetchingMetadata, setFetchingMetadata] = useState(false);
+  const [titlePrefilled, setTitlePrefilled] = useState(false);
+
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const abortRef = useRef<AbortController | undefined>(undefined);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(debounceRef.current);
+      abortRef.current?.abort();
+    };
+  }, []);
 
   function updateField(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -52,16 +78,56 @@ export function SubmitTrackPage() {
       delete next[field];
       return next;
     });
+
+    if (field === 'trackTitle' && titlePrefilled) {
+      setTitlePrefilled(false);
+    }
+  }
+
+  function handleUrlChange(url: string) {
+    updateField('trackUrl', url);
+
+    const platform = detectPlatform(url);
+    setDetectedPlatform(platform);
+    if (platform) {
+      setForm((prev) => ({ ...prev, platform }));
+    }
+
+    clearTimeout(debounceRef.current);
+    abortRef.current?.abort();
+    setMetadata(null);
+
+    if (!platform || platform === 'bandcamp' || platform === 'other') {
+      setFetchingMetadata(false);
+      return;
+    }
+
+    setFetchingMetadata(true);
+    debounceRef.current = setTimeout(() => {
+      const controller = new AbortController();
+      abortRef.current = controller;
+
+      void fetchTrackMetadata(url, platform, controller.signal).then((result) => {
+        if (controller.signal.aborted) return;
+        setMetadata(result);
+        setFetchingMetadata(false);
+        if (result?.title) {
+          setForm((prev) => ({ ...prev, trackTitle: result.title }));
+          setTitlePrefilled(true);
+        }
+      });
+    }, 500);
   }
 
   function validateStep(): boolean {
     const fieldErrors: Record<string, string> = {};
 
     if (step === 0) {
+      if (!form.trackUrl.trim()) fieldErrors.trackUrl = 'Track URL is required';
+      else if (!detectedPlatform) fieldErrors.trackUrl = 'Please enter a valid track URL';
+    } else if (step === 1) {
       if (!form.trackTitle.trim()) fieldErrors.trackTitle = 'Track title is required';
       if (!form.genre) fieldErrors.genre = 'Please select a genre';
-    } else if (step === 1) {
-      if (!form.trackUrl.trim()) fieldErrors.trackUrl = 'Track URL is required';
     }
 
     setErrors(fieldErrors);
@@ -108,7 +174,7 @@ export function SubmitTrackPage() {
         artist_id: user.id,
         track_title: form.trackTitle,
         track_url: form.trackUrl,
-        platform: form.platform,
+        platform: form.platform as 'spotify' | 'soundcloud' | 'bandcamp' | 'other',
         genre: form.genre,
         description: form.description || null,
         payment_id: null,
@@ -187,8 +253,58 @@ export function SubmitTrackPage() {
             </Alert>
           )}
 
-          {/* Step 0: Track Info */}
+          {/* Step 0: Link */}
           {step === 0 && (
+            <div className="space-y-5 animate-fade-in">
+              <FormField label="Track URL" htmlFor="trackUrl" error={errors.trackUrl}>
+                <Input
+                  id="trackUrl"
+                  value={form.trackUrl}
+                  onChange={(e) => handleUrlChange(e.target.value)}
+                  placeholder="https://open.spotify.com/track/..."
+                  icon={<LinkIcon className="h-4 w-4" />}
+                  suffix={
+                    fetchingMetadata ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : detectedPlatform ? (
+                      <span className="inline-flex items-center rounded-full bg-accent-purple/10 px-2 py-0.5 text-xs font-medium text-accent-purple">
+                        {PLATFORM_LABELS[detectedPlatform] ?? detectedPlatform}
+                      </span>
+                    ) : null
+                  }
+                />
+              </FormField>
+
+              {metadata && (
+                <div className="flex items-center gap-3 rounded-lg border border-hex-border bg-hex-surface/50 p-3 animate-fade-in">
+                  {metadata.thumbnailUrl && (
+                    <img
+                      src={metadata.thumbnailUrl}
+                      alt=""
+                      className="h-12 w-12 rounded-md object-cover shrink-0"
+                    />
+                  )}
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-hex-text truncate">{metadata.title}</p>
+                    {metadata.artistName && (
+                      <p className="text-xs text-hex-muted truncate">{metadata.artistName}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-start gap-2 rounded-lg bg-accent-purple/5 border border-accent-purple/10 p-3">
+                <Info className="h-4 w-4 text-accent-purple shrink-0 mt-0.5" />
+                <p className="text-xs text-hex-muted">
+                  Paste a Spotify, SoundCloud, or Bandcamp track link. Right-click the track and
+                  select &quot;Copy link&quot; or &quot;Share&quot;.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Step 1: Track Info */}
+          {step === 1 && (
             <div className="space-y-5 animate-fade-in">
               <FormField label="Track Title" htmlFor="trackTitle" error={errors.trackTitle}>
                 <Input
@@ -198,6 +314,11 @@ export function SubmitTrackPage() {
                   placeholder="My Awesome Track"
                   icon={<Music className="h-4 w-4" />}
                 />
+                {titlePrefilled && detectedPlatform && (
+                  <p className="mt-1 text-xs text-hex-muted">
+                    Pre-filled from {PLATFORM_LABELS[detectedPlatform] ?? detectedPlatform}
+                  </p>
+                )}
               </FormField>
               <FormField label="Genre" htmlFor="genre" error={errors.genre}>
                 <Select
@@ -213,41 +334,6 @@ export function SubmitTrackPage() {
                   ))}
                 </Select>
               </FormField>
-            </div>
-          )}
-
-          {/* Step 1: Link */}
-          {step === 1 && (
-            <div className="space-y-5 animate-fade-in">
-              <FormField label="Platform" htmlFor="platform" error={errors.platform}>
-                <Select
-                  id="platform"
-                  value={form.platform}
-                  onChange={(e) => updateField('platform', e.target.value)}
-                >
-                  {PLATFORMS.map((p) => (
-                    <option key={p.value} value={p.value}>
-                      {p.label}
-                    </option>
-                  ))}
-                </Select>
-              </FormField>
-              <FormField label="Track URL" htmlFor="trackUrl" error={errors.trackUrl}>
-                <Input
-                  id="trackUrl"
-                  value={form.trackUrl}
-                  onChange={(e) => updateField('trackUrl', e.target.value)}
-                  placeholder="https://open.spotify.com/track/..."
-                  icon={<LinkIcon className="h-4 w-4" />}
-                />
-              </FormField>
-              <div className="flex items-start gap-2 rounded-lg bg-accent-purple/5 border border-accent-purple/10 p-3">
-                <Info className="h-4 w-4 text-accent-purple shrink-0 mt-0.5" />
-                <p className="text-xs text-hex-muted">
-                  Paste the full URL from {form.platform === 'spotify' ? 'Spotify' : form.platform}.
-                  Right-click the track and select &quot;Copy link&quot; or &quot;Share&quot;.
-                </p>
-              </div>
             </div>
           )}
 
