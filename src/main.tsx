@@ -34,9 +34,9 @@ if (env.SENTRY_DSN) {
 }
 
 // Prevent pinch-to-zoom on iOS (Safari ignores user-scalable=no since iOS 10)
-document.addEventListener('gesturestart', (e) => e.preventDefault());
-document.addEventListener('gesturechange', (e) => e.preventDefault());
-document.addEventListener('gestureend', (e) => e.preventDefault());
+document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+document.addEventListener('gestureend', (e) => e.preventDefault(), { passive: false });
 document.addEventListener(
   'touchstart',
   (e) => {
