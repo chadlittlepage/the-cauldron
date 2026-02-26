@@ -14,7 +14,10 @@ const forCurators = [
   { to: '/dashboard/review-queue', label: 'Review Queue' },
 ];
 
-const hexwaveLinks = [{ to: '/features', label: 'Features' }];
+const hexwaveLinks = [
+  { to: '/features', label: 'Features' },
+  { to: '/specs', label: 'Specs' },
+];
 
 const company = [
   { to: '/about', label: 'About Us' },
