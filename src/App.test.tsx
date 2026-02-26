@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { describe, it, expect, vi } from 'vitest';
@@ -68,9 +68,11 @@ describe('App', () => {
     expect(screen.getByText('Sign In')).toBeInTheDocument();
   });
 
-  it('renders the hero section', () => {
+  it('renders the hero section', async () => {
     renderApp();
-    expect(screen.getByText('Worth Hearing')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Worth Hearing')).toBeInTheDocument();
+    });
     expect(screen.getAllByText('Submit Song Free').length).toBeGreaterThan(0);
   });
 

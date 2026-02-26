@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
 import type { ChartType } from '@/types/database';
@@ -6,6 +6,7 @@ import type { ChartType } from '@/types/database';
 export function useCharts(type: ChartType, period: string) {
   return useQuery({
     queryKey: queryKeys.charts.byPeriod(type, period),
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('charts')

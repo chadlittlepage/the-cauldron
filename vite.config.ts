@@ -2,12 +2,14 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
+import { compression } from 'vite-plugin-compression2';
 import path from 'path';
 
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     tailwindcss(),
+    mode === 'production' && compression({ algorithms: ['gzip', 'brotliCompress'] }),
     mode === 'production' &&
       sentryVitePlugin({
         org: 'cell-division',

@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
 import { toast } from './use-toast';
@@ -17,6 +17,7 @@ export function useSubmissions(filters: SubmissionFilters = {}) {
 
   return useQuery({
     queryKey: queryKeys.submissions.list(filters),
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       let query = supabase
         .from('submissions')
@@ -74,6 +75,7 @@ export function useReviewQueue(filters: { page?: number; genre?: string; search?
 
   return useQuery({
     queryKey: queryKeys.submissions.reviewQueue(filters),
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       let query = supabase
         .from('submissions')

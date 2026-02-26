@@ -17,6 +17,16 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+const routeImports: Record<string, () => Promise<unknown>> = {
+  '/browse': () => import('@/pages/browse'),
+  '/charts': () => import('@/pages/charts'),
+  '/curators': () => import('@/pages/curators'),
+};
+
+function prefetchRoute(to: string) {
+  routeImports[to]?.();
+}
+
 const navLinks = [
   { to: '/browse', label: 'Browse', icon: Music },
   { to: '/charts', label: 'Charts', icon: BarChart3 },
@@ -55,6 +65,8 @@ export function Header() {
               <Link
                 key={link.to}
                 to={link.to}
+                onMouseEnter={() => prefetchRoute(link.to)}
+                onFocus={() => prefetchRoute(link.to)}
                 className={cn(
                   'flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-200',
                   active

@@ -22,10 +22,12 @@ function ScrollToTop() {
 }
 
 // Eager: pages that are always needed on first load
-import { HomePage } from '@/pages/home';
 import { LoginPage } from '@/pages/login';
 import { SignupPage } from '@/pages/signup';
 import { NotFoundPage } from '@/pages/not-found';
+
+// Lazy: home page (large due to track pool data)
+const HomePage = lazy(() => import('@/pages/home').then((m) => ({ default: m.HomePage })));
 
 // Lazy: public pages
 const BrowsePage = lazy(() => import('@/pages/browse').then((m) => ({ default: m.BrowsePage })));

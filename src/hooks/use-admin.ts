@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
 import { toast } from './use-toast';
@@ -38,6 +38,7 @@ export function useAdminSubmissions(filters: { status?: string; page?: number } 
 
   return useQuery({
     queryKey: queryKeys.admin.allSubmissions(filters),
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       let query = supabase
         .from('submissions')
@@ -108,6 +109,7 @@ export function useAdminCurators(filters: { page?: number } = {}) {
 
   return useQuery({
     queryKey: queryKeys.admin.allCurators(filters),
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       const { data, error, count } = await supabase
         .from('profiles')
@@ -126,6 +128,7 @@ export function useAdminPayouts(filters: { page?: number } = {}) {
 
   return useQuery({
     queryKey: queryKeys.admin.allPayouts(filters),
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       const { data, error, count } = await supabase
         .from('curator_payouts')
