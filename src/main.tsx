@@ -35,10 +35,27 @@ if (env.SENTRY_DSN) {
 
 // Prevent pinch-to-zoom on iOS (Safari ignores user-scalable=no since iOS 10)
 document.addEventListener('gesturestart', (e) => e.preventDefault());
+document.addEventListener('gesturechange', (e) => e.preventDefault());
+document.addEventListener('gestureend', (e) => e.preventDefault());
 document.addEventListener(
   'touchstart',
   (e) => {
     if (e.touches.length > 1) e.preventDefault();
+  },
+  { passive: false },
+);
+document.addEventListener(
+  'touchmove',
+  (e) => {
+    if (e.touches.length > 1) e.preventDefault();
+  },
+  { passive: false },
+);
+// Prevent ctrl+wheel zoom (trackpad pinch triggers this in some browsers)
+document.addEventListener(
+  'wheel',
+  (e) => {
+    if (e.ctrlKey) e.preventDefault();
   },
   { passive: false },
 );

@@ -37,8 +37,12 @@
 
 /* ──────────────────── Base ──────────────────── */
 
-html {
+html,
+html * {
   touch-action: pan-y;
+}
+
+html {
   overflow-x: hidden;
 }
 
