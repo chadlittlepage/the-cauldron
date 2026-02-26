@@ -15,6 +15,10 @@ function ScrollToTop() {
   }, []);
 
   useEffect(() => {
+    const root = document.getElementById('root');
+    if (root) {
+      root.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [pathname]);
 
