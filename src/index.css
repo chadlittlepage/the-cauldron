@@ -43,14 +43,17 @@ html * {
 }
 
 html {
-  overflow-x: hidden;
+  overflow: hidden;
+  position: fixed;
   width: 100%;
+  height: 100%;
 }
 
 body {
-  overflow-x: hidden;
+  overflow: hidden;
+  position: fixed;
   width: 100%;
-  max-width: 100vw;
+  height: 100%;
   margin: 0;
   background-color: var(--color-hex-dark);
   background-image: url('/hex-wave-bg.svg?v=4');
@@ -68,8 +71,16 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overscroll-behavior: none;
   color-scheme: dark;
+}
+
+#root {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: none;
+  width: 100%;
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 * {
