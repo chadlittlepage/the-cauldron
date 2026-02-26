@@ -1,7 +1,21 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
-import type { ChartType } from '@/types/database';
+import type { ChartType, Tables, MusicPlatform } from '@/types/database';
+
+export type ChartEntryWithSubmission = Pick<
+  Tables<'charts'>,
+  'id' | 'submission_id' | 'rank' | 'vote_count' | 'chart_type' | 'period'
+> & {
+  submissions: {
+    track_title: string;
+    track_url: string;
+    platform: MusicPlatform;
+    genre: string;
+    artist_id: string;
+    profiles: { display_name: string } | null;
+  } | null;
+};
 
 export function useCharts(type: ChartType, period: string) {
   return useQuery({
@@ -15,7 +29,8 @@ export function useCharts(type: ChartType, period: string) {
         )
         .eq('chart_type', type)
         .eq('period', period)
-        .order('rank', { ascending: true });
+        .order('rank', { ascending: true })
+        .returns<ChartEntryWithSubmission[]>();
       if (error) throw error;
       return data;
     },
@@ -29,7 +44,8 @@ export function useChartPeriods() {
       const { data, error } = await supabase
         .from('charts')
         .select('chart_type, period')
-        .order('period', { ascending: false });
+        .order('period', { ascending: false })
+        .returns<{ chart_type: ChartType; period: string }[]>();
       if (error) throw error;
 
       const periods = new Map<string, Set<string>>();

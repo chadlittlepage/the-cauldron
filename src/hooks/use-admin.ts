@@ -2,8 +2,16 @@ import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tansta
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
 import { toast } from './use-toast';
-import type { SubmissionStatus } from '@/types/database';
+import type { SubmissionStatus, Tables } from '@/types/database';
 import { ITEMS_PER_PAGE } from '@/lib/constants';
+
+export type AdminSubmissionWithProfile = Tables<'submissions'> & {
+  profiles: { display_name: string; email: string } | null;
+};
+
+export type AdminPayoutWithProfile = Tables<'curator_payouts'> & {
+  profiles: { display_name: string; email: string } | null;
+};
 
 export function useAdminStats() {
   return useQuery({
@@ -14,11 +22,12 @@ export function useAdminStats() {
         supabase
           .from('profiles')
           .select('id', { count: 'exact', head: true })
-          .eq('role', 'curator'),
+          .eq('role', 'curator' as const),
         supabase
           .from('payments')
           .select('amount_cents', { count: 'exact' })
-          .eq('status', 'succeeded'),
+          .eq('status', 'succeeded' as const)
+          .returns<{ amount_cents: number }[]>(),
       ]);
 
       const totalRevenue = (payments.data ?? []).reduce((sum, p) => sum + p.amount_cents, 0);
@@ -48,7 +57,7 @@ export function useAdminSubmissions(filters: { status?: string; page?: number } 
 
       if (status) query = query.eq('status', status as SubmissionStatus);
 
-      const { data, error, count } = await query;
+      const { data, error, count } = await query.returns<AdminSubmissionWithProfile[]>();
       if (error) throw error;
       return { data, totalCount: count ?? 0, totalPages: Math.ceil((count ?? 0) / ITEMS_PER_PAGE) };
     },
@@ -73,7 +82,8 @@ export function useUpdateSubmissionStatus() {
         .update({ status })
         .eq('id', id)
         .select()
-        .single();
+        .single()
+        .returns<Tables<'submissions'>>();
       if (error) throw error;
       return { ...data, _oldStatus: oldStatus };
     },
@@ -114,9 +124,10 @@ export function useAdminCurators(filters: { page?: number } = {}) {
       const { data, error, count } = await supabase
         .from('profiles')
         .select('*', { count: 'exact' })
-        .eq('role', 'curator')
+        .eq('role', 'curator' as const)
         .order('created_at', { ascending: false })
-        .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
+        .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1)
+        .returns<Tables<'profiles'>[]>();
       if (error) throw error;
       return { data, totalCount: count ?? 0, totalPages: Math.ceil((count ?? 0) / ITEMS_PER_PAGE) };
     },
@@ -136,7 +147,8 @@ export function useAdminPayouts(filters: { page?: number } = {}) {
           count: 'exact',
         })
         .order('created_at', { ascending: false })
-        .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
+        .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1)
+        .returns<AdminPayoutWithProfile[]>();
       if (error) throw error;
       return { data, totalCount: count ?? 0, totalPages: Math.ceil((count ?? 0) / ITEMS_PER_PAGE) };
     },
@@ -148,10 +160,14 @@ export function useAdminAnalytics() {
     queryKey: queryKeys.admin.analytics(),
     queryFn: async () => {
       const [genres, monthly, curators, revenue] = await Promise.all([
-        supabase.rpc('get_submissions_by_genre'),
-        supabase.rpc('get_submissions_by_month'),
-        supabase.rpc('get_top_curators'),
-        supabase.rpc('get_revenue_by_month'),
+        supabase.rpc('get_submissions_by_genre').returns<{ count: number; genre: string }[]>(),
+        supabase.rpc('get_submissions_by_month').returns<{ count: number; month: string }[]>(),
+        supabase
+          .rpc('get_top_curators')
+          .returns<
+            { avg_rating: number; curator_id: string; display_name: string; review_count: number }[]
+          >(),
+        supabase.rpc('get_revenue_by_month').returns<{ month: string; revenue_cents: number }[]>(),
       ]);
 
       const firstError = [genres, monthly, curators, revenue].find((r) => r.error)?.error;

@@ -8,10 +8,12 @@ export function useHasVoted(submissionId: string | undefined, userId: string | u
     queryKey: queryKeys.votes.hasVoted(submissionId ?? '', userId ?? ''),
     queryFn: async () => {
       if (!submissionId || !userId) return false;
-      const { data, error } = await supabase.rpc('has_voted', {
-        p_submission_id: submissionId,
-        p_user_id: userId,
-      });
+      const { data, error } = await supabase
+        .rpc('has_voted', {
+          p_submission_id: submissionId,
+          p_user_id: userId,
+        })
+        .returns<boolean>();
       if (error) throw error;
       return data ?? false;
     },
@@ -37,13 +39,15 @@ export function useToggleVote() {
           .from('votes')
           .delete()
           .eq('submission_id', submissionId)
-          .eq('voter_id', voterId);
+          .eq('voter_id', voterId)
+          .returns<null>();
         if (error) throw error;
         return { action: 'removed' as const };
       } else {
         const { error } = await supabase
           .from('votes')
-          .insert({ submission_id: submissionId, voter_id: voterId });
+          .insert({ submission_id: submissionId, voter_id: voterId })
+          .returns<null>();
         if (error) throw error;
         return { action: 'added' as const };
       }

@@ -56,6 +56,15 @@ export const queryKeys = {
     placements: (artistId: string) => ['artist-analytics', 'placements', artistId] as const,
     tierBreakdown: (artistId: string) => ['artist-analytics', 'tier-breakdown', artistId] as const,
   },
+  curatorAnalytics: {
+    reviewsByMonth: (curatorId: string) =>
+      ['curator-analytics', 'reviews-by-month', curatorId] as const,
+    genrePerformance: (curatorId: string) =>
+      ['curator-analytics', 'genre-performance', curatorId] as const,
+    earningsByMonth: (curatorId: string) =>
+      ['curator-analytics', 'earnings-by-month', curatorId] as const,
+    payouts: (curatorId: string) => ['curator-analytics', 'payouts', curatorId] as const,
+  },
   debug: {
     supabaseHealth: () => ['debug', 'supabaseHealth'] as const,
     edgeFunctionHealth: () => ['debug', 'edgeFunctionHealth'] as const,

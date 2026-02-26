@@ -36,7 +36,7 @@ beforeEach(() => {
 
 describe('useHasVoted', () => {
   it('returns true when user has voted', async () => {
-    mockRpc.mockResolvedValue({ data: true, error: null });
+    mockRpc.mockReturnValue({ returns: vi.fn().mockResolvedValue({ data: true, error: null }) });
 
     const { result } = renderHook(() => useHasVoted('sub-1', 'user-1'), {
       wrapper: createWrapper(),
@@ -51,7 +51,7 @@ describe('useHasVoted', () => {
   });
 
   it('returns false when user has not voted', async () => {
-    mockRpc.mockResolvedValue({ data: false, error: null });
+    mockRpc.mockReturnValue({ returns: vi.fn().mockResolvedValue({ data: false, error: null }) });
 
     const { result } = renderHook(() => useHasVoted('sub-1', 'user-2'), {
       wrapper: createWrapper(),
@@ -62,7 +62,7 @@ describe('useHasVoted', () => {
   });
 
   it('defaults to false on null response', async () => {
-    mockRpc.mockResolvedValue({ data: null, error: null });
+    mockRpc.mockReturnValue({ returns: vi.fn().mockResolvedValue({ data: null, error: null }) });
 
     const { result } = renderHook(() => useHasVoted('sub-1', 'user-3'), {
       wrapper: createWrapper(),
@@ -89,7 +89,9 @@ describe('useHasVoted', () => {
   });
 
   it('propagates RPC errors', async () => {
-    mockRpc.mockResolvedValue({ data: null, error: new Error('RPC failed') });
+    mockRpc.mockReturnValue({
+      returns: vi.fn().mockResolvedValue({ data: null, error: new Error('RPC failed') }),
+    });
 
     const { result } = renderHook(() => useHasVoted('sub-1', 'user-1'), {
       wrapper: createWrapper(),
@@ -102,7 +104,9 @@ describe('useHasVoted', () => {
 
 describe('useToggleVote', () => {
   it('removes a vote when hasVoted is true', async () => {
-    const secondEq = vi.fn().mockResolvedValue({ error: null });
+    const secondEq = vi
+      .fn()
+      .mockReturnValue({ returns: vi.fn().mockResolvedValue({ error: null }) });
     mockEq.mockReturnValue({ eq: secondEq });
     mockDelete.mockReturnValue({ eq: mockEq });
 
@@ -119,7 +123,7 @@ describe('useToggleVote', () => {
   });
 
   it('adds a vote when hasVoted is false', async () => {
-    mockInsert.mockResolvedValue({ error: null });
+    mockInsert.mockReturnValue({ returns: vi.fn().mockResolvedValue({ error: null }) });
 
     const { result } = renderHook(() => useToggleVote(), { wrapper: createWrapper() });
 
@@ -134,7 +138,9 @@ describe('useToggleVote', () => {
   });
 
   it('throws on delete error', async () => {
-    const secondEq = vi.fn().mockResolvedValue({ error: new Error('Delete failed') });
+    const secondEq = vi.fn().mockReturnValue({
+      returns: vi.fn().mockResolvedValue({ error: new Error('Delete failed') }),
+    });
     mockEq.mockReturnValue({ eq: secondEq });
     mockDelete.mockReturnValue({ eq: mockEq });
 
@@ -152,7 +158,9 @@ describe('useToggleVote', () => {
   });
 
   it('throws on insert error', async () => {
-    mockInsert.mockResolvedValue({ error: new Error('Duplicate vote') });
+    mockInsert.mockReturnValue({
+      returns: vi.fn().mockResolvedValue({ error: new Error('Duplicate vote') }),
+    });
 
     const { result } = renderHook(() => useToggleVote(), { wrapper: createWrapper() });
 

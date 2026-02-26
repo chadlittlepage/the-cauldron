@@ -1,26 +1,27 @@
-import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import { useCuratorReviews } from '@/hooks/use-reviews';
 import { useReviewQueue } from '@/hooks/use-submissions';
 import { useDocumentTitle } from '@/hooks/use-document-title';
-import { StatCard } from '@/components/dashboard/stat-card';
-import { Button } from '@/components/ui/button';
+import { Tabs } from '@/components/ui/tabs';
+import { CuratorOverviewTab } from '@/components/dashboard/curator-overview-tab';
+import { CuratorAnalyticsTab } from '@/components/dashboard/curator-analytics-tab';
+import { CuratorReviewsTab } from '@/components/dashboard/curator-reviews-tab';
+import { CuratorPayoutsTab } from '@/components/dashboard/curator-payouts-tab';
+import { SettingsTab } from '@/components/dashboard/settings-tab';
 import { QueryError } from '@/components/ui/query-error';
 import { SkeletonStats } from '@/components/ui/skeleton';
-import { MessageSquare, Star, ListTodo, ArrowRight, Users } from 'lucide-react';
+import { Users } from 'lucide-react';
 
 export function CuratorDashboardPage() {
   useDocumentTitle('Curator Dashboard');
   const { user, profile } = useAuth();
   const {
-    data: reviews,
     isLoading: reviewsLoading,
     isError: reviewsError,
     error: reviewsErr,
     refetch: refetchReviews,
   } = useCuratorReviews(user?.id);
   const {
-    data: queue,
     isLoading: queueLoading,
     isError: queueError,
     error: queueErr,
@@ -49,9 +50,13 @@ export function CuratorDashboardPage() {
     );
   }
 
-  const avgRating = reviews?.length
-    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
-    : 'N/A';
+  const tabs = [
+    { value: 'overview', label: 'Overview', content: <CuratorOverviewTab /> },
+    { value: 'analytics', label: 'Analytics', content: <CuratorAnalyticsTab /> },
+    { value: 'reviews', label: 'Reviews', content: <CuratorReviewsTab /> },
+    { value: 'payouts', label: 'Payouts', content: <CuratorPayoutsTab /> },
+    { value: 'settings', label: 'Settings', content: <SettingsTab /> },
+  ];
 
   return (
     <div className="relative">
@@ -71,46 +76,8 @@ export function CuratorDashboardPage() {
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-3 mb-10">
-          <StatCard
-            label="Reviews Written"
-            value={reviews?.length ?? 0}
-            icon={<MessageSquare className="h-5 w-5" />}
-          />
-          <StatCard
-            label="Avg Rating Given"
-            value={avgRating}
-            icon={<Star className="h-5 w-5" />}
-          />
-          <StatCard
-            label="Queue Size"
-            value={queue?.totalCount ?? 0}
-            icon={<ListTodo className="h-5 w-5" />}
-          />
-        </div>
-
-        {/* Actions */}
-        <div className="flex flex-wrap gap-3">
-          <Link to="/dashboard/review-queue">
-            <Button variant="accent" className="gap-2 group">
-              Review Queue ({queue?.totalCount ?? 0})
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Button>
-          </Link>
-          <Link to="/dashboard/my-reviews">
-            <Button variant="outline" className="gap-2">
-              <MessageSquare className="h-4 w-4" />
-              My Reviews
-            </Button>
-          </Link>
-          <Link to="/dashboard/curator-stats">
-            <Button variant="outline" className="gap-2">
-              <Star className="h-4 w-4" />
-              Stats
-            </Button>
-          </Link>
-        </div>
+        {/* Tabs */}
+        <Tabs tabs={tabs} defaultValue="overview" />
       </div>
     </div>
   );

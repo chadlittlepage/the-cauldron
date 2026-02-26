@@ -28,7 +28,7 @@ function mockQueryBuilder(result: { data: unknown; error: unknown; count?: numbe
     then: (resolve: (v: unknown) => void, reject?: (e: unknown) => void) =>
       Promise.resolve(resolvedResult).then(resolve, reject),
   };
-  for (const m of ['select', 'update', 'eq', 'order', 'range', 'single']) {
+  for (const m of ['select', 'update', 'eq', 'order', 'range', 'single', 'returns']) {
     builder[m] = vi.fn(() => builder);
   }
   mockFrom.mockReturnValue(builder);

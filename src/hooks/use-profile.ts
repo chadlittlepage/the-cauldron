@@ -1,14 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
-import type { UpdateTables } from '@/types/database';
+import type { Tables, UpdateTables } from '@/types/database';
 
 export function useProfile(userId: string | undefined) {
   return useQuery({
     queryKey: queryKeys.profiles.detail(userId ?? ''),
     queryFn: async () => {
       if (!userId) return null;
-      const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
+      const { data, error } = await supabase
+        .from('profiles')
+        .select()
+        .eq('id', userId)
+        .single()
+        .returns<Tables<'profiles'>>();
       if (error) throw error;
       return data;
     },
@@ -22,9 +27,10 @@ export function useCurators() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
-        .eq('role', 'curator')
-        .order('listener_count', { ascending: false });
+        .select()
+        .eq('role', 'curator' as const)
+        .order('listener_count', { ascending: false })
+        .returns<Tables<'profiles'>[]>();
       if (error) throw error;
       return data;
     },
@@ -47,7 +53,8 @@ export function useUpdateProfile() {
         .update(updates)
         .eq('id', userId)
         .select()
-        .single();
+        .single()
+        .returns<Tables<'profiles'>>();
       if (error) throw error;
       return data;
     },

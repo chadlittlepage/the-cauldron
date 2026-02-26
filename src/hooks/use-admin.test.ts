@@ -49,7 +49,17 @@ function mockQueryBuilder(result: { data: unknown; error: unknown; count?: numbe
     then: (resolve: (v: unknown) => void, reject?: (e: unknown) => void) =>
       Promise.resolve(resolvedResult).then(resolve, reject),
   };
-  for (const m of ['select', 'insert', 'update', 'eq', 'in', 'order', 'range', 'single']) {
+  for (const m of [
+    'select',
+    'insert',
+    'update',
+    'eq',
+    'in',
+    'order',
+    'range',
+    'single',
+    'returns',
+  ]) {
     builder[m] = vi.fn(() => builder);
   }
   mockFrom.mockReturnValue(builder);
@@ -80,7 +90,7 @@ describe('useAdminStats', () => {
         then: (resolve: (v: unknown) => void, reject?: (e: unknown) => void) =>
           Promise.resolve(result).then(resolve, reject),
       };
-      for (const m of ['select', 'eq', 'order', 'range', 'single']) {
+      for (const m of ['select', 'eq', 'order', 'range', 'single', 'returns']) {
         builder[m] = vi.fn(() => builder);
       }
       return builder;
@@ -194,7 +204,7 @@ describe('useAdminAnalytics', () => {
         get_top_curators: [{ curator_id: 'c1', reviews: 20 }],
         get_revenue_by_month: [{ month: '2025-01', revenue: 1000 }],
       };
-      return Promise.resolve({ data: results[fn] ?? [], error: null });
+      return { returns: vi.fn().mockResolvedValue({ data: results[fn] ?? [], error: null }) };
     });
 
     const { result } = renderHook(() => useAdminAnalytics(), { wrapper: createWrapper() });
@@ -211,9 +221,11 @@ describe('useAdminAnalytics', () => {
   it('propagates RPC errors', async () => {
     mockRpc.mockImplementation((fn: string) => {
       if (fn === 'get_submissions_by_genre') {
-        return Promise.resolve({ data: null, error: new Error('RPC failed') });
+        return {
+          returns: vi.fn().mockResolvedValue({ data: null, error: new Error('RPC failed') }),
+        };
       }
-      return Promise.resolve({ data: [], error: null });
+      return { returns: vi.fn().mockResolvedValue({ data: [], error: null }) };
     });
 
     const { result } = renderHook(() => useAdminAnalytics(), { wrapper: createWrapper() });

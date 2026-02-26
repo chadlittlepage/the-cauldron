@@ -103,7 +103,9 @@ describe('useAuth', () => {
     mockFrom.mockReturnValue({
       select: vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
-          single: vi.fn().mockResolvedValue({ data: mockProfile, error: null }),
+          single: vi.fn().mockReturnValue({
+            returns: vi.fn().mockResolvedValue({ data: mockProfile, error: null }),
+          }),
         }),
       }),
     });
@@ -131,7 +133,9 @@ describe('useAuth', () => {
     mockFrom.mockReturnValue({
       select: vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
-          single: vi.fn().mockResolvedValue({ data: null, error: null }),
+          single: vi
+            .fn()
+            .mockReturnValue({ returns: vi.fn().mockResolvedValue({ data: null, error: null }) }),
         }),
       }),
     });
@@ -226,7 +230,9 @@ describe('signOut', () => {
     mockFrom.mockReturnValue({
       select: vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
-          single: vi.fn().mockResolvedValue({ data: mockProfile, error: null }),
+          single: vi.fn().mockReturnValue({
+            returns: vi.fn().mockResolvedValue({ data: mockProfile, error: null }),
+          }),
         }),
       }),
     });

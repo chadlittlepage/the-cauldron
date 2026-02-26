@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
 import { ITEMS_PER_PAGE } from '@/lib/constants';
-import type { AuditAction } from '@/types/database';
+import type { AuditAction, Tables } from '@/types/database';
 
 const EDGE_FUNCTIONS = [
   'create-checkout',
@@ -106,7 +106,7 @@ export function useTableInspector(
         query = query.eq('id', id);
       }
 
-      const { data, error, count } = await query;
+      const { data, error, count } = await query.returns<Record<string, unknown>[]>();
       if (error) throw error;
       return {
         data: data ?? [],
@@ -119,6 +119,10 @@ export function useTableInspector(
 }
 
 // --- Audit Trail ---
+
+export type AuditLogWithProfile = Tables<'admin_audit_logs'> & {
+  profiles: { display_name: string } | null;
+};
 
 export function useAuditLogs(opts: { action?: AuditAction; page?: number } = {}) {
   const { action, page = 1 } = opts;
@@ -136,7 +140,7 @@ export function useAuditLogs(opts: { action?: AuditAction; page?: number } = {})
         query = query.eq('action', action);
       }
 
-      const { data, error, count } = await query;
+      const { data, error, count } = await query.returns<AuditLogWithProfile[]>();
       if (error) throw error;
       return {
         data: data ?? [],

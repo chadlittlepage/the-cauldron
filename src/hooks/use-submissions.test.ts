@@ -44,7 +44,7 @@ function mockQueryBuilder(result: { data: unknown; error: unknown; count?: numbe
     then: (resolve: (v: unknown) => void, reject?: (e: unknown) => void) =>
       Promise.resolve(resolvedResult).then(resolve, reject),
   };
-  for (const m of ['select', 'insert', 'eq', 'in', 'order', 'range', 'single']) {
+  for (const m of ['select', 'insert', 'eq', 'in', 'order', 'range', 'single', 'returns']) {
     builder[m] = vi.fn(() => builder);
   }
   mockFrom.mockReturnValue(builder);
@@ -111,7 +111,9 @@ describe('useSubmissions', () => {
 describe('useSubmission', () => {
   it('fetches a single submission by id via RPC', async () => {
     const mockDetail = { id: '1', track_title: 'Track 1' };
-    mockRpc.mockResolvedValue({ data: [mockDetail], error: null });
+    mockRpc.mockReturnValue({
+      returns: vi.fn().mockResolvedValue({ data: [mockDetail], error: null }),
+    });
 
     const { result } = renderHook(() => useSubmission('1'), { wrapper: createWrapper() });
 
@@ -121,7 +123,7 @@ describe('useSubmission', () => {
   });
 
   it('returns null for empty RPC result', async () => {
-    mockRpc.mockResolvedValue({ data: [], error: null });
+    mockRpc.mockReturnValue({ returns: vi.fn().mockResolvedValue({ data: [], error: null }) });
 
     const { result } = renderHook(() => useSubmission('nonexistent'), { wrapper: createWrapper() });
 

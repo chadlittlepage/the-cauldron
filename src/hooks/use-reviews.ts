@@ -2,7 +2,15 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
 import { toast } from './use-toast';
-import type { InsertTables } from '@/types/database';
+import type { InsertTables, Tables } from '@/types/database';
+
+export type ReviewWithProfile = Tables<'reviews'> & {
+  profiles: { display_name: string; avatar_url: string | null } | null;
+};
+
+export type ReviewWithSubmission = Tables<'reviews'> & {
+  submissions: { track_title: string; artist_id: string; genre: string } | null;
+};
 
 export function useSubmissionReviews(submissionId: string | undefined) {
   return useQuery({
@@ -13,7 +21,8 @@ export function useSubmissionReviews(submissionId: string | undefined) {
         .from('reviews')
         .select('*, profiles!reviews_curator_id_fkey(display_name, avatar_url)')
         .eq('submission_id', submissionId)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .returns<ReviewWithProfile[]>();
       if (error) throw error;
       return data;
     },
@@ -30,7 +39,8 @@ export function useCuratorReviews(curatorId: string | undefined) {
         .from('reviews')
         .select('*, submissions(track_title, artist_id, genre)')
         .eq('curator_id', curatorId)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .returns<ReviewWithSubmission[]>();
       if (error) throw error;
       return data;
     },
@@ -43,7 +53,12 @@ export function useCreateReview() {
 
   return useMutation({
     mutationFn: async (input: InsertTables<'reviews'>) => {
-      const { data, error } = await supabase.from('reviews').insert(input).select().single();
+      const { data, error } = await supabase
+        .from('reviews')
+        .insert(input)
+        .select()
+        .single()
+        .returns<Tables<'reviews'>>();
       if (error) throw error;
       return data;
     },

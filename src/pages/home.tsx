@@ -293,7 +293,12 @@ export function HomePage() {
                         Vote ({t.votes})
                       </Button>
                     </Link>
-                    <Button variant="outline" size="lg" className="w-full gap-2" onClick={nextTrack}>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="w-full gap-2"
+                      onClick={nextTrack}
+                    >
                       <ThumbsDown className="h-4 w-4" />
                       Pass
                     </Button>

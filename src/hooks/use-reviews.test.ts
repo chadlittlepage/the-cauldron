@@ -39,7 +39,9 @@ describe('useSubmissionReviews', () => {
     const mockData = [
       { id: 'r1', rating: 4, feedback: 'Great track', profiles: { display_name: 'Curator A' } },
     ];
-    mockOrder.mockResolvedValue({ data: mockData, error: null });
+    mockOrder.mockReturnValue({
+      returns: vi.fn().mockResolvedValue({ data: mockData, error: null }),
+    });
     mockEq.mockReturnValue({ order: mockOrder });
     mockSelect.mockReturnValue({ eq: mockEq });
 
@@ -52,7 +54,7 @@ describe('useSubmissionReviews', () => {
   });
 
   it('returns empty array when no reviews', async () => {
-    mockOrder.mockResolvedValue({ data: [], error: null });
+    mockOrder.mockReturnValue({ returns: vi.fn().mockResolvedValue({ data: [], error: null }) });
     mockEq.mockReturnValue({ order: mockOrder });
     mockSelect.mockReturnValue({ eq: mockEq });
 
@@ -73,7 +75,9 @@ describe('useSubmissionReviews', () => {
   });
 
   it('propagates errors', async () => {
-    mockOrder.mockResolvedValue({ data: null, error: new Error('DB error') });
+    mockOrder.mockReturnValue({
+      returns: vi.fn().mockResolvedValue({ data: null, error: new Error('DB error') }),
+    });
     mockEq.mockReturnValue({ order: mockOrder });
     mockSelect.mockReturnValue({ eq: mockEq });
 
@@ -89,7 +93,9 @@ describe('useSubmissionReviews', () => {
 describe('useCuratorReviews', () => {
   it('fetches reviews by curator', async () => {
     const mockData = [{ id: 'r1', rating: 5, submissions: { track_title: 'Cool Song' } }];
-    mockOrder.mockResolvedValue({ data: mockData, error: null });
+    mockOrder.mockReturnValue({
+      returns: vi.fn().mockResolvedValue({ data: mockData, error: null }),
+    });
     mockEq.mockReturnValue({ order: mockOrder });
     mockSelect.mockReturnValue({ eq: mockEq });
 
@@ -118,7 +124,9 @@ describe('useCreateReview', () => {
     };
     const insertedReview = { id: 'r-new', ...newReview, created_at: '2025-01-01' };
 
-    mockSingle.mockResolvedValue({ data: insertedReview, error: null });
+    mockSingle.mockReturnValue({
+      returns: vi.fn().mockResolvedValue({ data: insertedReview, error: null }),
+    });
     mockSelect.mockReturnValue({ single: mockSingle });
     mockInsert.mockReturnValue({ select: mockSelect });
 
@@ -130,7 +138,9 @@ describe('useCreateReview', () => {
   });
 
   it('throws on insert error', async () => {
-    mockSingle.mockResolvedValue({ data: null, error: new Error('Insert failed') });
+    mockSingle.mockReturnValue({
+      returns: vi.fn().mockResolvedValue({ data: null, error: new Error('Insert failed') }),
+    });
     mockSelect.mockReturnValue({ single: mockSingle });
     mockInsert.mockReturnValue({ select: mockSelect });
 
