@@ -38,11 +38,14 @@ jobs:
 
       - name: Unit tests
         run: npm run test:ci
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - name: Setup Deno
         uses: denoland/setup-deno@v2
         with:
-          deno-version: v1.x
+          deno-version: v2.x
 
       - name: Edge Function type check
         run: |
@@ -87,12 +90,14 @@ jobs:
           SENTRY_PROJECT: hexwave
 
       - name: Deploy to Vercel (Preview)
-        uses: amondnet/vercel-action@16e87c0a08142b0d0d33b76aeaf20823c381b9b9 # v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./dist
+        run: |
+          cp -r dist /tmp/deploy
+          cd /tmp/deploy
+          npx vercel deploy . --token "$VERCEL_TOKEN" --yes
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
   deploy-staging:
     name: Deploy Staging
@@ -126,12 +131,14 @@ jobs:
           SENTRY_PROJECT: hexwave
 
       - name: Deploy to Vercel (Staging)
-        uses: amondnet/vercel-action@16e87c0a08142b0d0d33b76aeaf20823c381b9b9 # v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./dist
+        run: |
+          cp -r dist /tmp/deploy
+          cd /tmp/deploy
+          npx vercel deploy . --token "$VERCEL_TOKEN" --yes
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
   deploy-production:
     name: Deploy Production
@@ -166,13 +173,15 @@ jobs:
 
       - name: Deploy to Vercel (Production)
         id: deploy-prod
-        uses: amondnet/vercel-action@16e87c0a08142b0d0d33b76aeaf20823c381b9b9 # v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: "--prod"
-          working-directory: ./dist
+        run: |
+          cp -r dist /tmp/deploy
+          cd /tmp/deploy
+          DEPLOY_URL=$(npx vercel deploy . --prod --token "$VERCEL_TOKEN" --yes)
+          echo "deploy-url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Verify deployment health
         id: health-check
@@ -212,7 +221,7 @@ jobs:
           echo "Health check failed — rolling back to previous production deployment..."
           npm i -g vercel@latest
           PREV_URL=$(vercel ls --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" 2>/dev/null \
-            | grep -v "$(echo "${{ steps.deploy-prod.outputs.preview-url }}" | sed 's|https://||')" \
+            | grep -v "$(echo "${{ steps.deploy-prod.outputs.deploy-url }}" | sed 's|https://||')" \
             | grep "Production" | head -1 | awk '{print $2}')
           if [ -n "$PREV_URL" ]; then
             vercel promote "$PREV_URL" --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" --yes

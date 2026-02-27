@@ -237,7 +237,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'Performance',
     score: 92,
     threshold: 90,
-    evidence: 'Code splitting (33 lazy routes), Brotli + Gzip compression, 1-year immutable asset caching, 5 optimized vendor chunks.',
+    evidence:
+      'Code splitting (33 lazy routes), Brotli + Gzip compression, 1-year immutable asset caching, 5 optimized vendor chunks.',
   },
   {
     category: 'Lighthouse',
@@ -245,7 +246,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'Accessibility',
     score: 96,
     threshold: 90,
-    evidence: 'Skip navigation, ARIA attributes, keyboard nav, color contrast AA, reduced motion support, screen reader text.',
+    evidence:
+      'Skip navigation, ARIA attributes, keyboard nav, color contrast AA, reduced motion support, screen reader text.',
   },
   {
     category: 'Lighthouse',
@@ -253,7 +255,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'Best Practices',
     score: 95,
     threshold: 90,
-    evidence: 'HTTPS enforced, no deprecated APIs, source maps removed from production, CSP headers, no console errors.',
+    evidence:
+      'HTTPS enforced, no deprecated APIs, source maps removed from production, CSP headers, no console errors.',
   },
   {
     category: 'Lighthouse',
@@ -261,7 +264,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'SEO',
     score: 98,
     threshold: 90,
-    evidence: 'Meta tags, Open Graph, JSON-LD structured data, sitemap.xml, robots.txt, semantic HTML, dynamic page titles.',
+    evidence:
+      'Meta tags, Open Graph, JSON-LD structured data, sitemap.xml, robots.txt, semantic HTML, dynamic page titles.',
   },
   {
     category: 'Security',
@@ -269,7 +273,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'OWASP Top 10',
     score: 94,
     threshold: 90,
-    evidence: 'CSP, HSTS preload, Zod validation, parameterized queries (no raw SQL), PKCE auth, no eval/dangerouslySetInnerHTML.',
+    evidence:
+      'CSP, HSTS preload, Zod validation, parameterized queries (no raw SQL), PKCE auth, no eval/dangerouslySetInnerHTML.',
   },
   {
     category: 'Security',
@@ -277,7 +282,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'SSL/TLS Rating',
     score: 98,
     threshold: 90,
-    evidence: '2-year HSTS with preload + includeSubDomains, TLS 1.2+ via Vercel, certificate auto-renewal.',
+    evidence:
+      '2-year HSTS with preload + includeSubDomains, TLS 1.2+ via Vercel, certificate auto-renewal.',
   },
   {
     category: 'Security',
@@ -285,7 +291,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'SOC 2 Type II',
     score: 92,
     threshold: 90,
-    evidence: '37 controls documented against 8 TSC criteria (CC6.1–CC9.1). RLS, auth guards, encryption, audit logging, change management all mapped.',
+    evidence:
+      '37 controls documented against 8 TSC criteria (CC6.1–CC9.1). RLS, auth guards, encryption, audit logging, change management all mapped.',
   },
   {
     category: 'Security',
@@ -293,7 +300,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'Penetration Testing',
     score: 91,
     threshold: 90,
-    evidence: 'Formal OWASP Top 10 assessment report with 8 audit cycles (83 → 93). Zero critical/high vulnerabilities across all 10 categories.',
+    evidence:
+      'Formal OWASP Top 10 assessment report with 8 audit cycles (83 → 93). Zero critical/high vulnerabilities across all 10 categories.',
   },
   {
     category: 'Uptime',
@@ -301,7 +309,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: '99.9%+ Uptime',
     score: 95,
     threshold: 90,
-    evidence: 'Vercel edge network with global CDN, health checks with automatic rollback, Supabase managed Postgres.',
+    evidence:
+      'Vercel edge network with global CDN, health checks with automatic rollback, Supabase managed Postgres.',
   },
   {
     category: 'Uptime',
@@ -309,7 +318,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'SLAs & Incident Response',
     score: 93,
     threshold: 90,
-    evidence: 'Published SLA with 99.9% uptime target, P1–P4 severity levels, defined response times (1hr–72hr), and automated rollback escalation path.',
+    evidence:
+      'Published SLA with 99.9% uptime target, P1–P4 severity levels, defined response times (1hr–72hr), and automated rollback escalation path.',
   },
   {
     category: 'Code Quality',
@@ -317,7 +327,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'Test Coverage 80%+',
     score: 85,
     threshold: 80,
-    evidence: '80% statement/line thresholds enforced in CI. Vitest unit tests + Playwright E2E across 3 browsers.',
+    evidence:
+      '80% statement/line thresholds enforced in CI. Vitest unit tests + Playwright E2E across 3 browsers.',
   },
   {
     category: 'Code Quality',
@@ -325,7 +336,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'Zero Critical Bugs',
     score: 95,
     threshold: 90,
-    evidence: 'TypeScript strict mode (zero any types), ESLint + Prettier enforced, CVA component architecture.',
+    evidence:
+      'TypeScript strict mode (zero any types), ESLint + Prettier enforced, CVA component architecture.',
   },
   {
     category: 'Accessibility',
@@ -333,7 +345,8 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'WCAG 2.1 AA',
     score: 94,
     threshold: 90,
-    evidence: 'Skip nav, ARIA roles/labels, keyboard navigation, 4.5:1+ contrast ratios, form error announcements, reduced motion.',
+    evidence:
+      'Skip nav, ARIA roles/labels, keyboard navigation, 4.5:1+ contrast ratios, form error announcements, reduced motion.',
   },
 ];
 
@@ -536,7 +549,9 @@ export function PlatformOverviewPage() {
               <div key={item.category} className="glass-card rounded-xl p-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <item.icon className={`h-4 w-4 ${item.score === 10 ? 'text-green-400' : 'text-accent-purple'}`} />
+                    <item.icon
+                      className={`h-4 w-4 ${item.score === 10 ? 'text-green-400' : 'text-accent-purple'}`}
+                    />
                     <span className="text-sm font-medium text-hex-text">{item.category}</span>
                   </div>
                   <span
@@ -577,7 +592,9 @@ export function PlatformOverviewPage() {
             <div className="glass-card rounded-2xl p-8 text-center">
               <Trophy className="mx-auto h-8 w-8 text-accent-purple mb-3" />
               <div className="text-5xl font-bold gradient-text">
-                {Math.round(fortuneBenchmarks.reduce((sum, b) => sum + b.score, 0) / fortuneBenchmarks.length)}
+                {Math.round(
+                  fortuneBenchmarks.reduce((sum, b) => sum + b.score, 0) / fortuneBenchmarks.length,
+                )}
               </div>
               <div className="text-hex-muted text-sm mt-1">average score across 13 benchmarks</div>
             </div>

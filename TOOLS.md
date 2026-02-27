@@ -19,6 +19,41 @@
 | Vercel Settings | https://vercel.com/chad-littlepages-projects/hexwave/settings |
 | Vercel Environment Variables | https://vercel.com/chad-littlepages-projects/hexwave/settings/environment-variables |
 
+> **Note:** Vercel's GitHub auto-deploy is disabled (`commandForIgnoringBuildStep: "exit 0"`). All deploys go through the CD workflow in GitHub Actions using `vercel deploy` CLI. This prevents double-deploys and ensures CI gate runs before any deployment.
+
+## CI/CD Pipeline
+| Workflow | Trigger | Jobs |
+|----------|---------|------|
+| CI (`ci.yml`) | PRs to main/develop, push to develop | lint → test → edge-functions → build → e2e |
+| CD (`cd.yml`) | Push to main/develop, tags `v*` | ci-gate → deploy-preview (main) / deploy-staging (develop) / deploy-production (tags) |
+
+| CD Deploy Target | Trigger | Vercel Flag |
+|------------------|---------|-------------|
+| Preview | Push to `main` | (none) |
+| Staging | Push to `develop` | (none) |
+| Production | Tag `v*` | `--prod` |
+
+| Feature | Implementation |
+|---------|---------------|
+| Deploy Method | `npx vercel deploy` from `/tmp` (avoids git author team check) |
+| Deno Version | v2.x (required for lockfile v5) |
+| Production Health Check | Verifies frontend HTML + Edge Function `/health-check` endpoint |
+| Auto-Rollback | On health check failure, promotes previous production deployment via `vercel promote` |
+
+## GitHub Secrets
+| Secret | Purpose |
+|--------|---------|
+| `VERCEL_TOKEN` | Vercel deploy authentication |
+| `VERCEL_ORG_ID` | Vercel team identifier |
+| `VERCEL_PROJECT_ID` | Vercel project identifier |
+| `VITE_SUPABASE_URL` | Supabase project URL (build + test) |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anon key (build + test) |
+| `VITE_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key (build) |
+| `VITE_SENTRY_DSN` | Sentry DSN (build) |
+| `SENTRY_AUTH_TOKEN` | Sentry source map upload (build) |
+| `E2E_EMAIL` | Playwright test account email |
+| `E2E_PASSWORD` | Playwright test account password |
+
 ## Backend
 | Tool | URL |
 |------|-----|
