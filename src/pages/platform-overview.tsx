@@ -523,19 +523,22 @@ export function PlatformOverviewPage() {
           {/* Category breakdown */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-16">
             {[
-              { category: 'Security', score: 9 },
-              { category: 'Performance', score: 9 },
-              { category: 'Reliability', score: 9 },
-              { category: 'Observability', score: 9 },
-              { category: 'Accessibility', score: 10 },
-              { category: 'SEO & Web Vitals', score: 10 },
-              { category: 'Code Quality', score: 9 },
-              { category: 'CI/CD & DevOps', score: 10 },
-              { category: 'Data Integrity', score: 10 },
+              { category: 'Security', score: 9, icon: Shield },
+              { category: 'Performance', score: 9, icon: Gauge },
+              { category: 'Reliability', score: 9, icon: Activity },
+              { category: 'Observability', score: 9, icon: Eye },
+              { category: 'Accessibility', score: 10, icon: UserCheck },
+              { category: 'SEO & Web Vitals', score: 10, icon: Search },
+              { category: 'Code Quality', score: 9, icon: FileCode2 },
+              { category: 'CI/CD & DevOps', score: 10, icon: GitBranch },
+              { category: 'Data Integrity', score: 10, icon: Database },
             ].map((item) => (
               <div key={item.category} className="glass-card rounded-xl p-5">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-hex-text">{item.category}</span>
+                  <div className="flex items-center gap-2">
+                    <item.icon className={`h-4 w-4 ${item.score === 10 ? 'text-green-400' : 'text-accent-purple'}`} />
+                    <span className="text-sm font-medium text-hex-text">{item.category}</span>
+                  </div>
                   <span
                     className={`text-sm font-bold ${item.score === 10 ? 'text-green-400' : 'text-accent-purple'}`}
                   >
