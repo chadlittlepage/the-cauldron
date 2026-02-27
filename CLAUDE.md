@@ -95,7 +95,7 @@ SENTRY_AUTH_TOKEN           # Sentry auth token for source map uploads (CI + loc
 ## External Services
 - **Sentry**: Org `cell-division`, Project `hexwave` — error tracking + session replay + performance
 - **Supabase**: Auth, Postgres, RLS, Edge Functions, Storage
-- **Stripe**: Payment processing via Edge Functions (currently unused, kept for future use)
+- **Stripe**: Payment processing via Edge Functions (integrated but not yet active in production)
 - **Vercel**: Hosting, CDN, security headers, SPA rewrites
 
 ## Branch Strategy
@@ -146,7 +146,7 @@ SENTRY_AUTH_TOKEN           # Sentry auth token for source map uploads (CI + loc
 
 | Category | Requirement | Threshold | Score | Evidence |
 |---|---|---|---|---|
-| Lighthouse | Performance | 90 | **92** | Code splitting (27 lazy routes), Brotli + Gzip, immutable caching, 5 vendor chunks |
+| Lighthouse | Performance | 90 | **92** | Code splitting (33 lazy routes), Brotli + Gzip, immutable caching, 5 vendor chunks |
 | Lighthouse | Accessibility | 90 | **96** | Skip nav, ARIA attributes, keyboard nav, color contrast AA, reduced motion |
 | Lighthouse | Best Practices | 90 | **95** | HTTPS enforced, no deprecated APIs, source maps removed from prod, CSP |
 | Lighthouse | SEO | 90 | **98** | Meta tags, Open Graph, JSON-LD, sitemap.xml, robots.txt, semantic HTML |

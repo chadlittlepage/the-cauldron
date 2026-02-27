@@ -197,7 +197,7 @@
 ## Debug Console (`/admin/debug`)
 | Tab | Features |
 |-----|----------|
-| System Health | Supabase connection status (green/red dot + latency, auto-refresh 30s), Edge Function status grid (create-checkout, stripe-webhook, create-payout, generate-charts — reachability + latency), Sentry recent unresolved issues (title, event count, last seen) with "Send Test Error" button (30s countdown + auto-refresh) and fallback link |
+| System Health | Supabase connection status (green/red dot + latency, auto-refresh 30s), Edge Function status grid (create-checkout, stripe-webhook, create-payout, generate-charts, health-check, sentry-proxy — reachability + latency), Sentry recent unresolved issues (title, event count, last seen) with "Send Test Error" button (30s countdown + auto-refresh) and fallback link |
 | Data Inspector | Table selector dropdown (profiles, submissions, reviews, payments, votes, curator_payouts, charts), search by ID, dynamic columns via Object.keys, paginated DataTable |
 | Audit Trail | Filter by action type (status change, role change, payout created, profile updated, submission deleted, manual action), DataTable with admin name, action, target, expandable JSON metadata, timestamp, pagination |
 
@@ -234,11 +234,9 @@
 | Source | Live Supabase schema via `supabase gen types typescript` |
 
 ## Test Coverage
-| Test File | Tests | What's Covered |
-|-----------|-------|---------------|
-| `src/hooks/use-toast.test.ts` | 7 | addToast, dismissToast, auto-dismiss, convenience helpers |
-| `src/hooks/use-document-title.test.ts` | 4 | Title setting, default title, re-render updates |
-| `src/components/ui/query-error.test.tsx` | 5 | Error rendering, fallback messages, retry button |
-| `src/lib/env.test.ts` | 3 | Env fallback logic, MODE/DEV values |
-| `src/App.test.tsx` | 5 | Route rendering, navigation, hero section |
-| Config | `vitest.config.ts` with 70% coverage thresholds |
+| Metric | Value |
+|--------|-------|
+| Test files | 28 |
+| Total tests | 266 |
+| Coverage thresholds | 80/80/75/70 (statements/lines/functions/branches) |
+| Config | `vitest.config.ts` |

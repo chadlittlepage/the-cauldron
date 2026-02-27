@@ -147,7 +147,7 @@ const productionHardening: DetailCard[] = [
     icon: Activity,
     title: 'Error Monitoring',
     description:
-      'Sentry with 20% performance tracing, 10% session replay (100% on errors), Web Vitals tracking. Source maps uploaded but deleted from production builds.',
+      'Sentry with 20% performance tracing, 20% session replay (100% on errors), Web Vitals tracking. Source maps uploaded but deleted from production builds.',
     color: 'text-accent-purple',
     bg: 'bg-accent-purple/10',
   },
@@ -155,7 +155,7 @@ const productionHardening: DetailCard[] = [
     icon: GitBranch,
     title: 'CI/CD Pipeline',
     description:
-      '4-stage CI (lint → unit tests → build → E2E) with 3-environment CD (preview → staging → production). GitHub Actions + Vercel.',
+      '5-stage CI (lint → unit tests → edge-functions → build → E2E) with 3-environment CD (preview → staging → production). GitHub Actions + Vercel.',
     color: 'text-accent-pink',
     bg: 'bg-accent-pink/10',
   },
@@ -215,7 +215,7 @@ const revenueReady: DetailCard[] = [
 const whatYouGet: CompactCard[] = [
   { icon: FileStack, title: '32 Database Migrations', color: 'text-accent-purple' },
   { icon: Cloud, title: '7 Edge Functions', color: 'text-accent-pink' },
-  { icon: GitPullRequest, title: '4-Stage CI/CD Pipeline', color: 'text-accent-cyan' },
+  { icon: GitPullRequest, title: '5-Stage CI/CD Pipeline', color: 'text-accent-cyan' },
   { icon: Shield, title: '7 Security Headers', color: 'text-accent-purple' },
   { icon: UserCheck, title: '3 User Roles with Dashboards', color: 'text-accent-pink' },
   { icon: Wallet, title: 'Full Stripe Payment Stack', color: 'text-accent-cyan' },
@@ -237,7 +237,7 @@ const fortuneBenchmarks: Benchmark[] = [
     requirement: 'Performance',
     score: 92,
     threshold: 90,
-    evidence: 'Code splitting (27 lazy routes), Brotli + Gzip compression, 1-year immutable asset caching, 5 optimized vendor chunks.',
+    evidence: 'Code splitting (33 lazy routes), Brotli + Gzip compression, 1-year immutable asset caching, 5 optimized vendor chunks.',
   },
   {
     category: 'Lighthouse',

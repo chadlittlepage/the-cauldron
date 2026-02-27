@@ -73,7 +73,7 @@ For non-deployment incidents:
 1. **Investigate** — Review Sentry error details, session replays, and logs
 2. **Identify** — Determine root cause and affected scope
 3. **Fix** — Implement fix on a `fix/*` branch
-4. **Test** — 4-stage CI pipeline validates the fix (lint → test → build → E2E)
+4. **Test** — 5-stage CI pipeline validates the fix (lint → test → edge-functions → build → E2E)
 5. **Deploy** — Merge to `main` triggers automatic production deployment
 
 ### 5. Post-Incident Review
