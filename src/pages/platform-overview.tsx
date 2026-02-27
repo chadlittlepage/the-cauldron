@@ -575,6 +575,7 @@ export function PlatformOverviewPage() {
           {/* Overall average */}
           <div className="flex justify-center mb-12">
             <div className="glass-card rounded-2xl p-8 text-center">
+              <Trophy className="mx-auto h-8 w-8 text-accent-purple mb-3" />
               <div className="text-5xl font-bold gradient-text">
                 {Math.round(fortuneBenchmarks.reduce((sum, b) => sum + b.score, 0) / fortuneBenchmarks.length)}
               </div>
