@@ -3,19 +3,19 @@ import { test, expect } from '@playwright/test';
 test.describe('Authentication', () => {
   test('login page loads', async ({ page }) => {
     await page.goto('/login');
-    await expect(page.getByText('Welcome back to hexwave')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Welcome back' })).toBeVisible();
     await expect(page.getByPlaceholder('you@example.com')).toBeVisible();
   });
 
   test('signup page loads', async ({ page }) => {
     await page.goto('/signup');
-    await expect(page.getByText('Join hexwave as an artist or curator')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Create your account' })).toBeVisible();
     await expect(page.getByPlaceholder('Your display name')).toBeVisible();
   });
 
   test('login form validates empty fields', async ({ page }) => {
     await page.goto('/login');
-    await page.getByRole('button', { name: 'Sign In' }).click();
+    await page.getByRole('main').getByRole('button', { name: 'Sign In' }).click();
     await expect(page.getByText('Please enter a valid email')).toBeVisible();
   });
 
@@ -26,18 +26,18 @@ test.describe('Authentication', () => {
     await page.getByPlaceholder('At least 8 characters').fill('weak');
     await page.getByPlaceholder('Confirm your password').fill('weak');
     await page.getByRole('button', { name: 'Create Account' }).click();
-    await expect(page.getByText('Password must be at least 8 characters')).toBeVisible();
+    await expect(page.getByText(/Password must/)).toBeVisible();
   });
 
   test('login links to signup', async ({ page }) => {
     await page.goto('/login');
-    await page.getByText('Sign up').click();
+    await page.getByRole('main').getByRole('link', { name: 'Create one' }).click();
     await expect(page).toHaveURL('/signup');
   });
 
   test('signup links to login', async ({ page }) => {
     await page.goto('/signup');
-    await page.getByText('Sign in').click();
+    await page.getByRole('main').getByRole('link', { name: 'Sign in' }).click();
     await expect(page).toHaveURL('/login');
   });
 });

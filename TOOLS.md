@@ -236,7 +236,7 @@
 ## Test Coverage
 | Metric | Value |
 |--------|-------|
-| Test files | 28 |
-| Total tests | 266 |
+| Test files | 26 (19 unit + 7 E2E) |
+| Total tests | 181 (156 unit + 25 E2E) |
 | Coverage thresholds | 80/80/75/70 (statements/lines/functions/branches) |
 | Config | `vitest.config.ts` |

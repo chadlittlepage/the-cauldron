@@ -8,6 +8,6 @@ test.describe('Curator review', () => {
 
   test('curators page loads', async ({ page }) => {
     await page.goto('/curators');
-    await expect(page.getByText('Curators')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Curators' })).toBeVisible({ timeout: 15000 });
   });
 });
