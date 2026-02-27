@@ -71,10 +71,38 @@ Deno.serve(async (req: Request) => {
       return json({ error: 'Unsupported platform' }, 400);
     }
 
+    // SSRF protection: only allow https URLs to known music platforms
+    let parsed: URL;
+    try {
+      parsed = new URL(url);
+    } catch {
+      return json({ error: 'Invalid URL' }, 400);
+    }
+
+    if (parsed.protocol !== 'https:') {
+      return json({ error: 'Only HTTPS URLs are allowed' }, 400);
+    }
+
+    const allowedHosts: Record<string, string[]> = {
+      spotify: ['open.spotify.com'],
+      soundcloud: ['soundcloud.com', 'www.soundcloud.com', 'm.soundcloud.com'],
+    };
+
+    const hosts = allowedHosts[platform];
+    if (!hosts || !hosts.includes(parsed.hostname)) {
+      return json({ error: 'URL does not match expected platform domain' }, 400);
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10_000);
+
     const res = await fetch(url, {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; HexwaveBot/1.0)' },
       redirect: 'follow',
+      signal: controller.signal,
     });
+
+    clearTimeout(timeout);
 
     if (!res.ok) {
       return json({ error: 'Failed to fetch track page' }, 502);
