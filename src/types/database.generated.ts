@@ -184,37 +184,58 @@ export type Database = {
       };
       profiles: {
         Row: {
+          accepting_submissions: boolean | null;
           avatar_url: string | null;
           bio: string | null;
+          contact_email: string | null;
           created_at: string;
           display_name: string;
           email: string;
+          genres: string[] | null;
           id: string;
+          instagram_handle: string | null;
           listener_count: number;
+          looking_for: string | null;
           role: Database['public']['Enums']['user_role'];
+          tiktok_handle: string | null;
           updated_at: string;
+          website_url: string | null;
         };
         Insert: {
+          accepting_submissions?: boolean | null;
           avatar_url?: string | null;
           bio?: string | null;
+          contact_email?: string | null;
           created_at?: string;
           display_name: string;
           email: string;
+          genres?: string[] | null;
           id: string;
+          instagram_handle?: string | null;
           listener_count?: number;
+          looking_for?: string | null;
           role?: Database['public']['Enums']['user_role'];
+          tiktok_handle?: string | null;
           updated_at?: string;
+          website_url?: string | null;
         };
         Update: {
+          accepting_submissions?: boolean | null;
           avatar_url?: string | null;
           bio?: string | null;
+          contact_email?: string | null;
           created_at?: string;
           display_name?: string;
           email?: string;
+          genres?: string[] | null;
           id?: string;
+          instagram_handle?: string | null;
           listener_count?: number;
+          looking_for?: string | null;
           role?: Database['public']['Enums']['user_role'];
+          tiktok_handle?: string | null;
           updated_at?: string;
+          website_url?: string | null;
         };
         Relationships: [];
       };
@@ -266,6 +287,7 @@ export type Database = {
       submissions: {
         Row: {
           artist_id: string;
+          artist_name: string | null;
           created_at: string;
           description: string | null;
           genre: string;
@@ -281,6 +303,7 @@ export type Database = {
         };
         Insert: {
           artist_id: string;
+          artist_name?: string | null;
           created_at?: string;
           description?: string | null;
           genre: string;
@@ -296,6 +319,7 @@ export type Database = {
         };
         Update: {
           artist_id?: string;
+          artist_name?: string | null;
           created_at?: string;
           description?: string | null;
           genre?: string;
@@ -362,6 +386,95 @@ export type Database = {
     Functions: {
       generate_monthly_chart: { Args: { p_period: string }; Returns: undefined };
       generate_yearly_chart: { Args: { p_year: string }; Returns: undefined };
+      get_artist_curator_decisions: {
+        Args: { p_artist_id: string };
+        Returns: {
+          accepted: number;
+          month: string;
+          pending: number;
+          rejected: number;
+        }[];
+      };
+      get_artist_genre_distribution: {
+        Args: { p_artist_id: string };
+        Returns: {
+          count: number;
+          genre: string;
+        }[];
+      };
+      get_artist_placements: {
+        Args: { p_artist_id: string };
+        Returns: {
+          count: number;
+        }[];
+      };
+      get_artist_ratings_distribution: {
+        Args: { p_artist_id: string };
+        Returns: {
+          count: number;
+          rating: number;
+        }[];
+      };
+      get_artist_submissions_by_month: {
+        Args: { p_artist_id: string };
+        Returns: {
+          count: number;
+          month: string;
+        }[];
+      };
+      get_artist_tier_breakdown: {
+        Args: { p_artist_id: string };
+        Returns: {
+          count: number;
+          tier: string;
+          total_cents: number;
+        }[];
+      };
+      get_artist_total_spent: {
+        Args: { p_artist_id: string };
+        Returns: {
+          total_cents: number;
+        }[];
+      };
+      get_artist_vote_history: {
+        Args: { p_artist_id: string };
+        Returns: {
+          artist_name: string;
+          created_at: string;
+          genre: string;
+          submission_id: string;
+          track_title: string;
+        }[];
+      };
+      get_artist_vote_trend: {
+        Args: { p_artist_id: string };
+        Returns: {
+          day: string;
+          upvotes: number;
+        }[];
+      };
+      get_curator_earnings_by_month: {
+        Args: { p_curator_id: string };
+        Returns: {
+          earnings_cents: number;
+          month: string;
+        }[];
+      };
+      get_curator_genre_performance: {
+        Args: { p_curator_id: string };
+        Returns: {
+          avg_rating: number;
+          genre: string;
+          reviews: number;
+        }[];
+      };
+      get_curator_reviews_by_month: {
+        Args: { p_curator_id: string };
+        Returns: {
+          count: number;
+          month: string;
+        }[];
+      };
       get_curator_stats: {
         Args: { p_curator_id: string };
         Returns: {

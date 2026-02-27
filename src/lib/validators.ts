@@ -81,6 +81,7 @@ export const submissionSchema = z.object({
     .string()
     .min(1, 'Track title is required')
     .max(200, 'Track title must be 200 characters or less'),
+  artistName: z.string().max(200).optional().default(''),
   trackUrl: z.string().url('Please enter a valid track URL'),
   platform: z.enum(['spotify', 'soundcloud', 'bandcamp', 'other']),
   genre: z.string().min(1, 'Genre is required'),

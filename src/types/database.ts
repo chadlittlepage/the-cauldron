@@ -287,6 +287,7 @@ export type Database = {
       submissions: {
         Row: {
           artist_id: string;
+          artist_name: string | null;
           created_at: string;
           description: string | null;
           genre: string;
@@ -302,6 +303,7 @@ export type Database = {
         };
         Insert: {
           artist_id: string;
+          artist_name?: string | null;
           created_at?: string;
           description?: string | null;
           genre: string;
@@ -317,6 +319,7 @@ export type Database = {
         };
         Update: {
           artist_id?: string;
+          artist_name?: string | null;
           created_at?: string;
           description?: string | null;
           genre?: string;

@@ -133,6 +133,7 @@ export function BrowsePage() {
                   id={submission.id}
                   trackTitle={submission.track_title}
                   artistName={
+                    submission.artist_name ??
                     (submission.profiles as { display_name: string } | null)?.display_name ??
                     'Unknown'
                   }

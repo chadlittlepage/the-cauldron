@@ -47,6 +47,7 @@ export function SubmitTrackPage() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({
     trackTitle: '',
+    artistName: '',
     trackUrl: '',
     platform: '' as string,
     genre: '',
@@ -112,7 +113,11 @@ export function SubmitTrackPage() {
         setMetadata(result);
         setFetchingMetadata(false);
         if (result?.title) {
-          setForm((prev) => ({ ...prev, trackTitle: result.title }));
+          setForm((prev) => ({
+            ...prev,
+            trackTitle: result.title,
+            ...(result.artistName ? { artistName: result.artistName } : {}),
+          }));
           setTitlePrefilled(true);
         }
       });
@@ -173,6 +178,7 @@ export function SubmitTrackPage() {
       await createSubmission.mutateAsync({
         artist_id: user.id,
         track_title: form.trackTitle,
+        artist_name: form.artistName || null,
         track_url: form.trackUrl,
         platform: form.platform as 'spotify' | 'soundcloud' | 'bandcamp' | 'other',
         genre: form.genre,
@@ -315,6 +321,19 @@ export function SubmitTrackPage() {
                   icon={<Music className="h-4 w-4" />}
                 />
                 {titlePrefilled && detectedPlatform && (
+                  <p className="mt-1 text-xs text-hex-muted">
+                    Pre-filled from {PLATFORM_LABELS[detectedPlatform] ?? detectedPlatform}
+                  </p>
+                )}
+              </FormField>
+              <FormField label="Artist Name" htmlFor="artistName" error={errors.artistName}>
+                <Input
+                  id="artistName"
+                  value={form.artistName}
+                  onChange={(e) => updateField('artistName', e.target.value)}
+                  placeholder="Artist or performer name"
+                />
+                {form.artistName && titlePrefilled && detectedPlatform && (
                   <p className="mt-1 text-xs text-hex-muted">
                     Pre-filled from {PLATFORM_LABELS[detectedPlatform] ?? detectedPlatform}
                   </p>
