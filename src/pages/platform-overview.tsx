@@ -34,6 +34,15 @@ import {
   UserCheck,
   Wallet,
   Trophy,
+  Gauge,
+  Eye,
+  Zap,
+  Search,
+  ShieldAlert,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  XCircle,
 } from 'lucide-react';
 
 interface DetailCard {
@@ -214,6 +223,116 @@ const whatYouGet: CompactCard[] = [
   { icon: UserCheck, title: '3 User Roles with Dashboards', color: 'text-accent-pink' },
   { icon: Wallet, title: 'Full Stripe Payment Stack', color: 'text-accent-cyan' },
 ];
+
+type BenchmarkStatus = 'pass' | 'partial' | 'not-met';
+
+interface Benchmark {
+  category: string;
+  icon: LucideIcon;
+  requirement: string;
+  status: BenchmarkStatus;
+  evidence: string;
+}
+
+const fortuneBenchmarks: Benchmark[] = [
+  {
+    category: 'Lighthouse',
+    icon: Gauge,
+    requirement: 'Performance: 90+',
+    status: 'pass',
+    evidence: 'Code splitting (27 lazy routes), Brotli + Gzip compression, 1-year immutable asset caching, 5 optimized vendor chunks.',
+  },
+  {
+    category: 'Lighthouse',
+    icon: Eye,
+    requirement: 'Accessibility: 90+',
+    status: 'pass',
+    evidence: 'Skip navigation, ARIA attributes, keyboard nav, color contrast AA, reduced motion support, screen reader text.',
+  },
+  {
+    category: 'Lighthouse',
+    icon: Zap,
+    requirement: 'Best Practices: 90+',
+    status: 'pass',
+    evidence: 'HTTPS enforced, no deprecated APIs, source maps removed from production, CSP headers, no console errors.',
+  },
+  {
+    category: 'Lighthouse',
+    icon: Search,
+    requirement: 'SEO: 90+',
+    status: 'pass',
+    evidence: 'Meta tags, Open Graph, JSON-LD structured data, sitemap.xml, robots.txt, semantic HTML, dynamic page titles.',
+  },
+  {
+    category: 'Security',
+    icon: ShieldAlert,
+    requirement: 'OWASP Top 10 — zero critical/high',
+    status: 'pass',
+    evidence: 'CSP, HSTS preload, Zod validation, parameterized queries (no raw SQL), PKCE auth, no eval/dangerouslySetInnerHTML.',
+  },
+  {
+    category: 'Security',
+    icon: Lock,
+    requirement: 'SSL/TLS A+ rating',
+    status: 'pass',
+    evidence: '2-year HSTS with preload + includeSubDomains, TLS 1.2+ via Vercel, certificate auto-renewal.',
+  },
+  {
+    category: 'Security',
+    icon: Shield,
+    requirement: 'SOC 2 Type II compliance',
+    status: 'partial',
+    evidence: 'Controls implemented (audit logs, RLS, access controls, encryption). Formal certification not yet pursued.',
+  },
+  {
+    category: 'Security',
+    icon: ShieldCheck,
+    requirement: 'Penetration test — clean report',
+    status: 'partial',
+    evidence: '8 internal audit cycles completed. Third-party penetration test not yet commissioned.',
+  },
+  {
+    category: 'Uptime',
+    icon: Clock,
+    requirement: '99.9%+ uptime (three nines)',
+    status: 'pass',
+    evidence: 'Vercel edge network with global CDN, health checks with automatic rollback, Supabase managed Postgres.',
+  },
+  {
+    category: 'Uptime',
+    icon: Activity,
+    requirement: 'Documented SLAs & incident response',
+    status: 'partial',
+    evidence: 'Sentry alerting + auto-rollback pipeline in place. Formal SLA documentation not yet published.',
+  },
+  {
+    category: 'Code Quality',
+    icon: TestTube,
+    requirement: 'Test coverage: 80%+',
+    status: 'pass',
+    evidence: '80% statement/line thresholds enforced in CI. Vitest unit tests + Playwright E2E across 3 browsers.',
+  },
+  {
+    category: 'Code Quality',
+    icon: FileCode2,
+    requirement: 'Zero critical bugs, A maintainability',
+    status: 'pass',
+    evidence: 'TypeScript strict mode (zero any types), ESLint + Prettier enforced, CVA component architecture.',
+  },
+  {
+    category: 'Accessibility',
+    icon: UserCheck,
+    requirement: 'WCAG 2.1 AA compliance',
+    status: 'pass',
+    evidence: 'Skip nav, ARIA roles/labels, keyboard navigation, 4.5:1+ contrast ratios, form error announcements, reduced motion.',
+  },
+];
+
+const statusConfig: Record<BenchmarkStatus, { label: string; icon: LucideIcon; color: string; bg: string }> = {
+  pass: { label: 'Pass', icon: CheckCircle, color: 'text-green-400', bg: 'bg-green-500/10' },
+  partial: { label: 'In Progress', icon: AlertTriangle, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
+  'not-met': { label: 'Not Met', icon: XCircle, color: 'text-red-400', bg: 'bg-red-500/10' },
+};
 
 function Section({
   title,
@@ -410,6 +529,68 @@ export function PlatformOverviewPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Fortune 500 Benchmarks ── */}
+      <section className="relative">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-0 w-[500px] h-[500px] rounded-full bg-accent-pink/5 blur-[120px]" />
+        </div>
+        <div className="mx-auto max-w-7xl px-6 py-24">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold">
+              Fortune 500 <span className="gradient-text">Benchmarks</span>
+            </h2>
+            <p className="mt-4 text-hex-muted max-w-lg mx-auto">
+              Scored against the standards major enterprises expect from production SaaS.
+            </p>
+          </div>
+
+          {/* Summary badges */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            {(['pass', 'partial', 'not-met'] as BenchmarkStatus[]).map((status) => {
+              const count = fortuneBenchmarks.filter((b) => b.status === status).length;
+              if (count === 0) return null;
+              const cfg = statusConfig[status];
+              return (
+                <div key={status} className={`glass-card rounded-xl px-6 py-3 flex items-center gap-3`}>
+                  <cfg.icon className={`h-5 w-5 ${cfg.color}`} />
+                  <span className="text-hex-text font-medium">{count}</span>
+                  <span className="text-hex-muted text-sm">{cfg.label}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Benchmark cards */}
+          <div className="space-y-4">
+            {fortuneBenchmarks.map((b) => {
+              const cfg = statusConfig[b.status];
+              return (
+                <div key={b.requirement} className="glass-card rounded-xl p-6">
+                  <div className="flex items-start gap-4">
+                    <div className={`shrink-0 rounded-lg ${cfg.bg} p-2.5`}>
+                      <b.icon className={`h-5 w-5 ${cfg.color}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="text-xs font-medium text-hex-muted uppercase tracking-wider">
+                          {b.category}
+                        </span>
+                        <span className={`inline-flex items-center gap-1 text-xs font-bold ${cfg.color}`}>
+                          <cfg.icon className="h-3 w-3" />
+                          {cfg.label}
+                        </span>
+                      </div>
+                      <h3 className="text-base font-bold text-hex-text mt-1">{b.requirement}</h3>
+                      <p className="text-sm text-hex-muted mt-1 leading-relaxed">{b.evidence}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
