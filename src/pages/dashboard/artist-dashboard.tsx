@@ -114,7 +114,7 @@ export function ArtistDashboardPage() {
                 <ArrowRight className="ml-auto h-4 w-4 text-hex-muted group-hover:text-accent-purple transition-colors" />
               </Link>
               <Link
-                to="/dashboard/reviews"
+                to="/dashboard/my-reviews"
                 className="flex items-center gap-4 rounded-xl border border-hex-border bg-hex-card/50 p-5 hover:bg-hex-card transition-colors group"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-purple/10">
