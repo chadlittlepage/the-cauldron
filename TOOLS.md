@@ -72,7 +72,7 @@
 | Platform | React |
 | Features | Error Monitoring, Session Replay (100% on error, 10% baseline), Performance Tracing (20% prod), Web Vitals (LCP, CLS, FID) |
 | Source Maps | Uploaded via `@sentry/vite-plugin` on production builds, deleted from dist after upload |
-| Edge Functions | 4 Edge Functions report errors to Sentry via lightweight envelope API (`_shared/sentry.ts`); `sentry-proxy` proxies Sentry Issues API for Debug Console |
+| Edge Functions | 5 Edge Functions report errors to Sentry via lightweight envelope API (`_shared/sentry.ts`); `sentry-proxy` proxies Sentry Issues API for Debug Console |
 | Web Vitals | Core Web Vitals (LCP, CLS, FID) reported to Sentry via PerformanceObserver in `src/lib/web-vitals.ts` |
 | Enabled | Production only (`import.meta.env.PROD`) |
 
@@ -111,6 +111,7 @@
 | Vote Cooldown | 1-second client-side cooldown via `useRef` timestamp |
 | Submission Guard | Ref-based double-submit prevention on track submit + review forms |
 | Edge Function CORS | Restricted to `APP_URL` env var (not wildcard `*`) |
+| SSRF Protection | `track-metadata` Edge Function restricts fetches to HTTPS-only on allowlisted domains (`open.spotify.com`, `soundcloud.com`) with 10s timeout |
 | CSP | Strict Content-Security-Policy via Vercel headers (Stripe, Spotify, Supabase, Sentry) |
 | Asset Caching | `Cache-Control: immutable, 1 year` on `/assets/*` |
 | RLS | Row Level Security on all database tables |

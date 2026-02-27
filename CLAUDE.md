@@ -47,8 +47,8 @@ src/
 ├── App.tsx         # Root component + routes (lazy-loaded except home/login/signup)
 └── main.tsx        # Entry point + providers + Sentry init
 supabase/
-├── migrations/     # SQL migration files (00001–00015 + seed)
-├── functions/      # Supabase Edge Functions (create-checkout, stripe-webhook, create-payout, generate-charts)
+├── migrations/     # SQL migration files (00001–00026 + seed)
+├── functions/      # Supabase Edge Functions (create-checkout, stripe-webhook, create-payout, generate-charts, sentry-proxy, track-metadata)
 e2e/                # Playwright E2E tests
 ```
 
