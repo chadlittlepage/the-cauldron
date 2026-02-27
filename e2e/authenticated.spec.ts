@@ -119,7 +119,7 @@ test.describe('Authenticated flows', () => {
     // Desktop: icon-only button with aria-label
     const signOutButton = page.getByRole('button', { name: /sign out/i });
     await signOutButton.click();
-    // Should redirect to home or login
-    await page.waitForURL(/^\/$|\/login/, { timeout: 10000 });
+    // After sign out, the Sign In button should reappear in the nav
+    await expect(page.getByRole('button', { name: 'Sign In' })).toBeVisible({ timeout: 10000 });
   });
 });
