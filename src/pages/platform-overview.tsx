@@ -367,7 +367,7 @@ export function PlatformOverviewPage() {
               Production Readiness <span className="gradient-text">Score</span>
             </h2>
             <p className="mt-4 text-hex-muted max-w-lg mx-auto">
-              8 independent audit cycles. Verified against Fortune 500 benchmarks.
+              Verified against Fortune 500 benchmarks.
             </p>
           </div>
 
