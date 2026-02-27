@@ -90,7 +90,7 @@ jobs:
           SENTRY_PROJECT: hexwave
 
       - name: Deploy to Vercel (Preview)
-        run: npx vercel deploy ./dist --token "$VERCEL_TOKEN" --yes
+        run: npx vercel deploy ./dist --token "$VERCEL_TOKEN" --yes --no-git
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -128,7 +128,7 @@ jobs:
           SENTRY_PROJECT: hexwave
 
       - name: Deploy to Vercel (Staging)
-        run: npx vercel deploy ./dist --token "$VERCEL_TOKEN" --yes
+        run: npx vercel deploy ./dist --token "$VERCEL_TOKEN" --yes --no-git
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -168,7 +168,7 @@ jobs:
       - name: Deploy to Vercel (Production)
         id: deploy-prod
         run: |
-          DEPLOY_URL=$(npx vercel deploy ./dist --prod --token "$VERCEL_TOKEN" --yes)
+          DEPLOY_URL=$(npx vercel deploy ./dist --prod --token "$VERCEL_TOKEN" --yes --no-git)
           echo "deploy-url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
