@@ -29,14 +29,14 @@ export default defineConfig(({ mode }) => ({
     strictPort: true,
   },
   build: {
-    sourcemap: 'hidden',
+    sourcemap: true,
     chunkSizeWarningLimit: 250, // kB — flag chunks > 250 KB
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
           supabase: ['@supabase/supabase-js'],
-          stripe: ['@stripe/stripe-js'],
+          stripe: ['@stripe/stripe-js', '@stripe/react-stripe-js'],
           query: ['@tanstack/react-query'],
           sentry: ['@sentry/react'],
         },
