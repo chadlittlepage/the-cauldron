@@ -7,7 +7,7 @@ export const supabase = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_AN
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true,
-    flowType: 'implicit',
+    flowType: 'pkce',
     lock: async <R>(_name: string, _acquireTimeout: number, fn: () => Promise<R>): Promise<R> => {
       return fn();
     },
