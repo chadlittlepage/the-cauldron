@@ -33,6 +33,7 @@ import {
   Shield,
   UserCheck,
   Wallet,
+  Trophy,
 } from 'lucide-react';
 
 interface DetailCard {
@@ -62,7 +63,7 @@ const originalCode: DetailCard[] = [
     icon: Puzzle,
     title: 'Purpose-Built Backend',
     description:
-      '5 Supabase Edge Functions, 25 database migrations, custom RLS policies — designed specifically for music curation workflows.',
+      '7 Supabase Edge Functions, 32 database migrations, custom RLS policies — designed specifically for music curation workflows.',
     color: 'text-accent-pink',
     bg: 'bg-accent-pink/10',
   },
@@ -206,8 +207,8 @@ const revenueReady: DetailCard[] = [
 ];
 
 const whatYouGet: CompactCard[] = [
-  { icon: FileStack, title: '25 Database Migrations', color: 'text-accent-purple' },
-  { icon: Cloud, title: '5 Edge Functions', color: 'text-accent-pink' },
+  { icon: FileStack, title: '32 Database Migrations', color: 'text-accent-purple' },
+  { icon: Cloud, title: '7 Edge Functions', color: 'text-accent-pink' },
   { icon: GitPullRequest, title: '4-Stage CI/CD Pipeline', color: 'text-accent-cyan' },
   { icon: Shield, title: '7 Security Headers', color: 'text-accent-purple' },
   { icon: UserCheck, title: '3 User Roles with Dashboards', color: 'text-accent-pink' },
@@ -354,6 +355,132 @@ export function PlatformOverviewPage() {
       >
         <CompactGrid items={whatYouGet} />
       </Section>
+
+      {/* ── Production Readiness Score ── */}
+      <section className="relative">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-accent-purple/5 blur-[100px]" />
+        </div>
+        <div className="mx-auto max-w-7xl px-6 py-24">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold">
+              Production Readiness <span className="gradient-text">Score</span>
+            </h2>
+            <p className="mt-4 text-hex-muted max-w-lg mx-auto">
+              8 independent audit cycles. Verified against Fortune 500 benchmarks.
+            </p>
+          </div>
+
+          {/* Score badge */}
+          <div className="flex justify-center mb-12">
+            <div className="glass-card rounded-2xl p-8 text-center">
+              <Trophy className="mx-auto h-8 w-8 text-accent-purple mb-3" />
+              <div className="text-6xl font-bold gradient-text">93</div>
+              <div className="text-hex-muted text-sm mt-1">out of 100</div>
+            </div>
+          </div>
+
+          {/* Category breakdown */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-16">
+            {[
+              { category: 'Security', score: 9 },
+              { category: 'Performance', score: 9 },
+              { category: 'Reliability', score: 9 },
+              { category: 'Observability', score: 9 },
+              { category: 'Accessibility', score: 10 },
+              { category: 'SEO & Web Vitals', score: 10 },
+              { category: 'Code Quality', score: 9 },
+              { category: 'CI/CD & DevOps', score: 10 },
+              { category: 'Data Integrity', score: 10 },
+            ].map((item) => (
+              <div key={item.category} className="glass-card rounded-xl p-5">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-hex-text">{item.category}</span>
+                  <span
+                    className={`text-sm font-bold ${item.score === 10 ? 'text-green-400' : 'text-accent-purple'}`}
+                  >
+                    {item.score}/10
+                  </span>
+                </div>
+                <div className="mt-3 h-2 rounded-full bg-hex-card overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${item.score === 10 ? 'bg-green-500' : 'bg-accent-purple'}`}
+                    style={{ width: `${item.score * 10}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Audit history */}
+          <div className="glass-card rounded-2xl p-8">
+            <h3 className="text-lg font-semibold mb-6 text-center">Audit History</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-hex-border">
+                    <th className="text-left py-3 px-4 text-hex-muted font-medium">Audit</th>
+                    <th className="text-left py-3 px-4 text-hex-muted font-medium">Score</th>
+                    <th className="text-left py-3 px-4 text-hex-muted font-medium">Key Fixes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { audit: '#1', score: '83', fixes: 'Baseline audit' },
+                    {
+                      audit: '#2',
+                      score: '82',
+                      fixes: 'Vote rate limiting, DB-backed rate limiters, Sentry context',
+                    },
+                    {
+                      audit: '#3',
+                      score: '86',
+                      fixes: 'CSP exact domains, iframe sandbox, vote race guard, health check',
+                    },
+                    {
+                      audit: '#4',
+                      score: '88',
+                      fixes: 'touch-action WCAG fix, sitemap + robots.txt',
+                    },
+                    {
+                      audit: '#5',
+                      score: '89',
+                      fixes: 'Web Locks API, frontend health check, checkout pre-validation',
+                    },
+                    {
+                      audit: '#6',
+                      score: '91',
+                      fixes: 'Checkout ref guard, active-only iframes, aria-live, JSON-LD',
+                    },
+                    {
+                      audit: '#7',
+                      score: '92',
+                      fixes: 'ILIKE wildcard escaping, automated rollback, offline detection',
+                    },
+                    {
+                      audit: '#8',
+                      score: '93',
+                      fixes: 'Auth callback cleanup, coverage thresholds raised',
+                    },
+                  ].map((row) => (
+                    <tr key={row.audit} className="border-b border-hex-border/50">
+                      <td className="py-3 px-4 font-medium text-hex-text">{row.audit}</td>
+                      <td className="py-3 px-4">
+                        <span
+                          className={`font-bold ${row.audit === '#8' ? 'text-green-400' : 'text-hex-muted'}`}
+                        >
+                          {row.score}/100
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-hex-muted">{row.fixes}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

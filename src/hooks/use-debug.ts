@@ -6,9 +6,12 @@ import type { AuditAction, Tables } from '@/types/database';
 
 const EDGE_FUNCTIONS = [
   'create-checkout',
-  'stripe-webhook',
   'create-payout',
   'generate-charts',
+  'health-check',
+  'sentry-proxy',
+  'stripe-webhook',
+  'track-metadata',
 ] as const;
 
 // --- System Health ---

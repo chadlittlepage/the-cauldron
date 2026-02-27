@@ -72,7 +72,7 @@
 | Platform | React |
 | Features | Error Monitoring, Session Replay (100% on error, 10% baseline), Performance Tracing (20% prod), Web Vitals (LCP, CLS, FID) |
 | Source Maps | Uploaded via `@sentry/vite-plugin` on production builds, deleted from dist after upload |
-| Edge Functions | 5 Edge Functions report errors to Sentry via lightweight envelope API (`_shared/sentry.ts`); `sentry-proxy` proxies Sentry Issues API for Debug Console |
+| Edge Functions | 7 Edge Functions report errors to Sentry via lightweight envelope API (`_shared/sentry.ts`); `sentry-proxy` proxies Sentry Issues API for Debug Console |
 | Web Vitals | Core Web Vitals (LCP, CLS, FID) reported to Sentry via PerformanceObserver in `src/lib/web-vitals.ts` |
 | Enabled | Production only (`import.meta.env.PROD`) |
 

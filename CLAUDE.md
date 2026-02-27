@@ -48,7 +48,7 @@ src/
 └── main.tsx        # Entry point + providers + Sentry init
 supabase/
 ├── migrations/     # SQL migration files (00001–00032 + seed)
-├── functions/      # Supabase Edge Functions (create-checkout, stripe-webhook, create-payout, generate-charts, sentry-proxy, track-metadata)
+├── functions/      # Supabase Edge Functions (create-checkout, create-payout, generate-charts, health-check, sentry-proxy, stripe-webhook, track-metadata)
 e2e/                # Playwright E2E tests
 ```
 
@@ -120,4 +120,22 @@ SENTRY_AUTH_TOKEN           # Sentry auth token for source map uploads (CI + loc
 | CI/CD & DevOps | 10/10 |
 | Data Integrity | 10/10 |
 
-Score history: 83 → 82 → 86 → 88 → 89 → 91 → 92 → **93**
+### Score History (8 audit cycles)
+
+| Audit | Score | Key Fixes |
+|---|---|---|
+| #1 | 83/100 | Baseline audit |
+| #2 | 82/100 | Vote rate limiting, DB-backed rate limiters, Sentry context |
+| #3 | 86/100 | CSP exact domains, iframe sandbox, vote race guard, health check |
+| #4 | 88/100 | touch-action WCAG fix, sitemap + robots.txt |
+| #5 | 89/100 | Web Locks API, frontend health check, checkout pre-validation |
+| #6 | 91/100 | Checkout ref guard, active-only iframes, aria-live, JSON-LD |
+| #7 | 92/100 | ILIKE wildcard escaping, automated rollback, offline detection |
+| #8 | **93/100** | Auth callback cleanup, coverage thresholds raised |
+
+### Remaining Gaps to 95+
+- **Security (9/10)** — Subresource Integrity, CSP nonce-based scripts, penetration test certification
+- **Performance (9/10)** — Service worker for true offline caching, dynamic import prefetch hints
+- **Reliability (9/10)** — Structured retry queues for failed mutations
+- **Observability (9/10)** — Structured business event logging (not just error captures)
+- **Code Quality (9/10)** — Test coverage breadth (19 test files for 100+ source files)

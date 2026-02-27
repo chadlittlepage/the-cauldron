@@ -19,7 +19,7 @@
 | **State Management** | Lovable default (varies per generation) | TanStack Query (server) + React state (local) |
 | **Routing** | Lovable default routing | React Router v7 with lazy-loaded routes |
 | **Styling** | Tailwind (AI-generated utility classes) | Tailwind CSS 4 + CVA component variants + custom dark theme |
-| **API Layer** | Unknown / Lovable-managed | 6 Supabase Edge Functions (Deno runtime) |
+| **API Layer** | Unknown / Lovable-managed | 7 Supabase Edge Functions (Deno runtime) |
 
 ---
 
@@ -79,7 +79,7 @@
 | **Performance Tracing** | None | Sentry Performance (20% sample rate in production) |
 | **Web Vitals** | None | Core Web Vitals (LCP, CLS, FID) reported to Sentry |
 | **Source Maps** | Exposed in production | Uploaded to Sentry, deleted from production dist |
-| **Edge Function Monitoring** | None | 5 Edge Functions report errors via Sentry envelope API |
+| **Edge Function Monitoring** | None | 7 Edge Functions report errors via Sentry envelope API |
 | **Debug Console** | None | Admin debug console (system health, data inspector, audit trail) |
 
 ---
@@ -115,7 +115,7 @@
 | **Source Control** | Lovable-managed (exportable to GitHub) | GitHub with branch protection |
 | **Hosting** | Lovable hosting | Vercel (CDN, security headers, SPA rewrites) |
 | **CI/CD** | None | GitHub Actions (automated build + test + deploy) |
-| **Database** | Supabase (Lovable-managed) | Supabase Postgres — 26 migrations, RLS, RPC functions |
+| **Database** | Supabase (Lovable-managed) | Supabase Postgres — 32 migrations, RLS, RPC functions |
 | **Edge Functions** | None confirmed | 6 deployed (checkout, payout, charts, sentry-proxy, webhook, track-metadata) |
 | **Domain** | Custom domain (thecauldron.rocks) | Custom domain (hexwave.io) via IONOS |
 | **SSL** | Automatic via Lovable | Automatic via Vercel |
