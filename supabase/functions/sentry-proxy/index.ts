@@ -7,7 +7,7 @@ const sentryOrg = 'cell-division';
 const sentryProject = 'hexwave';
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*',
+  'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || 'https://hexwave.io',
   'Access-Control-Allow-Headers': 'authorization, content-type, apikey, x-client-info',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
@@ -33,7 +33,7 @@ Deno.serve(async (req: Request) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Invalid auth token', detail: authError?.message }), {
+      return new Response(JSON.stringify({ error: 'Invalid auth token' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
@@ -71,7 +71,8 @@ Deno.serve(async (req: Request) => {
 
     if (!sentryResp.ok) {
       const text = await sentryResp.text();
-      return new Response(JSON.stringify({ error: `Sentry API error: ${sentryResp.status}`, detail: text }), {
+      console.error('Sentry API error:', sentryResp.status, text);
+      return new Response(JSON.stringify({ error: 'Sentry API error' }), {
         status: sentryResp.status,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
@@ -96,7 +97,7 @@ Deno.serve(async (req: Request) => {
     });
   } catch (err) {
     console.error('sentry-proxy error:', err);
-    return new Response(JSON.stringify({ error: (err as Error).message }), {
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });

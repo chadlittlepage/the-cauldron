@@ -5,7 +5,7 @@ import { createRateLimiter, rateLimitResponse } from '../_shared/rate-limit.ts';
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-const corsOrigin = Deno.env.get('APP_URL') || '*';
+const corsOrigin = Deno.env.get('APP_URL') || 'https://hexwave.io';
 
 // 10 payouts per admin per minute
 const payoutLimiter = createRateLimiter(60_000, 10);
@@ -55,12 +55,16 @@ serve(async (req: Request) => {
 
     const { curator_id, amount_cents, period } = await req.json();
 
-    if (!curator_id || !amount_cents || !period) {
-      return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
+    if (!curator_id || typeof curator_id !== 'string' || !/^[0-9a-f-]{36}$/.test(curator_id)) {
+      return new Response(JSON.stringify({ error: 'Invalid curator_id' }), { status: 400 });
     }
 
-    if (typeof amount_cents !== 'number' || amount_cents <= 0) {
+    if (typeof amount_cents !== 'number' || !Number.isInteger(amount_cents) || amount_cents <= 0 || amount_cents > 100_000) {
       return new Response(JSON.stringify({ error: 'Invalid amount' }), { status: 400 });
+    }
+
+    if (!period) {
+      return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
     }
 
     if (!PERIOD_RE.test(period)) {
@@ -97,7 +101,8 @@ serve(async (req: Request) => {
       .single();
 
     if (payoutError) {
-      return new Response(JSON.stringify({ error: payoutError.message }), { status: 500 });
+      await captureException(payoutError, { function: 'create-payout', curator_id });
+      return new Response(JSON.stringify({ error: 'Failed to create payout' }), { status: 500 });
     }
 
     return new Response(JSON.stringify({ payout }), {

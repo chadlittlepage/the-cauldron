@@ -42,7 +42,7 @@ const CardDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLPara
 CardDescription.displayName = 'CardDescription';
 
 const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => <div ref={ref} className={cn('', className)} {...props} />,
+  ({ className, ...props }, ref) => <div ref={ref} className={className} {...props} />,
 );
 CardContent.displayName = 'CardContent';
 

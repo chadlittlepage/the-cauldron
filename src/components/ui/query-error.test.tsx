@@ -3,9 +3,10 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { QueryError } from './query-error';
 
 describe('QueryError', () => {
-  it('renders error message from Error instance', () => {
+  it('renders fallback message instead of raw error details', () => {
     render(<QueryError error={new Error('Network failed')} />);
-    expect(screen.getByText('Network failed')).toBeInTheDocument();
+    expect(screen.getAllByText('Something went wrong')).toHaveLength(2); // title + description
+    expect(screen.queryByText('Network failed')).not.toBeInTheDocument();
   });
 
   it('renders fallback message for non-Error values', () => {

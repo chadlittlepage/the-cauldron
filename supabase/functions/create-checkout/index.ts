@@ -7,7 +7,7 @@ import { createRateLimiter, rateLimitResponse } from '../_shared/rate-limit.ts';
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, { apiVersion: '2024-04-10' });
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-const corsOrigin = Deno.env.get('APP_URL') || '*';
+const corsOrigin = Deno.env.get('APP_URL') || 'https://hexwave.io';
 
 // 5 checkout sessions per user per minute
 const checkoutLimiter = createRateLimiter(60_000, 5);
@@ -43,8 +43,8 @@ serve(async (req: Request) => {
     }
 
     const { submission_id } = await req.json();
-    if (!submission_id) {
-      return new Response(JSON.stringify({ error: 'Missing submission_id' }), { status: 400 });
+    if (!submission_id || typeof submission_id !== 'string' || !/^[0-9a-f-]{36}$/.test(submission_id)) {
+      return new Response(JSON.stringify({ error: 'Invalid submission_id' }), { status: 400 });
     }
 
     // Verify submission exists and belongs to user

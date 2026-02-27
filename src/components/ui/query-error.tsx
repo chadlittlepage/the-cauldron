@@ -10,7 +10,6 @@ interface QueryErrorProps {
 }
 
 export function QueryError({
-  error,
   fallbackMessage = 'Something went wrong',
   onRetry,
   className,
@@ -19,9 +18,7 @@ export function QueryError({
     <div className={className ?? 'flex flex-col items-center justify-center py-24 gap-4'}>
       <Alert variant="error" className="max-w-md">
         <AlertTitle>Something went wrong</AlertTitle>
-        <AlertDescription>
-          {error instanceof Error ? error.message : fallbackMessage}
-        </AlertDescription>
+        <AlertDescription>{fallbackMessage}</AlertDescription>
         {onRetry && (
           <Button variant="outline" size="sm" className="mt-4 gap-2" onClick={onRetry}>
             <RefreshCw className="h-3.5 w-3.5" />

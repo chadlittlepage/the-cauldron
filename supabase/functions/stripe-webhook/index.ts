@@ -20,9 +20,7 @@ serve(async (req: Request) => {
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
-    return new Response(`Webhook signature verification failed: ${(err as Error).message}`, {
-      status: 400,
-    });
+    return new Response('Webhook verification failed', { status: 400 });
   }
 
   try {
@@ -71,7 +69,7 @@ serve(async (req: Request) => {
     });
   } catch (err) {
     await captureException(err, { function: 'stripe-webhook', eventType: event.type });
-    return new Response(JSON.stringify({ error: (err as Error).message }), {
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

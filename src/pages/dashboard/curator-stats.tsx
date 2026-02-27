@@ -70,7 +70,7 @@ export function CuratorStatsPage() {
       <section className="mt-10">
         <h2 className="text-xl font-semibold">Rating Distribution</h2>
         <div className="mt-4 space-y-2">
-          {ratingDistribution.reverse().map(({ star, count }) => (
+          {[...ratingDistribution].reverse().map(({ star, count }) => (
             <div key={star} className="flex items-center gap-3">
               <span className="w-12 text-sm text-hex-muted">{star} star</span>
               <div className="flex-1 rounded-full bg-hex-border h-3">

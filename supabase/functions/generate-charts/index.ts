@@ -9,7 +9,7 @@ serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, {
       headers: {
-        'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*',
+        'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || 'https://hexwave.io',
         'Access-Control-Allow-Headers': 'authorization, content-type',
         'Access-Control-Allow-Methods': 'POST',
       },
@@ -63,13 +63,13 @@ serve(async (req: Request) => {
     }
 
     return new Response(JSON.stringify({ success: true }), {
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || 'https://hexwave.io' },
     });
   } catch (err) {
     await captureException(err, { function: 'generate-charts' });
-    return new Response(JSON.stringify({ error: (err as Error).message }), {
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || '*' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || 'https://hexwave.io' },
     });
   }
 });

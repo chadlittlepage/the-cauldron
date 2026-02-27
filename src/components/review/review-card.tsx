@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Music, Calendar, ExternalLink } from 'lucide-react';
 
 interface ReviewCardProps {
-  id: string;
   submissionId: string;
   trackTitle: string;
   genre: string;

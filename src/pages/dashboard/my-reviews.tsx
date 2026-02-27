@@ -38,7 +38,6 @@ export function MyReviewsPage() {
             return (
               <ReviewCard
                 key={review.id}
-                id={review.id}
                 submissionId={review.submission_id}
                 trackTitle={submission?.track_title ?? 'Unknown'}
                 genre={submission?.genre ?? ''}
