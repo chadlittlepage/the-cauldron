@@ -441,7 +441,7 @@ export function PlatformOverviewPage() {
             Platform <span className="gradient-text">Overview</span>
           </h1>
           <p className="mt-6 text-lg text-hex-muted max-w-2xl mx-auto leading-relaxed">
-            A turnkey, production-grade SaaS product — 100% original code, modern stack, hardened
+            A turnkey, production-grade music platform — 100% original code, modern stack, hardened
             security, ready for scale or acquisition.
           </p>
         </div>
