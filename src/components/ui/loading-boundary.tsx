@@ -68,8 +68,13 @@ export function LoadingBoundary({ children, fallback }: LoadingBoundaryProps) {
       <Suspense
         fallback={
           fallback ?? (
-            <div className="flex min-h-[40vh] items-center justify-center">
+            <div
+              className="flex min-h-[40vh] items-center justify-center"
+              role="status"
+              aria-live="polite"
+            >
               <Spinner size="lg" />
+              <span className="sr-only">Loading...</span>
             </div>
           )
         }

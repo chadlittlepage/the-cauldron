@@ -8,7 +8,15 @@ export const supabase = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_AN
     persistSession: true,
     detectSessionInUrl: true,
     flowType: 'pkce',
-    lock: async <R>(_name: string, _acquireTimeout: number, fn: () => Promise<R>): Promise<R> => {
+    lock: async <R>(name: string, acquireTimeout: number, fn: () => Promise<R>): Promise<R> => {
+      if (navigator.locks) {
+        return navigator.locks.request(
+          name,
+          { signal: AbortSignal.timeout(acquireTimeout) },
+          async () => fn(),
+        );
+      }
+      // Fallback for environments without Web Locks API
       return fn();
     },
   },

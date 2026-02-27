@@ -27,6 +27,7 @@ function subscribe(listener: Listener) {
   return () => listeners.delete(listener);
 }
 
+/** Adds a toast notification. Auto-dismisses after `duration` ms (default 4s). Pass 0 to persist. */
 export function addToast(message: string, variant: ToastVariant = 'default', duration = 4000) {
   const id = String(++nextId);
   toasts = [...toasts, { id, message, variant }];
@@ -36,11 +37,13 @@ export function addToast(message: string, variant: ToastVariant = 'default', dur
   }
 }
 
+/** Removes a toast by ID. Called automatically after the toast duration expires. */
 export function dismissToast(id: string) {
   toasts = toasts.filter((t) => t.id !== id);
   emit();
 }
 
+/** Subscribes to the toast store. Returns the current list of active toasts. */
 export function useToasts() {
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }

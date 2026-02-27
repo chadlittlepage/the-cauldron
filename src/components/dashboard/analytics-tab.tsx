@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/hooks/query-keys';
 
 export function AnalyticsTab() {
   const { user } = useAuth();
@@ -56,8 +57,8 @@ export function AnalyticsTab() {
       : '0.0';
 
   function handleRefresh() {
-    queryClient.invalidateQueries({ queryKey: ['artist-analytics'] });
-    queryClient.invalidateQueries({ queryKey: ['submissions'] });
+    queryClient.invalidateQueries({ queryKey: ['artist-analytics'] as const });
+    queryClient.invalidateQueries({ queryKey: queryKeys.submissions.all });
   }
 
   const submissionMonths = (monthlyData ?? []).map((d) => ({

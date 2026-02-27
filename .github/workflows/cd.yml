@@ -10,10 +10,56 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  ci-gate:
+    name: CI Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npx prettier --check "src/**/*.{ts,tsx,css,json}"
+
+      - name: Unit tests
+        run: npm run test:ci
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v1.x
+
+      - name: Edge Function type check
+        run: |
+          for dir in supabase/functions/*/; do
+            if [ -f "${dir}index.ts" ]; then
+              deno check "${dir}index.ts"
+            fi
+          done
+
+      - name: Edge Function tests
+        run: deno test supabase/functions/ --allow-net --allow-env
+
   deploy-preview:
     name: Deploy Preview
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: [ci-gate]
     if: github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')
 
     steps:
@@ -52,6 +98,7 @@ jobs:
     name: Deploy Staging
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: [ci-gate]
     if: github.ref == 'refs/heads/develop'
 
     steps:
@@ -90,6 +137,7 @@ jobs:
     name: Deploy Production
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: [ci-gate]
     if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
@@ -117,6 +165,7 @@ jobs:
           SENTRY_PROJECT: hexwave
 
       - name: Deploy to Vercel (Production)
+        id: deploy-prod
         uses: amondnet/vercel-action@16e87c0a08142b0d0d33b76aeaf20823c381b9b9 # v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -124,3 +173,51 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: "--prod"
           working-directory: ./dist
+
+      - name: Verify deployment health
+        id: health-check
+        run: |
+          sleep 10
+
+          # 1. Verify frontend serves HTML with expected content
+          echo "Checking frontend..."
+          FRONTEND=$(curl -sf -o /dev/null -w "%{http_code}" "https://hexwave.io/")
+          if [ "$FRONTEND" != "200" ]; then
+            echo "Frontend health check failed: HTTP $FRONTEND"
+            exit 1
+          fi
+          curl -sf "https://hexwave.io/" | grep -q '<div id="root">' || {
+            echo "Frontend health check failed: missing root element"
+            exit 1
+          }
+          echo "Frontend OK: HTTP $FRONTEND"
+
+          # 2. Verify Supabase Edge Functions
+          echo "Checking backend..."
+          STATUS=$(curl -sf "${{ secrets.VITE_SUPABASE_URL }}/functions/v1/health-check" \
+            -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_ANON_KEY }}" | jq -r '.status')
+          if [ "$STATUS" != "healthy" ] && [ "$STATUS" != "degraded" ]; then
+            echo "Backend health check failed: $STATUS"
+            exit 1
+          fi
+          echo "Backend OK: $STATUS"
+
+      - name: Rollback on health check failure
+        if: failure() && steps.health-check.outcome == 'failure'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          echo "Health check failed — rolling back to previous production deployment..."
+          npm i -g vercel@latest
+          PREV_URL=$(vercel ls --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" 2>/dev/null \
+            | grep -v "$(echo "${{ steps.deploy-prod.outputs.preview-url }}" | sed 's|https://||')" \
+            | grep "Production" | head -1 | awk '{print $2}')
+          if [ -n "$PREV_URL" ]; then
+            vercel promote "$PREV_URL" --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" --yes
+            echo "Rolled back to: $PREV_URL"
+          else
+            echo "::error::Could not find previous production deployment to rollback to"
+            exit 1
+          fi

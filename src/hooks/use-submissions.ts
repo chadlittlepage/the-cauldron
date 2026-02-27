@@ -2,8 +2,17 @@ import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tansta
 import { supabase } from '@/lib/supabase';
 import { queryKeys } from './query-keys';
 import { toast } from './use-toast';
+import * as Sentry from '@sentry/react';
 import type { InsertTables, SubmissionStatus, Tables, MusicPlatform } from '@/types/database';
 import { ITEMS_PER_PAGE } from '@/lib/constants';
+
+/** Strips PostgREST filter syntax characters and escapes ILIKE wildcards. */
+export function sanitizeSearch(input: string): string {
+  return input
+    .replace(/[,().\\*]/g, '')
+    .replace(/[_%]/g, '\\$&')
+    .trim();
+}
 
 export type SubmissionWithProfile = Tables<'submissions'> & {
   profiles: { display_name: string; avatar_url: string | null } | null;
@@ -36,6 +45,7 @@ interface SubmissionFilters {
   search?: string;
 }
 
+/** Fetches paginated submissions with optional genre, status, and search filters. */
 export function useSubmissions(filters: SubmissionFilters = {}) {
   const { genre, status, page = 1, search } = filters;
 
@@ -53,7 +63,10 @@ export function useSubmissions(filters: SubmissionFilters = {}) {
 
       if (genre) query = query.eq('genre', genre);
       if (status) query = query.eq('status', status as SubmissionStatus);
-      if (search) query = query.or(`track_title.ilike.*${search}*,genre.ilike.*${search}*`);
+      if (search) {
+        const safe = sanitizeSearch(search);
+        if (safe) query = query.or(`track_title.ilike.*${safe}*,genre.ilike.*${safe}*`);
+      }
 
       const { data, error, count } = await query.returns<SubmissionWithProfile[]>();
       if (error) throw error;
@@ -62,6 +75,7 @@ export function useSubmissions(filters: SubmissionFilters = {}) {
   });
 }
 
+/** Fetches a single submission by ID using the `get_submission_details` RPC. */
 export function useSubmission(id: string | undefined) {
   return useQuery({
     queryKey: queryKeys.submissions.detail(id ?? ''),
@@ -79,6 +93,7 @@ export function useSubmission(id: string | undefined) {
   });
 }
 
+/** Fetches all submissions for a given artist, ordered by newest first. */
 export function useArtistSubmissions(artistId: string | undefined) {
   return useQuery({
     queryKey: queryKeys.submissions.byArtist(artistId ?? ''),
@@ -97,6 +112,7 @@ export function useArtistSubmissions(artistId: string | undefined) {
   });
 }
 
+/** Fetches the curator review queue — pending/in_review submissions with pagination and filters. */
 export function useReviewQueue(filters: { page?: number; genre?: string; search?: string } = {}) {
   const { page = 1, genre, search } = filters;
 
@@ -109,7 +125,10 @@ export function useReviewQueue(filters: { page?: number; genre?: string; search?
         .select('*, profiles!submissions_artist_id_fkey(display_name)', { count: 'exact' })
         .in('status', ['pending', 'in_review'] as SubmissionStatus[]);
       if (genre) query = query.eq('genre', genre);
-      if (search) query = query.or(`track_title.ilike.*${search}*,genre.ilike.*${search}*`);
+      if (search) {
+        const safe = sanitizeSearch(search);
+        if (safe) query = query.or(`track_title.ilike.*${safe}*,genre.ilike.*${safe}*`);
+      }
       const { data, error, count } = await query
         .order('created_at', { ascending: true })
         .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1)
@@ -120,19 +139,22 @@ export function useReviewQueue(filters: { page?: number; genre?: string; search?
   });
 }
 
+/** Creates a new track submission and invalidates related query caches on success. */
 export function useCreateSubmission() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (input: InsertTables<'submissions'>) => {
-      const { data, error } = await supabase
-        .from('submissions')
-        .insert(input)
-        .select()
-        .single()
-        .returns<Tables<'submissions'>>();
-      if (error) throw error;
-      return data;
+      return Sentry.startSpan({ name: 'submission.create', op: 'db.query' }, async () => {
+        const { data, error } = await supabase
+          .from('submissions')
+          .insert(input)
+          .select()
+          .single()
+          .returns<Tables<'submissions'>>();
+        if (error) throw error;
+        return data;
+      });
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.submissions.all });

@@ -3,6 +3,8 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import Stripe from 'https://esm.sh/stripe@14?target=deno';
 import { captureException } from '../_shared/sentry.ts';
 import { createRateLimiter, rateLimitResponse } from '../_shared/rate-limit.ts';
+import { validateCheckoutBody } from '../_shared/validate.ts';
+import { log } from '../_shared/middleware.ts';
 
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, { apiVersion: '2024-04-10' });
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -23,6 +25,7 @@ serve(async (req: Request) => {
     });
   }
 
+  let userId: string | undefined;
   try {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
@@ -36,16 +39,18 @@ serve(async (req: Request) => {
     if (authError || !user) {
       return new Response(JSON.stringify({ error: 'Invalid auth token' }), { status: 401 });
     }
+    userId = user.id;
 
     // Rate limit: 5 checkout sessions per user per minute
-    if (!checkoutLimiter.check(user.id)) {
+    if (!(await checkoutLimiter.check(`checkout:${user.id}`))) {
       return rateLimitResponse(corsOrigin);
     }
 
-    const { submission_id } = await req.json();
-    if (!submission_id || typeof submission_id !== 'string' || !/^[0-9a-f-]{36}$/.test(submission_id)) {
-      return new Response(JSON.stringify({ error: 'Invalid submission_id' }), { status: 400 });
+    const parsed = validateCheckoutBody(await req.json());
+    if (!parsed.ok) {
+      return new Response(JSON.stringify({ error: parsed.error }), { status: 400 });
     }
+    const { submission_id } = parsed.data;
 
     // Verify submission exists and belongs to user
     const { data: submission, error: subError } = await supabase
@@ -106,7 +111,8 @@ serve(async (req: Request) => {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': corsOrigin },
     });
   } catch (err) {
-    await captureException(err, { function: 'create-checkout' });
+    log('error', 'create-checkout', (err as Error).message);
+    await captureException(err, { function: 'create-checkout', userId });
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': corsOrigin },

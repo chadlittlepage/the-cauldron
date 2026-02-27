@@ -1,5 +1,7 @@
 import type { DetectedPlatform } from './validators';
 import { env } from './env';
+import { supabase } from './supabase';
+import * as Sentry from '@sentry/react';
 
 export interface TrackMetadata {
   title: string;
@@ -12,26 +14,40 @@ const OEMBED_ENDPOINTS: Partial<Record<NonNullable<DetectedPlatform>, string>> =
   soundcloud: 'https://soundcloud.com/oembed?format=json&url=',
 };
 
+/** Fetches artist name from the track-metadata Edge Function (SSRF-protected server-side scrape). */
 async function fetchArtistFromEdge(
   url: string,
   platform: string,
   signal?: AbortSignal,
 ): Promise<string | null> {
   try {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (session?.access_token) {
+      headers['Authorization'] = `Bearer ${session.access_token}`;
+    }
+
     const res = await fetch(`${env.SUPABASE_URL}/functions/v1/track-metadata`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ url, platform }),
       signal,
     });
     if (!res.ok) return null;
     const data = (await res.json()) as { artistName?: string | null };
     return data.artistName || null;
-  } catch {
+  } catch (err) {
+    Sentry.captureException(err, {
+      tags: { source: 'edge_artist_fetch' },
+      extra: { url, platform },
+    });
     return null;
   }
 }
 
+/** Fetches track title, thumbnail, and artist name via oEmbed (Spotify/SoundCloud). Falls back to Edge Function for artist name. */
 export async function fetchTrackMetadata(
   url: string,
   platform: DetectedPlatform,
@@ -60,7 +76,8 @@ export async function fetchTrackMetadata(
       thumbnailUrl: (data.thumbnail_url as string) || null,
       artistName,
     };
-  } catch {
+  } catch (err) {
+    Sentry.captureException(err, { tags: { source: 'oembed_fetch' }, extra: { url, platform } });
     return null;
   }
 }

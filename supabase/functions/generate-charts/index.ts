@@ -1,75 +1,44 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { captureException } from '../_shared/sentry.ts';
-
-const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+import { validateChartsBody } from '../_shared/validate.ts';
+import { requireAdmin, corsResponse, jsonResponse, log } from '../_shared/middleware.ts';
 
 serve(async (req: Request) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      headers: {
-        'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || 'https://hexwave.io',
-        'Access-Control-Allow-Headers': 'authorization, content-type',
-        'Access-Control-Allow-Methods': 'POST',
-      },
-    });
-  }
+  if (req.method === 'OPTIONS') return corsResponse();
 
+  let userId: string | undefined;
   try {
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'Missing auth token' }), { status: 401 });
-    }
+    const auth = await requireAdmin(req);
+    if (!auth.ok) return auth.response;
+    userId = auth.user.id;
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Invalid auth token' }), { status: 401 });
-    }
-
-    // Verify admin
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profile?.role !== 'admin') {
-      return new Response(JSON.stringify({ error: 'Admin only' }), { status: 403 });
-    }
-
-    const { type, period } = await req.json();
+    const parsed = validateChartsBody(await req.json());
+    if (!parsed.ok) return jsonResponse({ error: parsed.error }, 400);
+    const { type, period } = parsed.data;
 
     if (type === 'monthly' && period) {
-      const { error } = await supabase.rpc('generate_monthly_chart', { p_period: period });
+      const { error } = await auth.supabase.rpc('generate_monthly_chart', { p_period: period });
       if (error) throw error;
     } else if (type === 'yearly' && period) {
-      const { error } = await supabase.rpc('generate_yearly_chart', { p_year: period });
+      const { error } = await auth.supabase.rpc('generate_yearly_chart', { p_year: period });
       if (error) throw error;
     } else {
-      // Auto-generate: current month + current year
       const now = new Date();
       const monthPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
       const yearPeriod = String(now.getFullYear());
 
-      const { error: monthError } = await supabase.rpc('generate_monthly_chart', { p_period: monthPeriod });
+      const { error: monthError } = await auth.supabase.rpc('generate_monthly_chart', { p_period: monthPeriod });
       if (monthError) throw monthError;
 
-      const { error: yearError } = await supabase.rpc('generate_yearly_chart', { p_year: yearPeriod });
+      const { error: yearError } = await auth.supabase.rpc('generate_yearly_chart', { p_year: yearPeriod });
       if (yearError) throw yearError;
     }
 
-    return new Response(JSON.stringify({ success: true }), {
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || 'https://hexwave.io' },
-    });
+    log('info', 'generate-charts', 'Charts generated', { type, period });
+    return jsonResponse({ success: true });
   } catch (err) {
-    await captureException(err, { function: 'generate-charts' });
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || 'https://hexwave.io' },
-    });
+    log('error', 'generate-charts', (err as Error).message);
+    await captureException(err, { function: 'generate-charts', userId });
+    return jsonResponse({ error: 'Internal server error' }, 500);
   }
 });

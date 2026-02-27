@@ -35,6 +35,19 @@ serve(async (req: Request) => {
         return new Response('Missing submission_id in metadata', { status: 400 });
       }
 
+      // Idempotency: skip if payment already succeeded
+      const { data: existing } = await supabase
+        .from('payments')
+        .select('status')
+        .eq('stripe_session_id', session.id)
+        .single();
+
+      if (existing?.status === 'succeeded') {
+        return new Response(JSON.stringify({ received: true, skipped: 'already_processed' }), {
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+
       // Update payment record
       await supabase
         .from('payments')

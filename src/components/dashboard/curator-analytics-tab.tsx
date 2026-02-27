@@ -9,6 +9,7 @@ import { BarChart } from '@/components/dashboard/bar-chart';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, Star } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/hooks/query-keys';
 
 export function CuratorAnalyticsTab() {
   const { user } = useAuth();
@@ -19,8 +20,8 @@ export function CuratorAnalyticsTab() {
   const { data: earningsData } = useCuratorEarningsByMonth(user?.id);
 
   function handleRefresh() {
-    queryClient.invalidateQueries({ queryKey: ['curator-analytics'] });
-    queryClient.invalidateQueries({ queryKey: ['reviews'] });
+    queryClient.invalidateQueries({ queryKey: ['curator-analytics'] as const });
+    queryClient.invalidateQueries({ queryKey: queryKeys.reviews.all });
   }
 
   const reviewMonths = (monthlyData ?? []).map((d) => ({

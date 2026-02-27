@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient, onlineManager } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import * as Sentry from '@sentry/react';
@@ -21,10 +21,10 @@ if (env.SENTRY_DSN) {
     release: `hexwave@${APP_VERSION}`,
     integrations: [
       Sentry.browserTracingIntegration(),
-      Sentry.replayIntegration({ maskAllText: false, blockAllMedia: false }),
+      Sentry.replayIntegration({ maskAllText: false, blockAllMedia: false, maskAllInputs: true }),
     ],
     tracesSampleRate: env.PROD ? 0.2 : 1.0,
-    replaysSessionSampleRate: 0.1,
+    replaysSessionSampleRate: 0.2,
     replaysOnErrorSampleRate: 1.0,
     enabled: env.PROD,
   });
@@ -33,7 +33,19 @@ if (env.SENTRY_DSN) {
   import('./lib/web-vitals.ts').then(({ reportWebVitals }) => reportWebVitals());
 }
 
-// Prevent double-tap zoom on iOS (preserves pinch-to-zoom for WCAG 1.4.4 compliance)
+// Sync TanStack Query online state with browser — pauses mutations when offline
+onlineManager.setEventListener((setOnline) => {
+  const onOnline = () => setOnline(true);
+  const onOffline = () => setOnline(false);
+  window.addEventListener('online', onOnline);
+  window.addEventListener('offline', onOffline);
+  return () => {
+    window.removeEventListener('online', onOnline);
+    window.removeEventListener('offline', onOffline);
+  };
+});
+
+// Prevent double-tap zoom on iOS while preserving pinch-to-zoom (WCAG 1.4.4)
 document.addEventListener(
   'touchend',
   (e) => {
@@ -51,10 +63,10 @@ document.addEventListener(
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 1000 * 60 * 5, // 5 min default — overridden per-query for votes/profiles
       retry: 2,
       refetchOnWindowFocus: false,
-      gcTime: 1000 * 60 * 5, // match staleTime for persistence
+      gcTime: 1000 * 60 * 10, // 10 min — keep cache longer than staleTime for fast re-mounts
     },
   },
 });

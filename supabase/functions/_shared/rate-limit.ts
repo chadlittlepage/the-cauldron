@@ -1,24 +1,30 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
 /**
- * In-memory sliding-window rate limiter for Edge Functions.
- * Each isolate maintains its own window — sufficient for stopping
- * automated abuse without external dependencies.
+ * Database-backed rate limiter using the `check_rate_limit` RPC.
+ * Works across multiple Edge Function isolates because state is in Postgres.
+ * Falls back to allowing the request if the DB call fails (fail-open).
  */
 export function createRateLimiter(windowMs: number, maxRequests: number) {
-  const requests = new Map<string, number[]>();
-
   return {
-    check(key: string): boolean {
-      const now = Date.now();
-      const valid = (requests.get(key) ?? []).filter((t) => now - t < windowMs);
+    async check(key: string): Promise<boolean> {
+      try {
+        const supabaseUrl = Deno.env.get('SUPABASE_URL');
+        const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+        if (!supabaseUrl || !serviceKey) return true; // fail-open in tests
 
-      if (valid.length >= maxRequests) {
-        requests.set(key, valid);
-        return false;
+        const supabase = createClient(supabaseUrl, serviceKey);
+        const { data, error } = await supabase.rpc('check_rate_limit', {
+          p_key: key,
+          p_window_ms: windowMs,
+          p_max_requests: maxRequests,
+        });
+
+        if (error) return true; // fail-open on DB errors
+        return data as boolean;
+      } catch {
+        return true; // fail-open
       }
-
-      valid.push(now);
-      requests.set(key, valid);
-      return true;
     },
   };
 }

@@ -1,0 +1,12 @@
+# Default owner for all files
+* @chadlittlepage
+
+# Infrastructure
+.github/ @chadlittlepage
+supabase/ @chadlittlepage
+vercel.json @chadlittlepage
+
+# Security-sensitive
+src/lib/supabase.ts @chadlittlepage
+src/lib/env.ts @chadlittlepage
+supabase/functions/ @chadlittlepage

@@ -56,7 +56,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
+      - name: Run tests with coverage thresholds
         run: npm run test:ci
 
       - name: Upload coverage
@@ -66,11 +66,38 @@ jobs:
           name: coverage-report
           path: coverage/
 
+  edge-functions:
+    name: Edge Functions Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v1.x
+
+      - name: Type check Edge Functions
+        run: |
+          for dir in supabase/functions/*/; do
+            if [ -f "${dir}index.ts" ]; then
+              echo "Checking ${dir}index.ts..."
+              deno check "${dir}index.ts"
+            fi
+          done
+
+      - name: Test Edge Functions
+        run: |
+          deno test supabase/functions/ --allow-net --allow-env
+
   build:
     name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [lint, test]
+    needs: [lint, test, edge-functions]
 
     steps:
       - name: Checkout
@@ -114,7 +141,7 @@ jobs:
         run: npm ci
 
       - name: Install Playwright
-        run: npx playwright install chromium --with-deps
+        run: npx playwright install --with-deps
 
       - name: Run E2E tests
         run: npm run test:e2e

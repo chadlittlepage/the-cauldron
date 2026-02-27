@@ -6,6 +6,7 @@ import type { Tables, UpdateTables } from '@/types/database';
 export function useProfile(userId: string | undefined) {
   return useQuery({
     queryKey: queryKeys.profiles.detail(userId ?? ''),
+    staleTime: 1000 * 60 * 15, // 15 min — profiles rarely change
     queryFn: async () => {
       if (!userId) return null;
       const { data, error } = await supabase
@@ -24,6 +25,7 @@ export function useProfile(userId: string | undefined) {
 export function useCurators() {
   return useQuery({
     queryKey: queryKeys.profiles.curators(),
+    staleTime: 1000 * 60 * 15, // 15 min — curator list rarely changes
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')

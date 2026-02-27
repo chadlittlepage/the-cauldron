@@ -1,9 +1,28 @@
-import { lazy, useEffect } from 'react';
+import { lazy, useEffect, useSyncExternalStore } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { onlineManager } from '@tanstack/react-query';
 import { MainLayout } from '@/components/layout/main-layout';
 import { LoadingBoundary } from '@/components/ui/loading-boundary';
 import { ProtectedRoute } from '@/components/layout/protected-route';
 import { RoleRoute } from '@/components/layout/role-route';
+
+function OfflineBanner() {
+  const isOnline = useSyncExternalStore(
+    (cb) => onlineManager.subscribe(cb),
+    () => onlineManager.isOnline(),
+  );
+
+  if (isOnline) return null;
+
+  return (
+    <div
+      role="alert"
+      className="fixed top-0 inset-x-0 z-50 bg-yellow-600 text-white text-center text-sm py-2 px-4"
+    >
+      You are offline. Changes will sync when your connection is restored.
+    </div>
+  );
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -20,6 +39,13 @@ function ScrollToTop() {
       root.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+    // Move focus to main content for screen reader users on route change
+    const main = document.getElementById('main-content');
+    if (main) {
+      main.setAttribute('tabindex', '-1');
+      main.focus({ preventScroll: true });
+    }
   }, [pathname]);
 
   return null;
@@ -132,181 +158,326 @@ const DebugConsolePage = lazy(() =>
 function App() {
   return (
     <MainLayout>
+      <OfflineBanner />
       <ScrollToTop />
-      <LoadingBoundary>
-        <Routes>
-          {/* Public */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/browse" element={<BrowsePage />} />
-          <Route path="/track/:id" element={<TrackDetailPage />} />
-          <Route path="/charts" element={<ChartsPage />} />
-          <Route path="/curators" element={<CuratorsPage />} />
-          <Route path="/curator/:id" element={<CuratorProfilePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/features" element={<FeaturesPage />} />
-          <Route path="/specs" element={<SpecsPage />} />
-          <Route path="/platform-overview" element={<PlatformOverviewPage />} />
-          <Route path="/become-curator" element={<BecomeCuratorPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
+      <Routes>
+        {/* Public */}
+        <Route
+          path="/"
+          element={
+            <LoadingBoundary>
+              <HomePage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/browse"
+          element={
+            <LoadingBoundary>
+              <BrowsePage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/track/:id"
+          element={
+            <LoadingBoundary>
+              <TrackDetailPage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/charts"
+          element={
+            <LoadingBoundary>
+              <ChartsPage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/curators"
+          element={
+            <LoadingBoundary>
+              <CuratorsPage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/curator/:id"
+          element={
+            <LoadingBoundary>
+              <CuratorProfilePage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <LoadingBoundary>
+              <AboutPage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/features"
+          element={
+            <LoadingBoundary>
+              <FeaturesPage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/specs"
+          element={
+            <LoadingBoundary>
+              <SpecsPage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/platform-overview"
+          element={
+            <LoadingBoundary>
+              <PlatformOverviewPage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/become-curator"
+          element={
+            <LoadingBoundary>
+              <BecomeCuratorPage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/terms"
+          element={
+            <LoadingBoundary>
+              <TermsPage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/privacy"
+          element={
+            <LoadingBoundary>
+              <PrivacyPage />
+            </LoadingBoundary>
+          }
+        />
 
-          {/* Auth */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/auth/callback" element={<AuthCallbackPage />} />
+        {/* Auth */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route
+          path="/auth/callback"
+          element={
+            <LoadingBoundary>
+              <AuthCallbackPage />
+            </LoadingBoundary>
+          }
+        />
 
-          {/* Artist Dashboard */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
+        {/* Artist Dashboard */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <LoadingBoundary>
                 <ArtistDashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/submit"
-            element={
-              <ProtectedRoute>
+              </LoadingBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/submit"
+          element={
+            <ProtectedRoute>
+              <LoadingBoundary>
                 <SubmitTrackPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/submissions"
-            element={
-              <ProtectedRoute>
+              </LoadingBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/submissions"
+          element={
+            <ProtectedRoute>
+              <LoadingBoundary>
                 <MySubmissionsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/submission/:id"
-            element={
-              <ProtectedRoute>
+              </LoadingBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/submission/:id"
+          element={
+            <ProtectedRoute>
+              <LoadingBoundary>
                 <SubmissionDetailPage />
-              </ProtectedRoute>
-            }
-          />
+              </LoadingBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Curator Dashboard */}
-          <Route
-            path="/dashboard/curator"
-            element={
-              <RoleRoute role="curator">
+        {/* Curator Dashboard */}
+        <Route
+          path="/dashboard/curator"
+          element={
+            <RoleRoute role="curator">
+              <LoadingBoundary>
                 <CuratorDashboardPage />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/dashboard/review-queue"
-            element={
-              <RoleRoute role="curator">
+              </LoadingBoundary>
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/dashboard/review-queue"
+          element={
+            <RoleRoute role="curator">
+              <LoadingBoundary>
                 <ReviewQueuePage />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/dashboard/review/:id"
-            element={
-              <RoleRoute role="curator">
+              </LoadingBoundary>
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/dashboard/review/:id"
+          element={
+            <RoleRoute role="curator">
+              <LoadingBoundary>
                 <WriteReviewPage />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/dashboard/my-reviews"
-            element={
-              <RoleRoute role="curator">
+              </LoadingBoundary>
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/dashboard/my-reviews"
+          element={
+            <RoleRoute role="curator">
+              <LoadingBoundary>
                 <MyReviewsPage />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/dashboard/curator-stats"
-            element={
-              <RoleRoute role="curator">
+              </LoadingBoundary>
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/dashboard/curator-stats"
+          element={
+            <RoleRoute role="curator">
+              <LoadingBoundary>
                 <CuratorStatsPage />
-              </RoleRoute>
-            }
-          />
+              </LoadingBoundary>
+            </RoleRoute>
+          }
+        />
 
-          {/* Settings */}
-          <Route
-            path="/settings/profile"
-            element={
-              <ProtectedRoute>
+        {/* Settings */}
+        <Route
+          path="/settings/profile"
+          element={
+            <ProtectedRoute>
+              <LoadingBoundary>
                 <ProfileSettingsPage />
-              </ProtectedRoute>
-            }
-          />
+              </LoadingBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Payment */}
-          <Route
-            path="/payment/checkout/:submissionId"
-            element={
-              <ProtectedRoute>
+        {/* Payment */}
+        <Route
+          path="/payment/checkout/:submissionId"
+          element={
+            <ProtectedRoute>
+              <LoadingBoundary>
                 <CheckoutPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/payment/success" element={<PaymentSuccessPage />} />
-          <Route path="/payment/cancel" element={<PaymentCancelPage />} />
+              </LoadingBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment/success"
+          element={
+            <LoadingBoundary>
+              <PaymentSuccessPage />
+            </LoadingBoundary>
+          }
+        />
+        <Route
+          path="/payment/cancel"
+          element={
+            <LoadingBoundary>
+              <PaymentCancelPage />
+            </LoadingBoundary>
+          }
+        />
 
-          {/* Admin */}
-          <Route
-            path="/admin"
-            element={
-              <RoleRoute role="admin">
+        {/* Admin */}
+        <Route
+          path="/admin"
+          element={
+            <RoleRoute role="admin">
+              <LoadingBoundary>
                 <AdminDashboardPage />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/admin/submissions"
-            element={
-              <RoleRoute role="admin">
+              </LoadingBoundary>
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/admin/submissions"
+          element={
+            <RoleRoute role="admin">
+              <LoadingBoundary>
                 <ManageSubmissionsPage />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/admin/curators"
-            element={
-              <RoleRoute role="admin">
+              </LoadingBoundary>
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/admin/curators"
+          element={
+            <RoleRoute role="admin">
+              <LoadingBoundary>
                 <ManageCuratorsPage />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/admin/payouts"
-            element={
-              <RoleRoute role="admin">
+              </LoadingBoundary>
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/admin/payouts"
+          element={
+            <RoleRoute role="admin">
+              <LoadingBoundary>
                 <ManagePayoutsPage />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/admin/analytics"
-            element={
-              <RoleRoute role="admin">
+              </LoadingBoundary>
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/admin/analytics"
+          element={
+            <RoleRoute role="admin">
+              <LoadingBoundary>
                 <AnalyticsPage />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/admin/debug"
-            element={
-              <RoleRoute role="admin">
+              </LoadingBoundary>
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/admin/debug"
+          element={
+            <RoleRoute role="admin">
+              <LoadingBoundary>
                 <DebugConsolePage />
-              </RoleRoute>
-            }
-          />
+              </LoadingBoundary>
+            </RoleRoute>
+          }
+        />
 
-          {/* 404 */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </LoadingBoundary>
+        {/* 404 */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
     </MainLayout>
   );
 }

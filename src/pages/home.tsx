@@ -249,27 +249,29 @@ export function HomePage() {
                     </div>
                   </div>
 
-                  {/* Spotify Embed */}
+                  {/* Spotify Embed — only render iframe for active track */}
                   <div
                     className="rounded-xl overflow-hidden mb-5"
                     style={{ height: 152, background: '#000' }}
                   >
-                    <iframe
-                      src={`https://open.spotify.com/embed/track/${t.spotifyId}?theme=0`}
-                      width="100%"
-                      height="152"
-                      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                      loading="eager"
-                      style={{
-                        touchAction: 'auto',
-                        display: 'block',
-                        border: 'none',
-                        visibility: loadedIframes.has(idx) ? 'visible' : 'hidden',
-                      }}
-                      title={`${t.title} by ${t.artist}`}
-                      className="rounded-xl"
-                      onLoad={() => markLoaded(idx)}
-                    />
+                    {isActive && (
+                      <iframe
+                        src={`https://open.spotify.com/embed/track/${t.spotifyId}?theme=0`}
+                        width="100%"
+                        height="152"
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                        loading="lazy"
+                        style={{
+                          touchAction: 'auto',
+                          display: 'block',
+                          border: 'none',
+                          visibility: loadedIframes.has(idx) ? 'visible' : 'hidden',
+                        }}
+                        title={`${t.title} by ${t.artist}`}
+                        className="rounded-xl"
+                        onLoad={() => markLoaded(idx)}
+                      />
+                    )}
                   </div>
 
                   {/* Open in Spotify link */}

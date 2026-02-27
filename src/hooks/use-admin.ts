@@ -89,7 +89,7 @@ export function useUpdateSubmissionStatus() {
     },
     onSuccess: async (data, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.submissions.all });
-      queryClient.invalidateQueries({ queryKey: ['admin', 'submissions'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'submissions'] as const });
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats() });
       toast.success(`Submission ${variables.status}`);
 
@@ -105,7 +105,7 @@ export function useUpdateSubmissionStatus() {
           target_id: variables.id,
           metadata: { old_status: data._oldStatus ?? 'unknown', new_status: variables.status },
         });
-        queryClient.invalidateQueries({ queryKey: ['debug', 'auditLogs'] });
+        queryClient.invalidateQueries({ queryKey: ['debug', 'auditLogs'] as const });
       }
     },
     onError: (err) => {

@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /settings/
+Disallow: /payment/
+Disallow: /auth/
+
+Sitemap: https://hexwave.io/sitemap.xml

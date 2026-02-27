@@ -1,6 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fetchTrackMetadata } from './oembed';
 
+vi.mock('@sentry/react', () => ({
+  captureException: vi.fn(),
+}));
+
 describe('fetchTrackMetadata', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -56,12 +60,17 @@ describe('fetchTrackMetadata', () => {
     });
   });
 
-  it('returns null on fetch error', async () => {
+  it('returns null and reports to Sentry on fetch error', async () => {
+    const { captureException } = await import('@sentry/react');
     vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(new Error('Network error'));
 
     const result = await fetchTrackMetadata('https://open.spotify.com/track/abc123', 'spotify');
 
     expect(result).toBeNull();
+    expect(captureException).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Network error' }),
+      expect.objectContaining({ tags: { source: 'oembed_fetch' } }),
+    );
   });
 
   it('returns null on non-ok response', async () => {

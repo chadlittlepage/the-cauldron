@@ -1,15 +1,9 @@
-const corsHeaders = {
-  'Access-Control-Allow-Origin': Deno.env.get('APP_URL') || 'https://hexwave.io',
-  'Access-Control-Allow-Headers': 'content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
+import { captureException } from '../_shared/sentry.ts';
+import { createRateLimiter, rateLimitResponse } from '../_shared/rate-limit.ts';
+import { requireAuth, corsResponse, jsonResponse, log } from '../_shared/middleware.ts';
 
-function json(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders },
-  });
-}
+// 20 lookups per user per minute
+const metadataLimiter = createRateLimiter(60_000, 20);
 
 /** Extract artist from Spotify og:description: "{artist} · {album} · Song · {year}" */
 function parseSpotifyArtist(html: string): string | null {
@@ -49,26 +43,35 @@ function parseSoundCloudArtist(html: string): string | null {
 }
 
 Deno.serve(async (req: Request) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === 'OPTIONS') return corsResponse();
 
   if (req.method !== 'POST') {
-    return json({ error: 'Method not allowed' }, 405);
+    return jsonResponse({ error: 'Method not allowed' }, 405);
   }
 
+  let userId: string | undefined;
   try {
+    // Require authentication
+    const auth = await requireAuth(req);
+    if (!auth.ok) return auth.response;
+    userId = auth.user.id;
+
+    // Rate limit per user
+    if (!(await metadataLimiter.check(`metadata:${auth.user.id}`))) {
+      return rateLimitResponse(Deno.env.get('APP_URL') || 'https://hexwave.io');
+    }
+
     const { url, platform } = (await req.json()) as {
       url?: string;
       platform?: string;
     };
 
     if (!url || !platform) {
-      return json({ error: 'url and platform are required' }, 400);
+      return jsonResponse({ error: 'url and platform are required' }, 400);
     }
 
     if (platform !== 'spotify' && platform !== 'soundcloud') {
-      return json({ error: 'Unsupported platform' }, 400);
+      return jsonResponse({ error: 'Unsupported platform' }, 400);
     }
 
     // SSRF protection: only allow https URLs to known music platforms
@@ -76,11 +79,11 @@ Deno.serve(async (req: Request) => {
     try {
       parsed = new URL(url);
     } catch {
-      return json({ error: 'Invalid URL' }, 400);
+      return jsonResponse({ error: 'Invalid URL' }, 400);
     }
 
     if (parsed.protocol !== 'https:') {
-      return json({ error: 'Only HTTPS URLs are allowed' }, 400);
+      return jsonResponse({ error: 'Only HTTPS URLs are allowed' }, 400);
     }
 
     const allowedHosts: Record<string, string[]> = {
@@ -90,7 +93,7 @@ Deno.serve(async (req: Request) => {
 
     const hosts = allowedHosts[platform];
     if (!hosts || !hosts.includes(parsed.hostname)) {
-      return json({ error: 'URL does not match expected platform domain' }, 400);
+      return jsonResponse({ error: 'URL does not match expected platform domain' }, 400);
     }
 
     const controller = new AbortController();
@@ -105,7 +108,7 @@ Deno.serve(async (req: Request) => {
     clearTimeout(timeout);
 
     if (!res.ok) {
-      return json({ error: 'Failed to fetch track page' }, 502);
+      return jsonResponse({ error: 'Failed to fetch track page' }, 502);
     }
 
     const html = await res.text();
@@ -114,9 +117,10 @@ Deno.serve(async (req: Request) => {
         ? parseSpotifyArtist(html)
         : parseSoundCloudArtist(html);
 
-    return json({ artistName });
+    return jsonResponse({ artistName });
   } catch (err) {
-    console.error('track-metadata error:', err);
-    return json({ error: 'Internal server error' }, 500);
+    log('error', 'track-metadata', (err as Error).message, { stack: (err as Error).stack });
+    await captureException(err, { function: 'track-metadata', userId });
+    return jsonResponse({ error: 'Internal server error' }, 500);
   }
 });

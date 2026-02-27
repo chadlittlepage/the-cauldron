@@ -10,6 +10,8 @@ export function AuthCallbackPage() {
 
   useEffect(() => {
     let cancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let authSubscription: { unsubscribe: () => void } | undefined;
 
     async function handleCallback() {
       const errorParam = searchParams.get('error_description') || searchParams.get('error');
@@ -72,8 +74,9 @@ export function AuthCallbackPage() {
           navigate('/dashboard', { replace: true });
         }
       });
+      authSubscription = subscription;
 
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         subscription.unsubscribe();
         if (!cancelled) setError('Confirmation timed out. Please try logging in.');
       }, 10000);
@@ -82,6 +85,8 @@ export function AuthCallbackPage() {
     handleCallback();
     return () => {
       cancelled = true;
+      clearTimeout(timeoutId);
+      authSubscription?.unsubscribe();
     };
   }, [navigate, searchParams]);
 

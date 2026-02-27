@@ -21,6 +21,7 @@ import {
   useSubmission,
   useArtistSubmissions,
   useReviewQueue,
+  sanitizeSearch,
 } from './use-submissions';
 
 function createWrapper() {
@@ -167,5 +168,48 @@ describe('useReviewQueue', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data?.totalCount).toBe(1);
+  });
+});
+
+describe('sanitizeSearch', () => {
+  it('passes through normal text', () => {
+    expect(sanitizeSearch('electronic')).toBe('electronic');
+    expect(sanitizeSearch('cool track')).toBe('cool track');
+  });
+
+  it('strips commas (PostgREST filter separator)', () => {
+    expect(sanitizeSearch('rock,pop')).toBe('rockpop');
+  });
+
+  it('strips parentheses (PostgREST grouping)', () => {
+    expect(sanitizeSearch('test(injection)')).toBe('testinjection');
+  });
+
+  it('strips dots (PostgREST field separator)', () => {
+    expect(sanitizeSearch('field.name')).toBe('fieldname');
+  });
+
+  it('strips asterisks (PostgREST wildcard)', () => {
+    expect(sanitizeSearch('*admin*')).toBe('admin');
+  });
+
+  it('strips backslashes', () => {
+    expect(sanitizeSearch('test\\injection')).toBe('testinjection');
+  });
+
+  it('trims whitespace', () => {
+    expect(sanitizeSearch('  hello  ')).toBe('hello');
+  });
+
+  it('returns empty string for all-special characters', () => {
+    expect(sanitizeSearch(',.()*\\')).toBe('');
+  });
+
+  it('escapes ILIKE underscore wildcard', () => {
+    expect(sanitizeSearch('h_p')).toBe('h\\_p');
+  });
+
+  it('escapes ILIKE percent wildcard', () => {
+    expect(sanitizeSearch('track%name')).toBe('track\\%name');
   });
 });

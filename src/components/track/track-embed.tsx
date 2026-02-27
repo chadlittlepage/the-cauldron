@@ -68,6 +68,7 @@ export function TrackEmbed({ url, platform, className }: TrackEmbedProps) {
         width="100%"
         height={height}
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        sandbox="allow-scripts allow-same-origin"
         loading="eager"
         title={`${platform} embed`}
         style={{ touchAction: 'auto' }}

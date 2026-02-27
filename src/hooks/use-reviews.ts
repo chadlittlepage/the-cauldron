@@ -12,6 +12,7 @@ export type ReviewWithSubmission = Tables<'reviews'> & {
   submissions: { track_title: string; artist_id: string; genre: string } | null;
 };
 
+/** Fetches all reviews for a submission, including reviewer profile data. */
 export function useSubmissionReviews(submissionId: string | undefined) {
   return useQuery({
     queryKey: queryKeys.reviews.bySubmission(submissionId ?? ''),
@@ -30,6 +31,7 @@ export function useSubmissionReviews(submissionId: string | undefined) {
   });
 }
 
+/** Fetches all reviews written by a curator, including submission details. */
 export function useCuratorReviews(curatorId: string | undefined) {
   return useQuery({
     queryKey: queryKeys.reviews.byCurator(curatorId ?? ''),
@@ -48,6 +50,7 @@ export function useCuratorReviews(curatorId: string | undefined) {
   });
 }
 
+/** Creates a new review and invalidates related caches (submission reviews, curator reviews, queue). */
 export function useCreateReview() {
   const queryClient = useQueryClient();
 

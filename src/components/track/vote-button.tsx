@@ -25,7 +25,7 @@ export function VoteButton({ submissionId, voteCount, className }: VoteButtonPro
   const voted = hasVoted ?? false;
 
   const handleVote = useCallback(() => {
-    if (!user) return;
+    if (!user || toggleVote.isPending) return;
     const now = Date.now();
     if (now - lastVoteAt.current < VOTE_COOLDOWN_MS) return;
     lastVoteAt.current = now;
@@ -40,7 +40,7 @@ export function VoteButton({ submissionId, voteCount, className }: VoteButtonPro
     <Button
       variant={voted ? 'accent' : 'outline'}
       onClick={handleVote}
-      disabled={!user}
+      disabled={!user || toggleVote.isPending}
       aria-label={voted ? `Remove vote (${voteCount} votes)` : `Vote (${voteCount} votes)`}
       className={cn(
         'gap-2.5 rounded-xl px-5 py-2.5 transition-all duration-200',

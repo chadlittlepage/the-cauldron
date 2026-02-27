@@ -51,6 +51,7 @@ export const platformPatterns = {
 
 export type DetectedPlatform = 'spotify' | 'soundcloud' | 'bandcamp' | 'other' | null;
 
+/** Detects the music platform from a URL (Spotify, SoundCloud, Bandcamp, or generic). */
 export function detectPlatform(url: string): DetectedPlatform {
   if (!url) return null;
   if (platformPatterns.spotify.test(url)) return 'spotify';

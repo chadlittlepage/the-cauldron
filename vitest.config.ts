@@ -15,9 +15,9 @@ export default defineConfig({
       exclude: ['node_modules/', 'src/test/', '**/*.d.ts', '**/*.config.*', 'dist/', 'src/pages/', 'src/components/layout/', 'src/App.tsx', 'src/main.tsx'],
       thresholds: {
         branches: 70,
-        functions: 70,
-        lines: 70,
-        statements: 70,
+        functions: 75,
+        lines: 80,
+        statements: 80,
       },
     },
   },

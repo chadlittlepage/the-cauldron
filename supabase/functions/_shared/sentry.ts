@@ -5,7 +5,16 @@ const SENTRY_ENV = Deno.env.get('SENTRY_ENVIRONMENT') ?? 'production';
  * Report an error to Sentry using the envelope API (no SDK dependency).
  * This is lightweight and works in Deno Edge Functions without npm packages.
  */
-export async function captureException(error: unknown, context?: Record<string, unknown>) {
+export interface SentryContext {
+  /** Function name or source identifier */
+  function?: string;
+  /** User ID for associating errors with users */
+  userId?: string;
+  /** Additional key-value pairs stored as extra context */
+  [key: string]: unknown;
+}
+
+export async function captureException(error: unknown, context?: SentryContext) {
   if (!SENTRY_DSN) return;
 
   try {
@@ -14,12 +23,15 @@ export async function captureException(error: unknown, context?: Record<string, 
     const publicKey = dsn.username;
     const host = dsn.hostname;
 
-    const event = {
+    const { userId, ...extra } = context ?? {};
+
+    const event: Record<string, unknown> = {
       event_id: crypto.randomUUID().replace(/-/g, ''),
       timestamp: new Date().toISOString(),
       platform: 'node',
       environment: SENTRY_ENV,
       server_name: 'supabase-edge',
+      tags: { function: extra.function },
       exception: {
         values: [
           {
@@ -31,8 +43,12 @@ export async function captureException(error: unknown, context?: Record<string, 
           },
         ],
       },
-      extra: context,
+      extra,
     };
+
+    if (userId) {
+      event.user = { id: userId };
+    }
 
     const envelope = [
       JSON.stringify({ event_id: event.event_id, sent_at: event.timestamp, dsn: SENTRY_DSN }),

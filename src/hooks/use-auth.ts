@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback, createElem
 import type { ReactNode } from 'react';
 import type { AuthResponse, Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
+import * as Sentry from '@sentry/react';
 import type { Tables } from '@/types/database';
 
 function getAuthTokenKey(): string | undefined {
@@ -61,6 +62,7 @@ interface AuthContextValue extends AuthState {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+/** Returns the current auth state (user, profile, session) and auth actions (signIn, signUp, signOut). */
 export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
   if (!context) {
@@ -69,6 +71,7 @@ export function useAuth(): AuthContextValue {
   return context;
 }
 
+/** Provides auth context to the component tree. Manages Supabase session and profile state. */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({
     user: storedSession?.user ?? null,
@@ -110,10 +113,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           clearState();
           return;
         }
+        Sentry.setUser({ id: session.user.id, email: session.user.email });
         setState({ user: session.user, profile, session, loading: false });
       })
-      .catch(() => {
+      .catch((err) => {
         // LockManager timeout or other unhandled auth error — clear stale state
+        Sentry.captureException(err, { tags: { source: 'auth_init' } });
         removeAuthToken();
         clearState();
       });
@@ -126,6 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (session?.user) {
         try {
           const profile = await fetchProfile(session.user.id);
+          Sentry.setUser({ id: session.user.id, email: session.user.email });
           setState({ user: session.user, profile, session, loading: false });
         } catch {
           clearState();
@@ -162,6 +168,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     // Clear state immediately so the UI updates even if the SDK call is slow
     // or fails to fire onAuthStateChange (Safari bug).
+    Sentry.setUser(null);
     setState({ user: null, profile: null, session: null, loading: false });
 
     // Remove the Supabase auth token from localStorage directly as a safety net.
