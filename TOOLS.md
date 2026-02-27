@@ -70,7 +70,7 @@
 | Project ID | `4510938330431488` |
 | DSN | `https://62ed9dd0b91f8bf05e1e294905cf3313@o4510140548055040.ingest.us.sentry.io/4510938330431488` |
 | Platform | React |
-| Features | Error Monitoring, Session Replay (100% on error, 10% baseline), Performance Tracing (20% prod), Web Vitals (LCP, CLS, FID) |
+| Features | Error Monitoring, Session Replay (100% on error, 20% baseline), Performance Tracing (20% prod), Web Vitals (LCP, CLS, FID) |
 | Source Maps | Uploaded via `@sentry/vite-plugin` on production builds, deleted from dist after upload |
 | Edge Functions | 7 Edge Functions report errors to Sentry via lightweight envelope API (`_shared/sentry.ts`); `sentry-proxy` proxies Sentry Issues API for Debug Console |
 | Web Vitals | Core Web Vitals (LCP, CLS, FID) reported to Sentry via PerformanceObserver in `src/lib/web-vitals.ts` |
