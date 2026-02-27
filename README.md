@@ -83,6 +83,8 @@ npm run dev
 | `stripe-webhook` | Handles Stripe payment events, updates submission status |
 | `create-payout` | Admin-only: records curator payout for a billing period |
 | `generate-charts` | Generates monthly/yearly charts from vote data |
+| `sentry-proxy` | Proxies Sentry Issues API for admin debug console |
+| `track-metadata` | Extracts artist name from Spotify/SoundCloud pages (SSRF-protected) |
 
 ## Project Structure
 
@@ -97,7 +99,7 @@ src/
 ├── App.tsx             # Routes (lazy-loaded except home/login/signup)
 └── main.tsx            # Entry point + providers + Sentry init
 supabase/
-├── migrations/         # SQL migrations (00001–00019)
+├── migrations/         # SQL migrations (00001–00028)
 └── functions/          # Edge Functions (Deno runtime)
 e2e/                    # Playwright E2E tests
 ```
